@@ -31,7 +31,14 @@ import { portraitChipHtml, hydratePortraits } from './ui/portrait_chip';
 import { playerPortraitDataUrl } from './render/characters/portrait';
 import { createPerfMonitor } from './game/perf';
 import { updateFollowCameraYaw, wrapAngle } from './game/camera_follow';
-
+// ── BharatVerse: Knowledge Combat Layer ───────────────────────────────────────
+import { KnowledgeModal } from './ui/knowledge_modal';
+import { MIGAGuide } from './ui/miga_guide';
+import {
+  getMobSubject, calcKnowledgeResult, shouldTriggerQuestion, getComboTierLabel,
+} from './sim/knowledge_combat';
+import { createPhaserGame } from './render-phaser/index';
+import { SimBridge } from './render-phaser/sim_bridge';
 
 const WORLD_SEED = 20061; // fixed: World of ClaudeCraft is a persistent place
 const CLICK_MOVE_TURN_RATE = 4.2; // rad/sec; responsive turning while the camera stays decoupled from click spam
@@ -61,7 +68,54 @@ let homepageMusicStarted = false;
 let homepageMusicMuted = readHomepageMusicMuted();
 let removeHomepageMusicGestureListeners: (() => void) | null = null;
 
-const SITE_URL = 'https://worldofclaudecraft.com/';
+// ── BharatVerse: Knowledge combat global state ─────────────────────────────────
+let bvKnowledgeModal: KnowledgeModal | null = null;
+let bvMIGA: MIGAGuide | null = null;
+let bvCombo = 0;           // current answer streak
+let bvAttackCount = 0;     // attacks this combat session (reset on new target)
+let bvLastTargetId: string | null = null;
+let phaserGame: any = null;
+
+// Fetch a question from the server and show the modal.
+// resolves with damage multiplier (0 = miss, 1 = normal, 2 = fast, 3 = critical)
+async function bvTriggerKnowledgeCheck(
+  mobId: string, mobSubject: string, isBoss: boolean, playerClass: string,
+): Promise<number> {
+  if (!bvKnowledgeModal) return 1; // safety: if modal not ready, pass through
+
+  try {
+    const resp = await fetch('/api/questions/random', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ subject: mobSubject, difficulty: isBoss ? 4 : 3 }),
+    });
+    const q = await resp.json();
+
+    return new Promise((resolve) => {
+      bvKnowledgeModal!.show(q, bvCombo);
+      (bvKnowledgeModal as any).onAnswer = (chosen: string, timeTaken: number) => {
+        const result = calcKnowledgeResult(
+          chosen === q.correct, timeTaken, bvCombo, playerClass,
+        );
+        bvCombo = Math.max(0, bvCombo + result.comboIncrement);
+
+        const tier = getComboTierLabel(bvCombo);
+        if (tier) console.info(`[BharatVerse] ${tier} ×${bvCombo}`);
+
+        if (!result.correct && bvMIGA) {
+          void bvMIGA.showWrongAnswer(q.text, chosen, q.correct, q.explanation);
+        }
+
+        resolve(result.damageMultiplier);
+      };
+    });
+  } catch {
+    // Network error — pass through (never block combat)
+    return 1;
+  }
+}
+
+const SITE_URL = 'https://bharatverse.in/';
 
 const RESOURCE_KEYS = {
   mana: 'classDetails.resources.mana',
@@ -529,6 +583,9 @@ function mountGameUi(): void {
 // ---------------------------------------------------------------------------
 
 async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWorld | null): Promise<void> {
+  let renderer: Renderer = null as any;
+  let hud: Hud = null as any;
+
   // Model/texture/HDRI fetches were kicked off at module import; the renderer
   // builds its scene synchronously, so everything must be resolved first.
   // The loading screen covers the gap - not a silent black screen.
@@ -540,25 +597,98 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
   // Paint the loading screen before anything can block — assetsReady may resolve
   // immediately when assets are already cached, and the scene build is synchronous.
   await nextPaint();
-  try {
-    await assetsReady((done, total) => setLoadingProgress(done, total));
-  } catch (err) {
-    fatalOverlay(t('loading.assetsFailed', { error: technicalErrorMessage(err) }));
-    return;
-  }
+  // Skip 3D assets preloading since we are in 2D Phaser mode
   setLoadingStatus(t('loading.enteringWorld'));
   // Let the final status + full progress bar paint before the synchronous
   // Renderer/Hud build freezes the main thread for a beat.
   await nextPaint();
   mountGameUi();
 
+  // Hide Three.js canvas and original HUD elements
+  const canvasEl = document.getElementById('game-canvas');
+  if (canvasEl) canvasEl.style.display = 'none';
+
+  const uiEl = document.getElementById('ui');
+  if (uiEl) uiEl.style.display = 'none';
+
+  // Create a container for Phaser
+  let phaserContainer = document.getElementById('phaser-game-container');
+  if (!phaserContainer) {
+    phaserContainer = document.createElement('div');
+    phaserContainer.id = 'phaser-game-container';
+    phaserContainer.style.position = 'fixed';
+    phaserContainer.style.left = '0';
+    phaserContainer.style.top = '0';
+    phaserContainer.style.width = '100vw';
+    phaserContainer.style.height = '100vh';
+    phaserContainer.style.zIndex = '10';
+    document.body.appendChild(phaserContainer);
+  }
+  phaserContainer.style.display = 'block';
+
+  // Import and initialize Phaser game
+  phaserGame = createPhaserGame(phaserContainer);
+
+  // Seed registries with character details
+  phaserGame.registry.set('world', world);
+  phaserGame.registry.set('playerName', world.player.name || 'Hero');
+  phaserGame.registry.set('playerClass', world.cfg.playerClass || 'arjuna');
+  phaserGame.registry.set('playerHp', world.player.hp || 100);
+  phaserGame.registry.set('playerMaxHp', world.player.maxHp || 100);
+  phaserGame.registry.set('playerXp', world.xp || 0);
+  phaserGame.registry.set('mindcoins', world.copper || 0);
+
+  // The seam between the fixed-step sim and the Phaser render loop: relays the
+  // SimEvent stream (previously dropped here) and carries the interpolation
+  // alpha so the renderer can lerp between ticks instead of snapping at 20Hz.
+  const simBridge = new SimBridge();
+  phaserGame.registry.set('simBridge', simBridge);
+
+  // Background simulation/network loop
+  let simLast = performance.now();
+  let simAcc = 0;
+  function simFrame(now: number): void {
+    requestAnimationFrame(simFrame);
+    let frameDt = (now - simLast) / 1000;
+    simLast = now;
+    if (frameDt > 0.25) frameDt = 0.25;
+
+    if (offlineSim) {
+      simAcc += frameDt;
+      while (simAcc >= DT) {
+        offlineSim.updateFiestaBots();
+        simBridge.push(offlineSim.tick());
+        simAcc -= DT;
+      }
+      simBridge.setAccumulator(simAcc);
+    } else if (online) {
+      online.flushInput();
+      simBridge.push(online.drainEvents());
+      // The online mirror interpolates each entity on its own net clock, so the
+      // shared alpha is left at the end-of-tick value.
+      simBridge.setAccumulator(0);
+    }
+
+    // Sync player stats back to Phaser registry
+    phaserGame.registry.set('playerHp', world.player.hp);
+    phaserGame.registry.set('playerMaxHp', world.player.maxHp);
+    phaserGame.registry.set('playerXp', world.xp);
+    phaserGame.registry.set('mindcoins', world.copper);
+  }
+  requestAnimationFrame(simFrame);
+  hideLoadingScreen();
+  fadeOutHomepageMusic();
+
+  // Definite assignment assignment so compiler flow analysis compiles cleanly below the return
+  renderer = null as any;
+  hud = null as any;
+  return;
+
   const canvas = $('#game-canvas') as unknown as HTMLCanvasElement;
   const nameplates = $('#nameplates') as HTMLDivElement;
 
   const keybinds = new Keybinds();
   const settings = new Settings();
-  let renderer!: Renderer;
-  let hud!: Hud;
   const perf = createPerfMonitor(null);
   try {
     renderer = new Renderer(world, canvas, nameplates);
@@ -573,9 +703,22 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
     fatalOverlay(t('loading.rendererFailed', { error: technicalErrorMessage(err) }));
     return;
   }
+  // ── BharatVerse: Initialize knowledge combat UI ─────────────────────────────
+  bvMIGA = new MIGAGuide();
+  bvKnowledgeModal = new KnowledgeModal((answer, timeTaken) => {
+    // This callback is overridden per-question in bvTriggerKnowledgeCheck
+    // but we need a base handler here for TypeScript to be happy.
+    console.debug('[BharatVerse] answer received without active check:', answer, timeTaken);
+  });
+  // Reset combat state when player enters world
+  bvCombo = 0;
+  bvAttackCount = 0;
+  bvLastTargetId = null;
+  // ───────────────────────────────────────────────────────────────────────────
+
 
   // Offline only: expose the dev "2v2 Fiesta vs Bots" practice toggle to the HUD.
-  if (offlineSim) hud.setFiestaPracticeHook(() => offlineSim.startFiestaPractice());
+  if (offlineSim) hud.setFiestaPracticeHook(() => offlineSim!.startFiestaPractice());
 
   const chatInput = $('#chat-input') as unknown as HTMLInputElement;
   const clickMoveMarker = $('#click-move-marker') as HTMLDivElement;
@@ -803,8 +946,8 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
   });
   if (online) {
     hud.attachReporting({
-      submit: (targetPid, reason, details) => api.reportPlayer(online.characterId, targetPid, reason, details),
-      submitByName: (targetName, reason, details) => api.reportPlayerByName(online.characterId, targetName, reason, details),
+      submit: (targetPid, reason, details) => api.reportPlayer(online!.characterId, targetPid, reason, details),
+      submitByName: (targetName, reason, details) => api.reportPlayerByName(online!.characterId, targetName, reason, details),
     });
   }
 
@@ -1970,7 +2113,7 @@ async function refreshCharacters(): Promise<void> {
     if (firstRow) {
       firstRow.click();
     } else {
-      renderClassDetails('charselect-class-details', 'warrior');
+      renderClassDetails('charselect-class-details', 'kshatriya');
     }
   } catch (err) {
     listEl.innerHTML = `<li class="char-list-message char-list-error">${escapeHtml(userFacingApiError(err))}</li>`;
@@ -2103,6 +2246,41 @@ const CLASS_DETAILS: Record<PlayerClass, ClassDetails> = {
     armorKey: 'classDetails.armor.leatherCloth',
     weaponsKey: 'classDetails.weapons.staves',
     loreKey: 'classDetails.lore.druid',
+  },
+  brahmarishi: {
+    roleKey: 'classDetails.roles.priest',
+    roleType: 'healer',
+    armorKey: 'classDetails.armor.cloth',
+    weaponsKey: 'classDetails.weapons.staves',
+    loreKey: 'classDetails.lore.priest',
+  },
+  kshatriya: {
+    roleKey: 'classDetails.roles.warrior',
+    roleType: 'hybrid',
+    armorKey: 'classDetails.armor.chainLeatherCloth',
+    weaponsKey: 'classDetails.weapons.swordsMacesAxes',
+    loreKey: 'classDetails.lore.warrior',
+  },
+  vaishya: {
+    roleKey: 'classDetails.roles.hunter',
+    roleType: 'dps',
+    armorKey: 'classDetails.armor.chainLeatherCloth',
+    weaponsKey: 'classDetails.weapons.staves', // or bow
+    loreKey: 'classDetails.lore.hunter',
+  },
+  shilpi: {
+    roleKey: 'classDetails.roles.mage',
+    roleType: 'dps',
+    armorKey: 'classDetails.armor.cloth',
+    weaponsKey: 'classDetails.weapons.staves',
+    loreKey: 'classDetails.lore.mage',
+  },
+  vaidya: {
+    roleKey: 'classDetails.roles.druid',
+    roleType: 'hybrid',
+    armorKey: 'classDetails.armor.leatherCloth',
+    weaponsKey: 'classDetails.weapons.staves',
+    loreKey: 'classDetails.lore.druid',
   }
 };
 
@@ -2115,7 +2293,12 @@ const SIGNATURE_ABILITIES: Record<PlayerClass, string[]> = {
   shaman: ['lightning_bolt', 'rockbiter_weapon', 'ghost_wolf'],
   mage: ['fireball', 'frostbolt', 'polymorph'],
   warlock: ['shadow_bolt', 'corruption', 'life_tap'],
-  druid: ['wrath', 'bear_form', 'rejuvenation']
+  druid: ['wrath', 'bear_form', 'rejuvenation'],
+  brahmarishi: ['smite', 'power_word_shield', 'shadow_word_pain'],
+  kshatriya: ['charge', 'heroic_strike', 'rend'],
+  vaishya: ['serpent_sting', 'aimed_shot', 'aspect_of_the_hawk'],
+  shilpi: ['fireball', 'frostbolt', 'polymorph'],
+  vaidya: ['wrath', 'bear_form', 'rejuvenation']
 };
 
 const activeClassDetailsTimeouts: Record<string, number | null> = {};
@@ -2368,14 +2551,14 @@ function updateSeoMetadata(lang: SupportedLanguage): void {
     jsonLd.textContent = JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'VideoGame',
-      name: 'World of ClaudeCraft',
-      alternateName: 'World of Claudecraft',
+      name: 'BharatVerse',
+      alternateName: 'BharatVerse',
       genre: t('seo.genre'),
       playMode: t('seo.playMode'),
       applicationCategory: t('seo.applicationCategory'),
       operatingSystem: t('seo.operatingSystem'),
       url: canonicalHref,
-      image: 'https://worldofclaudecraft.com/woc_logo_square.webp',
+      image: 'https://bharatverse.in/woc_logo_square.webp',
       description: t('seo.description'),
       inLanguage: languageTag(lang),
       sameAs: [
@@ -2774,18 +2957,18 @@ function wireStartScreens(): void {
   const handleOfflineSelect = () => {
     show('#offline-select');
     
-    // Select warrior by default and render details
-    const warriorCard = document.querySelector('#offline-select .mini-class[data-class="warrior"]') as HTMLElement | null;
-    if (warriorCard) {
+    // Select kshatriya by default and render details
+    const kshatriyaCard = document.querySelector('#offline-select .mini-class[data-class="kshatriya"]') as HTMLElement | null;
+    if (kshatriyaCard) {
       document.querySelectorAll('#offline-select .mini-class').forEach((c) => {
         c.classList.remove('sel');
         c.setAttribute('aria-pressed', 'false');
       });
-      warriorCard.classList.add('sel');
-      warriorCard.setAttribute('aria-pressed', 'true');
-      renderClassDetails('offline-class-details', 'warrior');
+      kshatriyaCard.classList.add('sel');
+      kshatriyaCard.setAttribute('aria-pressed', 'true');
+      renderClassDetails('offline-class-details', 'kshatriya');
       btnStartOffline.removeAttribute('disabled');
-      refreshOfflineSkins('warrior');
+      refreshOfflineSkins('kshatriya');
     }
   };
 
@@ -2795,16 +2978,26 @@ function wireStartScreens(): void {
   offlineBtn.addEventListener('click', handleOfflineSelect);
   offlineBtn.addEventListener('keydown', (e) => handleKeyboardActivation(e as KeyboardEvent, handleOfflineSelect));
 
+  // Wire new Kintara launcher buttons
+  const playOfflineBtn = $('#btn-play-offline');
+  const playOnlineBtn = $('#btn-play-online');
+  if (playOfflineBtn) {
+    playOfflineBtn.addEventListener('click', handleOfflineSelect);
+  }
+  if (playOnlineBtn) {
+    playOnlineBtn.addEventListener('click', handleOnlineSelect);
+  }
+
   // --- Play console: realm dropdown + single Play CTA -----------------------
   // The dropdown only chooses the destination (defaults to Online); the Play
   // button commits, routing to the same online/offline flows as the legacy cards.
   const serverSelect = $('#server-select');
-  const serverTrigger = $('#server-select-trigger') as HTMLButtonElement;
+  const serverTrigger = $('#server-select-trigger') as HTMLButtonElement | null;
   const serverMenu = $('#server-select-menu');
   const serverValue = $('#server-select-value');
   const serverSub = $('#server-select-sub');
-  const serverTriggerDot = serverTrigger.querySelector('.server-dot') as HTMLElement | null;
-  const btnPlay = $('#btn-play') as HTMLButtonElement;
+  const serverTriggerDot = serverTrigger?.querySelector('.server-dot') as HTMLElement | null;
+  const btnPlay = $('#btn-play') as HTMLButtonElement | null;
 
   if (serverSelect && serverTrigger && serverMenu && btnPlay) {
     type ServerMode = 'online' | 'offline';
@@ -3276,12 +3469,12 @@ function wireStartScreens(): void {
   });
 
   // Default select warrior in online character creator
-  const defaultOnlineClass = document.querySelector('#charcreate-panel .mini-class[data-class="warrior"]') as HTMLElement | null;
+  const defaultOnlineClass = document.querySelector('#charcreate-panel .mini-class[data-class="kshatriya"]') as HTMLElement | null;
   if (defaultOnlineClass) {
     defaultOnlineClass.classList.add('sel');
     defaultOnlineClass.setAttribute('aria-pressed', 'true');
-    renderClassDetails('charcreate-class-details', 'warrior');
-    refreshOnlineSkins('warrior');
+    renderClassDetails('charcreate-class-details', 'kshatriya');
+    refreshOnlineSkins('kshatriya');
   }
   const newCharNameInput = $('#new-char-name') as HTMLInputElement;
   const charselectError = $('#charselect-error');
@@ -3510,21 +3703,8 @@ function wireStartScreens(): void {
 
   initBackgroundEmbers();
 
-  // Initialize 3D character preview once assets are ready
+  // 3D character preview disabled for BharatVerse 2D pivot
   assetsReady().then(() => {
-    const activePanelId = ['#charselect-panel', '#offline-select'].find(id => !$(id).hasAttribute('hidden'));
-    const containerId = activePanelId === '#offline-select' ? '#offline-preview-container' : '#online-preview-container';
-    const container = $(containerId);
-    const canvas = $('#char-preview-canvas') as HTMLCanvasElement | null;
-    if (container && canvas) {
-      characterPreview = new CharacterPreview(container, canvas);
-      const selSelector = activePanelId === '#offline-select'
-        ? '#offline-select .mini-class.sel'
-        : '#charcreate-panel .mini-class.sel';
-      const selEl = document.querySelector(selSelector) as HTMLElement | null;
-      const cls = selEl ? (selEl.dataset.class as PlayerClass) : 'warrior';
-      characterPreview.setClass(cls);
-    }
     decorateClassChips();
   });
 }
