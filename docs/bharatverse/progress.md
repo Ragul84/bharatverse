@@ -8,7 +8,7 @@ blocked / complete.
 | WP | Title | Status | Branch | Notes |
 |---|---|---|---|---|
 | 1 | Phaser render parity (spine) | in-progress | feature/phaser-render-parity | spine commits 1-5 done (bus+interp, iso, terrain, entity views, targeting); `vite build` green. Remaining: live-browser smoke + dead-Three.js bundle trim |
-| 2 | Isometric art + landmark zones | not-started | | needs WP1 |
+| 2 | Isometric art + landmark zones | in-progress | feature/phaser-render-parity | procedural pass: decorations (trees/rocks, occluding) + per-hub landmarks (obelisk/dome/gopuram). Real tileset/sprite art still TODO |
 | 3 | Class / mob / item re-theme completion | not-started | | parallel-safe; verify MOB_SUBJECT_MAP ids |
 | 4 | Unify question systems (data only) | not-started | | parallel-safe; fix Math.random |
 | 5 | Phaser HUD parity (HUDScene) | not-started | | needs WP1 |
@@ -67,3 +67,10 @@ Archive actions (one-time):
   (`player.targetId`). `vite build` succeeds (Phaser client bundles; ~5MB incl.
   both three+phaser -- dead-Three.js trim is a later optimization). Spine done;
   live-browser smoke pending a running dev server (QA pass).
+- WP2 first pass (procedural art): occluding decorations (trees/rocks placed from
+  the sim's `generateDecorations`, depth-sorted billboards from generated
+  textures) + a themed procedural landmark at each zone hub (Statue-of-Unity
+  obelisk in Vidya Nagar/vale, Taj-style dome in Shastra Gram/marsh, Tanjore
+  gopuram in Takshashila/peaks) with hub-name labels. New tested
+  `decoration_style.ts`. tsc + `vite build` green. NEXT: real tilesets/sprite
+  art, Capital Plaza / Great Fort / Taj building-outs, props near POIs.

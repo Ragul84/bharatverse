@@ -13,8 +13,9 @@ import { Events } from '../index';
 import { SimBridge, interpPos } from '../sim_bridge';
 import { worldToIso, isoDepth, isoWorldBoundsRect } from '../iso';
 import { EntityView } from '../entity_view';
-import { WORLD_MIN_X, WORLD_MAX_X, WORLD_MIN_Z, WORLD_MAX_Z } from '../../sim/data';
-import { terrainHeight, zoneBiomeAt, roadDistance, WATER_LEVEL } from '../../sim/world';
+import { decoTexture, decoTint } from '../decoration_style';
+import { WORLD_MIN_X, WORLD_MAX_X, WORLD_MIN_Z, WORLD_MAX_Z, ZONES } from '../../sim/data';
+import { terrainHeight, zoneBiomeAt, roadDistance, WATER_LEVEL, generateDecorations } from '../../sim/world';
 import type { IWorld } from '../../world_api';
 import type { Entity } from '../../sim/types';
 
@@ -88,7 +89,11 @@ export class WorldScene extends Scene {
     const { width } = this.scale;
 
     // ---- Isometric terrain, sampled from the sim's own heightfield ----
-    this.drawTerrain(this.world.cfg.seed);
+    const seed = this.world.cfg.seed;
+    this.drawTerrain(seed);
+    this.makeDecoTextures();
+    this.drawDecorations(seed);
+    this.drawLandmarks(seed);
 
     // Zone name text (screen-space UI, above the world)
     this.zoneLabel = this.add.text(width / 2, 16, 'Vidya Nagar - Gangapur Nagari', {
@@ -188,6 +193,103 @@ export class WorldScene extends Scene {
       g.closePath();
       g.fillPath();
     }
+  }
+
+  /** Build the small reusable tree/rock textures used by drawDecorations. */
+  private makeDecoTextures(): void {
+    const g = this.make.graphics({ x: 0, y: 0 });
+    // Broadleaf tree
+    g.fillStyle(0x5a3b22, 1); g.fillRect(11, 24, 4, 12);
+    g.fillStyle(0x3f7d34, 1); g.fillCircle(13, 16, 13);
+    g.fillStyle(0x4f9442, 1); g.fillCircle(9, 13, 7);
+    g.generateTexture('bv-tree', 26, 36); g.clear();
+    // Pine
+    g.fillStyle(0x5a3b22, 1); g.fillRect(11, 26, 4, 10);
+    g.fillStyle(0x356b2e, 1); g.fillTriangle(2, 28, 24, 28, 13, 2);
+    g.fillStyle(0x3f7d34, 1); g.fillTriangle(5, 18, 21, 18, 13, 6);
+    g.generateTexture('bv-tree2', 26, 36); g.clear();
+    // Rock
+    g.fillStyle(0x8a8a8a, 1); g.fillEllipse(13, 11, 24, 14);
+    g.fillStyle(0x6f6f6f, 1); g.fillEllipse(16, 13, 11, 8);
+    g.generateTexture('bv-rock', 26, 20);
+    g.destroy();
+  }
+
+  /**
+   * Place trees/rocks from the sim's deterministic generateDecorations(), each a
+   * depth-sorted billboard so it occludes entities correctly. Same seed as the
+   * sim, so placement matches everywhere.
+   */
+  private drawDecorations(seed: number): void {
+    for (const d of generateDecorations(seed)) {
+      const pos = worldToScreen(d.x, d.z, terrainHeight(d.x, d.z, seed));
+      const img = this.add.image(pos.x, pos.y, decoTexture(d.kind))
+        .setOrigin(0.5, 1)
+        .setScale(d.scale)
+        .setDepth(isoDepth(d.x, d.z));
+      const tint = decoTint(d.kind, d.biome);
+      if (tint !== 0xffffff) img.setTint(tint);
+    }
+  }
+
+  /**
+   * A procedural isometric landmark at each zone hub, themed by biome: the vale
+   * gets a Statue-of-Unity obelisk, the marsh a Taj-style marble dome, the peaks
+   * a Tanjore-style stepped gopuram. Depth-sorted at the hub so the player can
+   * walk in front of and behind it. Real modeled landmarks are later art.
+   */
+  private drawLandmarks(seed: number): void {
+    for (const zone of ZONES) {
+      const h = zone.hub;
+      const base = worldToScreen(h.x, h.z, terrainHeight(h.x, h.z, seed));
+      const g = this.add.graphics();
+      if (zone.biome === 'vale') this.paintObelisk(g);
+      else if (zone.biome === 'marsh') this.paintDome(g);
+      else this.paintGopuram(g);
+      const label = this.add.text(0, -100, h.name, {
+        fontSize: '12px',
+        fontFamily: '"Noto Sans", sans-serif',
+        color: '#fde68a',
+        stroke: '#000000',
+        strokeThickness: 3,
+      }).setOrigin(0.5, 1);
+      this.add.container(base.x, base.y, [g, label]).setDepth(isoDepth(h.x, h.z));
+    }
+  }
+
+  private paintObelisk(g: Phaser.GameObjects.Graphics): void {
+    g.fillStyle(0x6b5536, 1); g.fillRect(-18, -20, 36, 20); // pedestal
+    g.fillStyle(0x7d6440, 1); g.fillRect(-22, -6, 44, 8);   // plinth
+    g.fillStyle(0x9c7a3c, 1);                               // bronze figure
+    g.beginPath();
+    g.moveTo(-9, -20); g.lineTo(9, -20); g.lineTo(5, -86); g.lineTo(-5, -86);
+    g.closePath(); g.fillPath();
+    g.fillStyle(0xb08d57, 1); g.fillCircle(0, -90, 6);
+  }
+
+  private paintDome(g: Phaser.GameObjects.Graphics): void {
+    g.fillStyle(0xd1d5db, 1); g.fillRect(-26, -12, 52, 12); // platform
+    g.fillStyle(0xe5e7eb, 1);                                // minarets
+    g.fillRect(-24, -58, 4, 46); g.fillRect(20, -58, 4, 46);
+    g.fillStyle(0xf1f5f9, 1); g.fillCircle(-22, -60, 3); g.fillCircle(22, -60, 3);
+    g.fillStyle(0xf3f4f6, 1); g.fillRect(-16, -46, 32, 34); // main block
+    g.fillStyle(0xf9fafb, 1); g.fillEllipse(0, -50, 34, 30); // onion dome
+    g.fillStyle(0xb0893f, 1); g.fillRect(-1, -72, 2, 8); g.fillCircle(0, -73, 2);
+  }
+
+  private paintGopuram(g: Phaser.GameObjects.Graphics): void {
+    const tiers = 6;
+    for (let i = 0; i < tiers; i++) {
+      const y0 = -i * 13;
+      const y1 = y0 - 13;
+      const hw = 28 - i * 4;
+      const tw = hw - 4;
+      g.fillStyle(i % 2 === 0 ? 0xb08d57 : 0x9c7a47, 1);
+      g.beginPath();
+      g.moveTo(-hw, y0); g.lineTo(hw, y0); g.lineTo(tw, y1); g.lineTo(-tw, y1);
+      g.closePath(); g.fillPath();
+    }
+    g.fillStyle(0xd4af5a, 1); g.fillCircle(0, -tiers * 13 - 4, 4); // kalasham
   }
 
   update(): void {
