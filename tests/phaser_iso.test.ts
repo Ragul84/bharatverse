@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  worldToIso, isoDepth, isoWorldBounds,
+  worldToIso, isoDepth, isoWorldBounds, isoWorldBoundsRect,
   ISO_PPY_X, ISO_PPY_Y, ISO_HEIGHT_PPY,
 } from '../src/render-phaser/iso';
 
@@ -55,6 +55,25 @@ describe('isoWorldBounds', () => {
       const screenY = b.originY + p.sy;
       expect(screenX).toBeGreaterThanOrEqual(0);
       expect(screenX).toBeLessThanOrEqual(b.width);
+      expect(screenY).toBeGreaterThanOrEqual(0);
+      expect(screenY).toBeLessThanOrEqual(b.height);
+    }
+  });
+});
+
+describe('isoWorldBoundsRect', () => {
+  it('contains a non-square north-running strip world', () => {
+    // The sim world: x in [-180,180], z in [-180,900].
+    const [minX, maxX, minZ, maxZ] = [-180, 180, -180, 900];
+    const b = isoWorldBoundsRect(minX, maxX, minZ, maxZ, 400);
+
+    // Every world corner, offset by the origin, lands inside [0,w] x [margin..].
+    for (const [x, z] of [[minX, minZ], [maxX, maxZ], [minX, maxZ], [maxX, minZ]]) {
+      const p = worldToIso(x, z);
+      const screenX = b.originX + p.sx;
+      const screenY = b.originY + p.sy;
+      expect(screenX).toBeGreaterThanOrEqual(-1e-9);
+      expect(screenX).toBeLessThanOrEqual(b.width + 1e-9);
       expect(screenY).toBeGreaterThanOrEqual(0);
       expect(screenY).toBeLessThanOrEqual(b.height);
     }

@@ -11,24 +11,43 @@
 import Phaser, { Scene, GameObjects, Input } from 'phaser';
 import { Events } from '../index';
 import { SimBridge, interpPos } from '../sim_bridge';
-import { worldToIso, isoDepth, isoWorldBounds } from '../iso';
-import { WORLD_SIZE } from '../../sim/data';
+import { worldToIso, isoDepth, isoWorldBoundsRect } from '../iso';
+import { WORLD_MIN_X, WORLD_MAX_X, WORLD_MIN_Z, WORLD_MAX_Z } from '../../sim/data';
+import { terrainHeight, zoneBiomeAt, roadDistance, WATER_LEVEL } from '../../sim/world';
 import type { IWorld } from '../../world_api';
 import type { Entity } from '../../sim/types';
 
-// Camera bounds + world origin offset for the isometric projection. The origin
-// shifts the (possibly negative) iso coordinates into positive camera space.
-const ISO_BOUNDS = isoWorldBounds(WORLD_SIZE);
+// Camera bounds + world origin offset for the isometric projection. The sim
+// world is a north-running strip (x in [-180,180], z in [-180,900]), not a
+// square, so bounds come from the real rectangle.
+const ISO_BOUNDS = isoWorldBoundsRect(WORLD_MIN_X, WORLD_MAX_X, WORLD_MIN_Z, WORLD_MAX_Z);
 
 // Depth bands kept clear of the in-world painter's-order range (isoDepth spans
-// roughly [-WORLD_SIZE, WORLD_SIZE]).
+// roughly [WORLD_MIN_X+WORLD_MIN_Z, WORLD_MAX_X+WORLD_MAX_Z]).
 const DEPTH_GROUND = -100000;
 const DEPTH_UI = 100000;
+
+// Base ground tint per biome; height shading is applied on top.
+const BIOME_BASE: Record<string, number> = {
+  vale: 0x4a7c3a,  // wooded green
+  marsh: 0x4f5e34, // swampy olive
+  peaks: 0x8c8378, // rocky grey-brown
+};
+const COLOR_WATER = 0x2c5d86;
+const COLOR_ROAD = 0xb89b6a;
 
 /** Project sim world coords to Phaser screen pixels (origin offset applied). */
 function worldToScreen(x: number, z: number, y = 0): { x: number; y: number } {
   const p = worldToIso(x, z, y);
   return { x: ISO_BOUNDS.originX + p.sx, y: ISO_BOUNDS.originY + p.sy };
+}
+
+/** Multiply each RGB channel of a packed color by `f`, clamped to [0,255]. */
+function shadeColor(hex: number, f: number): number {
+  const r = Math.min(255, Math.round(((hex >> 16) & 0xff) * f));
+  const g = Math.min(255, Math.round(((hex >> 8) & 0xff) * f));
+  const b = Math.min(255, Math.round((hex & 0xff) * f));
+  return (r << 16) | (g << 8) | b;
 }
 
 export class WorldScene extends Scene {
@@ -71,10 +90,8 @@ export class WorldScene extends Scene {
   create(): void {
     const { width } = this.scale;
 
-    // ---- Isometric ground placeholder (real terrain is WP2) ----
-    // A terracotta diamond covering the playable world, with a faint iso grid so
-    // the projection reads as 2.5D ground immediately.
-    this.drawGroundPlaceholder();
+    // ---- Isometric terrain, sampled from the sim's own heightfield ----
+    this.drawTerrain(this.world.cfg.seed);
 
     // Zone name text (screen-space UI, above the world)
     this.zoneLabel = this.add.text(width / 2, 16, 'Vidya Nagar - Gangapur Nagari', {
@@ -122,37 +139,56 @@ export class WorldScene extends Scene {
   }
 
   /**
-   * Placeholder isometric ground: a terracotta world diamond with a faint iso
-   * grid. Proves the projection/camera; real terrain (sampled from sim/world.ts)
-   * lands in WP2.
+   * Isometric terrain baked once from the sim's own heightfield, so the Phaser
+   * ground matches the simulation exactly (the repo invariant: renderer samples
+   * the same `world.ts` functions). Each cell is a flat iso tile lifted to its
+   * sampled height, tinted by biome + height, flooded to a flat water plane
+   * below WATER_LEVEL, and tan-tinted along roads. Real art / props are WP2.
    */
-  private drawGroundPlaceholder(): void {
-    const half = WORLD_SIZE / 2;
+  private drawTerrain(seed: number): void {
     const g = this.add.graphics().setDepth(DEPTH_GROUND);
+    const step = 8;
+    const s2 = step / 2;
 
-    // Filled world diamond.
-    const corners = [
-      worldToScreen(half, half),
-      worldToScreen(half, -half),
-      worldToScreen(-half, -half),
-      worldToScreen(-half, half),
-    ];
-    g.fillStyle(0x8b5e3c, 1);
-    g.beginPath();
-    g.moveTo(corners[0].x, corners[0].y);
-    for (let i = 1; i < corners.length; i++) g.lineTo(corners[i].x, corners[i].y);
-    g.closePath();
-    g.fillPath();
+    interface Cell { x: number; z: number; h: number; color: number }
+    const cells: Cell[] = [];
+    for (let z = WORLD_MIN_Z; z <= WORLD_MAX_Z; z += step) {
+      for (let x = WORLD_MIN_X; x <= WORLD_MAX_X; x += step) {
+        const th = terrainHeight(x, z, seed);
+        let color: number;
+        let h: number;
+        if (th < WATER_LEVEL) {
+          color = COLOR_WATER;
+          h = WATER_LEVEL; // flat water surface over the basin
+        } else if (roadDistance(x, z) < 3.5) {
+          color = COLOR_ROAD;
+          h = th;
+        } else {
+          const base = BIOME_BASE[zoneBiomeAt(z)] ?? BIOME_BASE.vale;
+          // brighter with elevation; clamped so peaks do not blow out
+          const shade = 0.7 + Math.min(1, Math.max(0, (th - WATER_LEVEL) / 40)) * 0.6;
+          color = shadeColor(base, shade);
+          h = th;
+        }
+        cells.push({ x, z, h, color });
+      }
+    }
 
-    // Faint iso grid every 30 yards along each world axis.
-    g.lineStyle(1, 0xc4a882, 0.35);
-    for (let c = -half; c <= half; c += 30) {
-      const ax = worldToScreen(c, -half);
-      const bx = worldToScreen(c, half);
-      g.lineBetween(ax.x, ax.y, bx.x, bx.y);
-      const az = worldToScreen(-half, c);
-      const bz = worldToScreen(half, c);
-      g.lineBetween(az.x, az.y, bz.x, bz.y);
+    // Painter's order: back (small x+z) to front, so raised tiles overlap right.
+    cells.sort((a, b) => (a.x + a.z) - (b.x + b.z));
+    for (const c of cells) {
+      const p1 = worldToScreen(c.x + s2, c.z + s2, c.h);
+      const p2 = worldToScreen(c.x + s2, c.z - s2, c.h);
+      const p3 = worldToScreen(c.x - s2, c.z - s2, c.h);
+      const p4 = worldToScreen(c.x - s2, c.z + s2, c.h);
+      g.fillStyle(c.color, 1);
+      g.beginPath();
+      g.moveTo(p1.x, p1.y);
+      g.lineTo(p2.x, p2.y);
+      g.lineTo(p3.x, p3.y);
+      g.lineTo(p4.x, p4.y);
+      g.closePath();
+      g.fillPath();
     }
   }
 

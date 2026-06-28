@@ -69,3 +69,26 @@ export function isoWorldBounds(worldSize: number, margin = 400): IsoBounds {
     height: halfH * 2 + margin * 2,
   };
 }
+
+/**
+ * Camera bounds + origin offset for a rectangular world spanning [minX,maxX] x
+ * [minZ,maxZ] yards (the sim world is a north-running strip, not a square). The
+ * origin offset maps the projected corners into positive camera space; `margin`
+ * (px) pads the top/bottom for world height lift and sprite extents.
+ */
+export function isoWorldBoundsRect(
+  minX: number, maxX: number, minZ: number, maxZ: number, margin = 400,
+): IsoBounds {
+  // sx = (x - z) * PPY_X is extremal at (minX,maxZ) and (maxX,minZ).
+  const sxMin = (minX - maxZ) * ISO_PPY_X;
+  const sxMax = (maxX - minZ) * ISO_PPY_X;
+  // sy = (x + z) * PPY_Y is extremal at (minX,minZ) and (maxX,maxZ).
+  const syMin = (minX + minZ) * ISO_PPY_Y;
+  const syMax = (maxX + maxZ) * ISO_PPY_Y;
+  return {
+    originX: -sxMin,
+    originY: -syMin + margin,
+    width: sxMax - sxMin,
+    height: (syMax - syMin) + margin * 2,
+  };
+}

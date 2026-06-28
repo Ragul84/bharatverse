@@ -48,3 +48,10 @@ Archive actions (one-time):
   `tests/phaser_iso.test.ts` 7/7). `WorldScene` now projects world (x,z,y) to iso
   screen space, depth-sorts entities by (x+z), feet-origin sprites, and draws an
   iso ground-diamond placeholder (real terrain is WP2/commit 3). tsc clean.
+- WP1 commit 3 (terrain from sim heightfield): `WorldScene.drawTerrain` bakes the
+  ground from `sim/world.ts` (`terrainHeight`/`WATER_LEVEL`/`zoneBiomeAt`/
+  `roadDistance`) so it matches the sim exactly. Iso tiles lifted to sampled
+  height, biome-tinted + height-shaded, water plane, road tint. Added
+  `isoWorldBoundsRect` for the real north-strip extents (x[-180,180] z[-180,900])
+  -- corrects commit 2's square camera bounds. tsc clean; iso tests 8/8. NOTE:
+  occluding props/decorations (`generateDecorations`) deferred to WP2 art.
