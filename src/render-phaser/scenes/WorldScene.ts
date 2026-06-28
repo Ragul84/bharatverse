@@ -13,6 +13,7 @@ import { Events } from '../index';
 import { SimBridge, interpPos } from '../sim_bridge';
 import { worldToIso, isoDepth, isoWorldBoundsRect } from '../iso';
 import { EntityView } from '../entity_view';
+import { generateCharacterTextures } from '../character_sprites';
 import { decoTexture, decoTint } from '../decoration_style';
 import { WORLD_MIN_X, WORLD_MAX_X, WORLD_MIN_Z, WORLD_MAX_Z, ZONES } from '../../sim/data';
 import { terrainHeight, zoneBiomeAt, roadDistance, WATER_LEVEL, generateDecorations } from '../../sim/world';
@@ -94,6 +95,7 @@ export class WorldScene extends Scene {
     this.makeDecoTextures();
     this.drawDecorations(seed);
     this.drawLandmarks(seed);
+    generateCharacterTextures(this); // procedural per-archetype sprites
 
     // Zone name text (screen-space UI, above the world)
     this.zoneLabel = this.add.text(width / 2, 16, 'Vidya Nagar - Gangapur Nagari', {

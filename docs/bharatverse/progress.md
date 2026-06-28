@@ -72,5 +72,12 @@ Archive actions (one-time):
   textures) + a themed procedural landmark at each zone hub (Statue-of-Unity
   obelisk in Vidya Nagar/vale, Taj-style dome in Shastra Gram/marsh, Tanjore
   gopuram in Takshashila/peaks) with hub-name labels. New tested
-  `decoration_style.ts`. tsc + `vite build` green. NEXT: real tilesets/sprite
-  art, Capital Plaza / Great Fort / Taj building-outs, props near POIs.
+  `decoration_style.ts`. tsc + `vite build` green.
+- WP2 sprites: replaced placeholder rectangles with procedural per-archetype
+  character sprites. New `character_archetype.ts` (pure, tested: entity ->
+  archetype key + palette for 9 classic + 5 BharatVerse classes, npc/mob/object)
+  and `character_sprites.ts` (bakes a humanoid texture per palette + a node
+  texture for objects via Graphics). `EntityView` now renders the sprite Image
+  (feet-anchored, scaled by entity.scale, dead-tinted), overlays repositioned
+  above the taller sprite. tsc + vite build green; 14 char/entity tests pass.
+  NEXT: directional facing frames, real tileset ground, building interiors.
