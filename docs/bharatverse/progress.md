@@ -7,7 +7,7 @@ blocked / complete.
 
 | WP | Title | Status | Branch | Notes |
 |---|---|---|---|---|
-| 1 | Phaser render parity (spine) | in-progress | feature/phaser-render-parity | audit done (`wp1-render-parity-audit.md`); Three.js path is dead code; Phaser is live |
+| 1 | Phaser render parity (spine) | in-progress | feature/phaser-render-parity | spine commits 1-5 done (bus+interp, iso, terrain, entity views, targeting); `vite build` green. Remaining: live-browser smoke + dead-Three.js bundle trim |
 | 2 | Isometric art + landmark zones | not-started | | needs WP1 |
 | 3 | Class / mob / item re-theme completion | not-started | | parallel-safe; verify MOB_SUBJECT_MAP ids |
 | 4 | Unify question systems (data only) | not-started | | parallel-safe; fix Math.random |
@@ -61,3 +61,9 @@ Archive actions (one-time):
   resource bar + cast bar (shown while `castingAbility` set). `WorldScene`
   simplified to create/update/destroy views. Body shapes still placeholder (real
   sprites WP2). tsc clean; 28 phaser tests pass (incl. 9 new logic tests).
+- WP1 commit 5 (targeting + target ring): click an entity to target
+  (`world.targetEntity(id)` via `EntityView.setInteractiveTarget`), Tab cycles
+  (`world.tabTarget`), and a gold iso ring tracks the player's current target
+  (`player.targetId`). `vite build` succeeds (Phaser client bundles; ~5MB incl.
+  both three+phaser -- dead-Three.js trim is a later optimization). Spine done;
+  live-browser smoke pending a running dev server (QA pass).

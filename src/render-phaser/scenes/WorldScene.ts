@@ -72,6 +72,7 @@ export class WorldScene extends Scene {
 
   private inCombat = false;
   private zoneLabel!: GameObjects.Text;
+  private targetRing!: GameObjects.Graphics;
 
   constructor() {
     super({ key: 'WorldScene', active: false });
@@ -110,6 +111,11 @@ export class WorldScene extends Scene {
     this.cameras.main.startFollow(this.playerView.container, true, 0.1, 0.1);
     this.cameras.main.setZoom(1.2);
 
+    // ---- Target ring (drawn under the current target's feet) ----
+    this.targetRing = this.add.graphics().setVisible(false);
+    this.targetRing.lineStyle(2, 0xfde047, 0.95); // gold
+    this.targetRing.strokeEllipse(0, 0, 30, 15);  // 2:1 iso footprint
+
     // ---- Keyboard input setup ----
     this.cursors = this.input.keyboard!.createCursorKeys();
     this.wasd = {
@@ -118,6 +124,10 @@ export class WorldScene extends Scene {
       left: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.A),
       right: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D),
     };
+
+    // Tab cycles the nearest hostile target (server/sim decides which).
+    this.input.keyboard!.addCapture('TAB');
+    this.input.keyboard!.on('keydown-TAB', () => this.world.tabTarget());
 
     // Listen for combat end
     this.events.on(Events.COMBAT_END, this.onCombatEnd, this);
@@ -214,8 +224,27 @@ export class WorldScene extends Scene {
     // ---- 3. Sync Other Entities from Sim ----
     this.syncEntities(alpha);
 
-    // ---- 4. Check Proximity for Combat ----
+    // ---- 4. Target ring on the current target ----
+    this.updateTargetRing(alpha);
+
+    // ---- 5. Check Proximity for Combat ----
     this.checkAggroEncounters();
+  }
+
+  /** Position/show the gold ring under the player's current target. */
+  private updateTargetRing(alpha: number): void {
+    const tid = this.world.player.targetId;
+    const target = tid != null ? this.world.entities.get(tid) : undefined;
+    if (!target || target.dead) {
+      this.targetRing.setVisible(false);
+      return;
+    }
+    const ip = interpPos(target, alpha);
+    const pos = worldToScreen(ip.x, ip.z, ip.y);
+    this.targetRing
+      .setVisible(true)
+      .setPosition(pos.x, pos.y)
+      .setDepth(isoDepth(ip.x, ip.z) - 0.5); // just behind the target body
   }
 
   private syncEntities(alpha: number): void {
@@ -231,7 +260,8 @@ export class WorldScene extends Scene {
 
       let view = this.entityViews.get(id);
       if (!view) {
-        view = new EntityView(this, entity, false);
+        view = new EntityView(this, entity, false)
+          .setInteractiveTarget(() => this.world.targetEntity(id));
         this.entityViews.set(id, view);
       }
       view.setPosition(pos.x, pos.y).setDepth(depth);

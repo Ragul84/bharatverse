@@ -78,6 +78,13 @@ export class EntityView {
     this.container.setAlpha(e.dead ? 0.6 : 1);
   }
 
+  /** Make the body clickable; `onClick` fires on pointer-down (for targeting). */
+  setInteractiveTarget(onClick: () => void): this {
+    this.body.setInteractive({ useHandCursor: true });
+    this.body.on('pointerdown', onClick);
+    return this;
+  }
+
   setPosition(x: number, y: number): this {
     this.container.setPosition(x, y);
     return this;
