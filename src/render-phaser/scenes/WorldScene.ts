@@ -12,6 +12,7 @@ import Phaser, { Scene, GameObjects, Input } from 'phaser';
 import { Events } from '../index';
 import { SimBridge, interpPos } from '../sim_bridge';
 import { worldToIso, isoDepth, isoWorldBoundsRect } from '../iso';
+import { EntityView } from '../entity_view';
 import { WORLD_MIN_X, WORLD_MAX_X, WORLD_MIN_Z, WORLD_MAX_Z } from '../../sim/data';
 import { terrainHeight, zoneBiomeAt, roadDistance, WATER_LEVEL } from '../../sim/world';
 import type { IWorld } from '../../world_api';
@@ -55,8 +56,7 @@ export class WorldScene extends Scene {
   private bridge!: SimBridge;
 
   // Player
-  private playerSprite!: GameObjects.Rectangle;
-  private playerLabel!: GameObjects.Text;
+  private playerView!: EntityView;
 
   // Keyboard inputs
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -67,12 +67,8 @@ export class WorldScene extends Scene {
     right: Input.Keyboard.Key;
   };
 
-  // Entity sprites cache (maps simulation entityId -> Phaser sprite container)
-  private entitySprites = new Map<number, {
-    container: GameObjects.Container;
-    rect: GameObjects.Rectangle;
-    label: GameObjects.Text;
-  }>();
+  // Per-entity in-world views (maps simulation entityId -> EntityView)
+  private entityViews = new Map<number, EntityView>();
 
   private inCombat = false;
   private zoneLabel!: GameObjects.Text;
@@ -105,21 +101,13 @@ export class WorldScene extends Scene {
     // ---- Player ----
     const p = this.world.player;
     const startPos = worldToScreen(p.pos.x, p.pos.z, p.pos.y);
-    this.playerSprite = this.add.rectangle(startPos.x, startPos.y, 22, 22, 0x4f46e5)
-      .setOrigin(0.5, 0.85) // feet near the ground point, so it sorts correctly
+    this.playerView = new EntityView(this, p, true)
+      .setPosition(startPos.x, startPos.y)
       .setDepth(isoDepth(p.pos.x, p.pos.z));
-    this.playerLabel = this.add.text(startPos.x, startPos.y - 26, p.name || 'Hero', {
-      fontSize: '12px',
-      fontFamily: '"Noto Sans", sans-serif',
-      color: '#ffffff',
-      fontStyle: 'bold',
-      stroke: '#000000',
-      strokeThickness: 2,
-    }).setOrigin(0.5, 1).setDepth(DEPTH_UI - 1);
 
     // Set camera bounds & follow
     this.cameras.main.setBounds(0, 0, ISO_BOUNDS.width, ISO_BOUNDS.height);
-    this.cameras.main.startFollow(this.playerSprite, true, 0.1, 0.1);
+    this.cameras.main.startFollow(this.playerView.container, true, 0.1, 0.1);
     this.cameras.main.setZoom(1.2);
 
     // ---- Keyboard input setup ----
@@ -215,13 +203,13 @@ export class WorldScene extends Scene {
     this.world.moveInput.strafeLeft = left;
     this.world.moveInput.strafeRight = right;
 
-    // ---- 2. Sync Player Sprite from Sim (interpolated) ----
+    // ---- 2. Sync Player View from Sim (interpolated) ----
     const playerIp = interpPos(this.world.player, alpha);
     const playerPhaserPos = worldToScreen(playerIp.x, playerIp.z, playerIp.y);
-
-    this.playerSprite.setPosition(playerPhaserPos.x, playerPhaserPos.y)
+    this.playerView
+      .setPosition(playerPhaserPos.x, playerPhaserPos.y)
       .setDepth(isoDepth(playerIp.x, playerIp.z));
-    this.playerLabel.setPosition(playerPhaserPos.x, playerPhaserPos.y - 26);
+    this.playerView.update(this.world.player);
 
     // ---- 3. Sync Other Entities from Sim ----
     this.syncEntities(alpha);
@@ -241,43 +229,20 @@ export class WorldScene extends Scene {
       const pos = worldToScreen(ip.x, ip.z, ip.y);
       const depth = isoDepth(ip.x, ip.z);
 
-      if (this.entitySprites.has(id)) {
-        // Update existing sprite position + painter's-order depth
-        const cached = this.entitySprites.get(id)!;
-        cached.container.setPosition(pos.x, pos.y).setDepth(depth);
-
-        // Show status changes (e.g., dead state grayed out)
-        if (entity.dead) {
-          cached.rect.setFillStyle(0x4b5563); // gray
-          cached.label.setColor('#9ca3af');
-        } else {
-          cached.rect.setFillStyle(entity.kind === 'npc' ? 0x059669 : 0xdc2626); // green for friendly NPC, red for hostile
-        }
-      } else {
-        // Create new sprite representation. Origin at the feet so depth sorting
-        // and the ground point line up.
-        const color = entity.kind === 'npc' ? 0x059669 : 0xdc2626;
-        const rect = this.add.rectangle(0, 0, 18, 18, color).setOrigin(0.5, 0.85);
-
-        const label = this.add.text(0, -22, entity.name || 'NPC', {
-          fontSize: '10px',
-          fontFamily: '"Noto Sans", sans-serif',
-          color: entity.kind === 'npc' ? '#a7f3d0' : '#fca5a5',
-          stroke: '#000000',
-          strokeThickness: 1.5,
-        }).setOrigin(0.5, 1);
-
-        const container = this.add.container(pos.x, pos.y, [rect, label]).setDepth(depth);
-        this.entitySprites.set(id, { container, rect, label });
+      let view = this.entityViews.get(id);
+      if (!view) {
+        view = new EntityView(this, entity, false);
+        this.entityViews.set(id, view);
       }
+      view.setPosition(pos.x, pos.y).setDepth(depth);
+      view.update(entity);
     }
 
-    // Clean up removed entities
-    for (const id of this.entitySprites.keys()) {
+    // Clean up views for entities no longer present
+    for (const id of this.entityViews.keys()) {
       if (!currentIds.has(id)) {
-        const cached = this.entitySprites.get(id)!;
-        cached.container.destroy();
-        this.entitySprites.delete(id);
+        this.entityViews.get(id)!.destroy();
+        this.entityViews.delete(id);
       }
     }
   }

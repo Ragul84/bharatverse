@@ -55,3 +55,9 @@ Archive actions (one-time):
   `isoWorldBoundsRect` for the real north-strip extents (x[-180,180] z[-180,900])
   -- corrects commit 2's square camera bounds. tsc clean; iso tests 8/8. NOTE:
   occluding props/decorations (`generateDecorations`) deferred to WP2 art.
+- WP1 commit 4 (entity sprite-containers): new `entity_view.ts` (Phaser glue) +
+  `entity_view_logic.ts` (pure, tested). Each entity (and the player) is now an
+  `EntityView` container: body marker + nameplate (name+level) + HP bar +
+  resource bar + cast bar (shown while `castingAbility` set). `WorldScene`
+  simplified to create/update/destroy views. Body shapes still placeholder (real
+  sprites WP2). tsc clean; 28 phaser tests pass (incl. 9 new logic tests).
