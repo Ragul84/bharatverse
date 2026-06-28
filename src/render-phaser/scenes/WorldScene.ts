@@ -11,20 +11,24 @@
 import Phaser, { Scene, GameObjects, Input } from 'phaser';
 import { Events } from '../index';
 import { SimBridge, interpPos } from '../sim_bridge';
+import { worldToIso, isoDepth, isoWorldBounds } from '../iso';
+import { WORLD_SIZE } from '../../sim/data';
 import type { IWorld } from '../../world_api';
 import type { Entity } from '../../sim/types';
 
-// Scale factor: 1 simulation yard = 5 pixels
-const SCALE = 5.0;
-const OFFSET_X = 960;
-const OFFSET_Y = 960;
+// Camera bounds + world origin offset for the isometric projection. The origin
+// shifts the (possibly negative) iso coordinates into positive camera space.
+const ISO_BOUNDS = isoWorldBounds(WORLD_SIZE);
 
-/** Convert simulation coordinates to Phaser pixels */
-function simToPhaser(x: number, z: number) {
-  return {
-    x: x * SCALE + OFFSET_X,
-    y: z * SCALE + OFFSET_Y // z in 3D maps to y in 2D
-  };
+// Depth bands kept clear of the in-world painter's-order range (isoDepth spans
+// roughly [-WORLD_SIZE, WORLD_SIZE]).
+const DEPTH_GROUND = -100000;
+const DEPTH_UI = 100000;
+
+/** Project sim world coords to Phaser screen pixels (origin offset applied). */
+function worldToScreen(x: number, z: number, y = 0): { x: number; y: number } {
+  const p = worldToIso(x, z, y);
+  return { x: ISO_BOUNDS.originX + p.sx, y: ISO_BOUNDS.originY + p.sy };
 }
 
 export class WorldScene extends Scene {
@@ -51,7 +55,6 @@ export class WorldScene extends Scene {
     label: GameObjects.Text;
   }>();
 
-  private worldBounds = { width: 1920, height: 1920 };
   private inCombat = false;
   private zoneLabel!: GameObjects.Text;
 
@@ -68,46 +71,39 @@ export class WorldScene extends Scene {
   create(): void {
     const { width } = this.scale;
 
-    // ---- World background (Indraprastha terracotta base) ----
-    this.add.rectangle(0, 0, this.worldBounds.width, this.worldBounds.height, 0x8b5e3c)
-      .setOrigin(0, 0);
+    // ---- Isometric ground placeholder (real terrain is WP2) ----
+    // A terracotta diamond covering the playable world, with a faint iso grid so
+    // the projection reads as 2.5D ground immediately.
+    this.drawGroundPlaceholder();
 
-    // Grid representing paths
-    const roadGraphics = this.add.graphics();
-    roadGraphics.fillStyle(0xc4a882, 1);
-    for (let x = 0; x < this.worldBounds.width; x += 192) {
-      roadGraphics.fillRect(x, 0, 32, this.worldBounds.height);
-    }
-    for (let y = 0; y < this.worldBounds.height; y += 192) {
-      roadGraphics.fillRect(0, y, this.worldBounds.width, 32);
-    }
-
-    // Zone name text
+    // Zone name text (screen-space UI, above the world)
     this.zoneLabel = this.add.text(width / 2, 16, 'Vidya Nagar - Gangapur Nagari', {
       fontSize: '14px',
       fontFamily: '"Noto Sans", sans-serif',
       color: '#fbbf24',
       backgroundColor: '#00000088',
       padding: { x: 10, y: 5 },
-    }).setOrigin(0.5, 0).setDepth(100).setScrollFactor(0);
+    }).setOrigin(0.5, 0).setDepth(DEPTH_UI).setScrollFactor(0);
 
     // ---- Player ----
-    // Set starting position from simulation player
-    const startPos = simToPhaser(this.world.player.pos.x, this.world.player.pos.z);
-    this.playerSprite = this.add.rectangle(startPos.x, startPos.y, 24, 24, 0x4f46e5).setDepth(10);
-    this.playerLabel = this.add.text(startPos.x, startPos.y - 20, this.world.player.name || 'Hero', {
+    const p = this.world.player;
+    const startPos = worldToScreen(p.pos.x, p.pos.z, p.pos.y);
+    this.playerSprite = this.add.rectangle(startPos.x, startPos.y, 22, 22, 0x4f46e5)
+      .setOrigin(0.5, 0.85) // feet near the ground point, so it sorts correctly
+      .setDepth(isoDepth(p.pos.x, p.pos.z));
+    this.playerLabel = this.add.text(startPos.x, startPos.y - 26, p.name || 'Hero', {
       fontSize: '12px',
       fontFamily: '"Noto Sans", sans-serif',
       color: '#ffffff',
       fontStyle: 'bold',
       stroke: '#000000',
       strokeThickness: 2,
-    }).setOrigin(0.5, 1).setDepth(11);
+    }).setOrigin(0.5, 1).setDepth(DEPTH_UI - 1);
 
     // Set camera bounds & follow
-    this.cameras.main.setBounds(0, 0, this.worldBounds.width, this.worldBounds.height);
+    this.cameras.main.setBounds(0, 0, ISO_BOUNDS.width, ISO_BOUNDS.height);
     this.cameras.main.startFollow(this.playerSprite, true, 0.1, 0.1);
-    this.cameras.main.setZoom(1.5);
+    this.cameras.main.setZoom(1.2);
 
     // ---- Keyboard input setup ----
     this.cursors = this.input.keyboard!.createCursorKeys();
@@ -123,6 +119,41 @@ export class WorldScene extends Scene {
 
     // Launch HUD
     this.scene.launch('HUDScene');
+  }
+
+  /**
+   * Placeholder isometric ground: a terracotta world diamond with a faint iso
+   * grid. Proves the projection/camera; real terrain (sampled from sim/world.ts)
+   * lands in WP2.
+   */
+  private drawGroundPlaceholder(): void {
+    const half = WORLD_SIZE / 2;
+    const g = this.add.graphics().setDepth(DEPTH_GROUND);
+
+    // Filled world diamond.
+    const corners = [
+      worldToScreen(half, half),
+      worldToScreen(half, -half),
+      worldToScreen(-half, -half),
+      worldToScreen(-half, half),
+    ];
+    g.fillStyle(0x8b5e3c, 1);
+    g.beginPath();
+    g.moveTo(corners[0].x, corners[0].y);
+    for (let i = 1; i < corners.length; i++) g.lineTo(corners[i].x, corners[i].y);
+    g.closePath();
+    g.fillPath();
+
+    // Faint iso grid every 30 yards along each world axis.
+    g.lineStyle(1, 0xc4a882, 0.35);
+    for (let c = -half; c <= half; c += 30) {
+      const ax = worldToScreen(c, -half);
+      const bx = worldToScreen(c, half);
+      g.lineBetween(ax.x, ax.y, bx.x, bx.y);
+      const az = worldToScreen(-half, c);
+      const bz = worldToScreen(half, c);
+      g.lineBetween(az.x, az.y, bz.x, bz.y);
+    }
   }
 
   update(): void {
@@ -150,10 +181,11 @@ export class WorldScene extends Scene {
 
     // ---- 2. Sync Player Sprite from Sim (interpolated) ----
     const playerIp = interpPos(this.world.player, alpha);
-    const playerPhaserPos = simToPhaser(playerIp.x, playerIp.z);
+    const playerPhaserPos = worldToScreen(playerIp.x, playerIp.z, playerIp.y);
 
-    this.playerSprite.setPosition(playerPhaserPos.x, playerPhaserPos.y);
-    this.playerLabel.setPosition(playerPhaserPos.x, playerPhaserPos.y - 20);
+    this.playerSprite.setPosition(playerPhaserPos.x, playerPhaserPos.y)
+      .setDepth(isoDepth(playerIp.x, playerIp.z));
+    this.playerLabel.setPosition(playerPhaserPos.x, playerPhaserPos.y - 26);
 
     // ---- 3. Sync Other Entities from Sim ----
     this.syncEntities(alpha);
@@ -170,13 +202,14 @@ export class WorldScene extends Scene {
 
       currentIds.add(id);
       const ip = interpPos(entity, alpha);
-      const pos = simToPhaser(ip.x, ip.z);
+      const pos = worldToScreen(ip.x, ip.z, ip.y);
+      const depth = isoDepth(ip.x, ip.z);
 
       if (this.entitySprites.has(id)) {
-        // Update existing sprite position
+        // Update existing sprite position + painter's-order depth
         const cached = this.entitySprites.get(id)!;
-        cached.container.setPosition(pos.x, pos.y);
-        
+        cached.container.setPosition(pos.x, pos.y).setDepth(depth);
+
         // Show status changes (e.g., dead state grayed out)
         if (entity.dead) {
           cached.rect.setFillStyle(0x4b5563); // gray
@@ -185,11 +218,12 @@ export class WorldScene extends Scene {
           cached.rect.setFillStyle(entity.kind === 'npc' ? 0x059669 : 0xdc2626); // green for friendly NPC, red for hostile
         }
       } else {
-        // Create new sprite representation
+        // Create new sprite representation. Origin at the feet so depth sorting
+        // and the ground point line up.
         const color = entity.kind === 'npc' ? 0x059669 : 0xdc2626;
-        const rect = this.add.rectangle(0, 0, 20, 20, color);
-        
-        const label = this.add.text(0, -14, entity.name || 'NPC', {
+        const rect = this.add.rectangle(0, 0, 18, 18, color).setOrigin(0.5, 0.85);
+
+        const label = this.add.text(0, -22, entity.name || 'NPC', {
           fontSize: '10px',
           fontFamily: '"Noto Sans", sans-serif',
           color: entity.kind === 'npc' ? '#a7f3d0' : '#fca5a5',
@@ -197,7 +231,7 @@ export class WorldScene extends Scene {
           strokeThickness: 1.5,
         }).setOrigin(0.5, 1);
 
-        const container = this.add.container(pos.x, pos.y, [rect, label]).setDepth(5);
+        const container = this.add.container(pos.x, pos.y, [rect, label]).setDepth(depth);
         this.entitySprites.set(id, { container, rect, label });
       }
     }

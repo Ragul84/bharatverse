@@ -41,5 +41,10 @@ Archive actions (one-time):
   (tsc clean; `tests/phaser_sim_bridge.test.ts` 11/11). New `render-phaser/
   sim_bridge.ts`; `main.ts` sim loop now relays `SimEvent[]` (previously dropped)
   and feeds an interpolation accumulator; `WorldScene` lerps prevPos->pos and
-  drains events to `Events.SIM_EVENTS`. NOTE: `src/render-phaser/` is entirely
-  untracked in git (never committed); commit scope TBD with the user.
+  drains events to `Events.SIM_EVENTS`. Committed a9da186 (render-phaser brought
+  under version control with main.ts Phaser wiring).
+- WP1 commit 2 (isometric projection + depth sort): new `render-phaser/iso.ts`
+  (pure 2:1 dimetric projection + painter's-order depth + camera bounds, tested
+  `tests/phaser_iso.test.ts` 7/7). `WorldScene` now projects world (x,z,y) to iso
+  screen space, depth-sorts entities by (x+z), feet-origin sprites, and draws an
+  iso ground-diamond placeholder (real terrain is WP2/commit 3). tsc clean.
