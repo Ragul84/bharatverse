@@ -47,6 +47,12 @@ const T_WATER_NW    = 0 * S + 0;
 const T_GRASS_DARK  = 1 * S + 5;   // 62  marsh (darker grass variant)
 const T_STONE       = 0 * S + 7;   // 7   grey stone (peaks)
 
+// Water 9-slice (grass-banked pond, sheet cols 2-4 / rows 0-2) for autotiled
+// shorelines: flat water (T_WATER_C) is replaced by the matching edge/corner.
+const W_NW = 0 * S + 2; const W_N = 0 * S + 3; const W_NE = 0 * S + 4;
+const W_W  = 1 * S + 2; const W_C = 1 * S + 3; const W_E  = 1 * S + 4;
+const W_SW = 2 * S + 2; const W_S = 2 * S + 3; const W_SE = 2 * S + 4;
+
 // ---- Trees: single 16x16 tiles (sheet rows 9-11, cols 12-18) ----
 const T_PINE_TOP    = 9 * S + 14;  // 527 green pine
 const T_PINE_BOT    = 9 * S + 16;  // 529 green pine (variant)
@@ -102,9 +108,8 @@ const MAP_H = 60;  // rows
 
 // Depth layers
 const D_GROUND   = 0;
-const D_OBJECT   = 1;
-const D_ENTITY   = 2;
-const D_UI       = 10;
+const D_ENTITY   = 2000;
+const D_UI       = 100000;
 
 // Click-to-move arrival radius
 const ARRIVE_PX = 8;
@@ -268,16 +273,20 @@ function buildTileMap(): { ground: number[][]; objects: (number | null)[][] } {
     o(r, c, t);
   }
 
-  // ---- Flowers and mushrooms scattered on grass ----
-  for (let r = 5; r < MAP_H - 2; r += 4) {
-    for (let c = 22; c < 62; c += 4) {
+  // ---- Lush ground flora: flowers + bushes scattered over ALL grass ----
+  // Only on grass tiles, never overwriting a tree/building, so the meadow feels
+  // alive without cluttering paths, water or the village.
+  const isGrassTile = (r: number, c: number) => {
+    const f = ground[r][c];
+    return f === T_GRASS || f === T_GRASS2 || f === T_GRASS3 || f === T_GRASS_DARK;
+  };
+  for (let r = 0; r < MAP_H; r++) {
+    for (let c = 0; c < MAP_W; c++) {
+      if (objects[r][c] !== null || !isGrassTile(r, c)) continue;
       const h = hash2(c, r, 33);
-      if (h < 0.12) {
-        const t = h < 0.04 ? T_FLOWER_R : h < 0.08 ? T_FLOWER_Y : T_MUSHROOM;
-        const dr = Math.round((hash2(c, r, 401) - 0.5) * 3);
-        const dc = Math.round((hash2(c, r, 501) - 0.5) * 3);
-        o(r + dr, c + dc, t);
-      }
+      if (h < 0.06) o(r, c, T_FLOWER_R);
+      else if (h < 0.12) o(r, c, T_FLOWER_Y);
+      else if (h < 0.17) o(r, c, [T_ROCK1, T_ROCK2, T_ROCK3][Math.floor(hash2(c, r, 7) * 3)]);
     }
   }
 
@@ -349,6 +358,30 @@ function buildTileMap(): { ground: number[][]; objects: (number | null)[][] } {
   // ---- Stumps ----
   o(20, 8, T_STUMP);
   o(38, 14, T_STUMP);
+
+  // ---- Autotile water shorelines ----
+  // Snapshot which cells are flat water, then replace each with the grass-banked
+  // 9-slice tile matching which sides border land, so the lake/pool get smooth
+  // grassy banks instead of a hard square edge.
+  const water = ground.map((row) => row.map((f) => f === T_WATER_C));
+  const isW = (r: number, c: number) =>
+    r >= 0 && r < MAP_H && c >= 0 && c < MAP_W && water[r][c];
+  for (let r = 0; r < MAP_H; r++) {
+    for (let c = 0; c < MAP_W; c++) {
+      if (!water[r][c]) continue;
+      const n = !isW(r - 1, c), s = !isW(r + 1, c), w = !isW(r, c - 1), e = !isW(r, c + 1);
+      let f = W_C;
+      if (n && w) f = W_NW;
+      else if (n && e) f = W_NE;
+      else if (s && w) f = W_SW;
+      else if (s && e) f = W_SE;
+      else if (n) f = W_N;
+      else if (s) f = W_S;
+      else if (w) f = W_W;
+      else if (e) f = W_E;
+      ground[r][c] = f;
+    }
+  }
 
   return { ground, objects };
 }
@@ -469,7 +502,7 @@ export class WorldScene extends Scene {
     const mapPxH = MAP_H * TILE_SZ;
     this.cameras.main.setBounds(0, 0, mapPxW, mapPxH);
     this.cameras.main.startFollow(this.playerView.container, true, 0.1, 0.1);
-    this.cameras.main.setZoom(1);
+    this.cameras.main.setZoom(1.5);
 
     // Click-to-move
     this.input.on('pointerdown', (ptr: Phaser.Input.Pointer) => {
@@ -529,7 +562,10 @@ export class WorldScene extends Scene {
         if (hasSheet) {
           this.add.image(x, y, 'roguelike_sheet', frame)
             .setScale(TILE_SCL)
-            .setDepth(D_OBJECT + r * 0.001); // painter's order by row
+            // Share the entity depth band, keyed by the object's base (bottom of
+            // its tile), so a tree to the south occludes an entity to the north
+            // and the player can walk behind trees/houses.
+            .setDepth(D_ENTITY + (r * TILE_SZ + TILE_SZ));
         } else {
           // No fallback for objects; they're decorative only
         }
@@ -563,7 +599,7 @@ export class WorldScene extends Scene {
     const pp = worldToPixel(playerIp.x, playerIp.z);
     this.playerView
       .setPosition(pp.px, pp.py)
-      .setDepth(D_ENTITY + pp.py * 0.0001);
+      .setDepth(D_ENTITY + pp.py);
     this.playerView.update(this.world.player);
 
     // Sync entities
@@ -656,7 +692,7 @@ export class WorldScene extends Scene {
           .setInteractiveTarget(() => this.world.targetEntity(id));
         this.entityViews.set(id, view);
       }
-      view.setPosition(pp.px, pp.py).setDepth(D_ENTITY + pp.py * 0.0001);
+      view.setPosition(pp.px, pp.py).setDepth(D_ENTITY + pp.py);
       view.update(entity);
     }
 
