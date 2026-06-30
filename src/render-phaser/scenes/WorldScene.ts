@@ -495,7 +495,9 @@ export class WorldScene extends Scene {
         const y = r * TILE_SZ;
         if (hasSheet) {
           this.add.image(x + TILE_SZ / 2, y + TILE_SZ / 2, 'roguelike_sheet', frame)
-            .setScale(TILE_SCL)
+            // 1px bleed on each side so adjacent ground tiles overlap and the
+            // antialiased seams between them disappear in HD (non-pixel) mode.
+            .setDisplaySize(TILE_SZ + 2, TILE_SZ + 2)
             .setDepth(D_GROUND);
         } else {
           // Color fallback
