@@ -1,72 +1,395 @@
 /**
- * WorldScene - BharatVerse Open World (Simulation-Linked)
+ * WorldScene - BharatVerse Open World (Flat Top-Down)
  *
- * Responsibilities:
- *  - Render the world by syncing with the simulation's `world.entities` map.
- *  - Convert 3D simulation coordinates (x, z) to 2D screen coordinates.
- *  - Map keyboard inputs (WASD/arrows) to `world.moveInput`.
- *  - Proactively create/destroy sprite representations of all entities.
+ * Renders a beautiful tile-based world using the Kenney Roguelike RPG Pack
+ * spritesheet (roguelikeSheet_transparent.png). The world is a flat top-down
+ * map matching the Sample1.png reference: grass terrain, lake, dirt paths,
+ * pine/round trees, buildings, tents, fences, flowers and decorations.
+ *
+ * Tile reference (frame index = row * 57 + col, 0-indexed):
+ *   Grass plain:   row 0, col 0  => frame 0
+ *   Grass variant: row 0, col 1  => frame 1
+ *   Dirt/path:     row 1, col 0  => frame 57
+ *   Water center:  row 0, col 2  => frame 2
+ *   Pine tree:     row 2, col 52 => frame 166
+ *   Round tree:    row 3, col 52 => frame 223
+ *   etc.
  */
 
 import Phaser, { Scene, GameObjects, Input } from 'phaser';
 import { Events } from '../index';
 import { SimBridge, interpPos } from '../sim_bridge';
-import { worldToIso, isoToWorld, isoDepth, isoWorldBoundsRect, ISO_PPY_X, ISO_PPY_Y } from '../iso';
 import { EntityView } from '../entity_view';
 import { generateCharacterTextures } from '../character_sprites';
-import { decoTint } from '../decoration_style';
-import { resolveDecoTexture, isRealArtKey } from '../bv_assets';
-import { WORLD_MIN_X, WORLD_MAX_X, WORLD_MIN_Z, WORLD_MAX_Z, ZONES } from '../../sim/data';
-import { terrainHeight, zoneBiomeAt, roadDistance, WATER_LEVEL, generateDecorations } from '../../sim/world';
-import { noise2 } from '../../sim/rng';
+import { ZONES } from '../../sim/data';
+import { hash2 } from '../../sim/rng';
 import type { IWorld } from '../../world_api';
 import type { Entity } from '../../sim/types';
 
-// Camera bounds + world origin offset for the isometric projection. The sim
-// world is a north-running strip (x in [-180,180], z in [-180,900]), not a
-// square, so bounds come from the real rectangle.
-const ISO_BOUNDS = isoWorldBoundsRect(WORLD_MIN_X, WORLD_MAX_X, WORLD_MIN_Z, WORLD_MAX_Z);
+// ---- Tile constants (roguelikeSheet_transparent.png layout) ----
+// Sheet: 57 cols x 31 rows, each tile 16x16 with 1px margin.
+// Frame index = row * 57 + col (Phaser spritesheet 0-indexed).
 
-// Depth bands kept clear of the in-world painter's-order range (isoDepth spans
-// roughly [WORLD_MIN_X+WORLD_MIN_Z, WORLD_MAX_X+WORLD_MAX_Z]).
-const DEPTH_GROUND = -100000;
-const DEPTH_UI = 100000;
+const S = 57; // columns per row in roguelikeSheet_transparent.png (frame = row*S + col)
 
-// Click-to-move: stop once within this many yards of the destination, so the
-// player doesn't jitter trying to land exactly on the point.
-const ARRIVE_DIST = 1.2;
+// ---- Ground tiles (verified against the sheet) ----
+const T_GRASS       = 0 * S + 5;   // 5   plain green grass
+const T_GRASS2      = 1 * S + 5;   // 62  grass variant
+const T_GRASS3      = 1 * S + 9;   // 66  grass with flecks
+const T_DIRT        = 0 * S + 6;   // 6   bare earth / path
+const T_DIRT2       = 1 * S + 6;   // 63  earth variant
+const T_WATER_C     = 0 * S + 0;   // 0   water
+const T_WATER_N     = 0 * S + 0;
+const T_WATER_S     = 0 * S + 0;
+const T_WATER_W     = 0 * S + 0;
+const T_WATER_E     = 0 * S + 0;
+const T_WATER_NW    = 0 * S + 0;
+const T_GRASS_DARK  = 1 * S + 5;   // 62  marsh (darker grass variant)
+const T_STONE       = 0 * S + 7;   // 7   grey stone (peaks)
 
-// Base ground tint per biome; height shading is applied on top.
-const BIOME_BASE: Record<string, number> = {
-  vale: 0x4a7c3a,  // wooded green
-  marsh: 0x4f5e34, // swampy olive
-  peaks: 0x8c8378, // rocky grey-brown
-};
-const COLOR_WATER = 0x2c5d86;
-const COLOR_ROAD = 0xb89b6a;
+// ---- Trees: single 16x16 tiles (sheet rows 9-11, cols 12-18) ----
+const T_PINE_TOP    = 9 * S + 14;  // 527 green pine
+const T_PINE_BOT    = 9 * S + 16;  // 529 green pine (variant)
+const T_ROUND_TOP   = 9 * S + 12;  // 525 round green tree
+const T_ROUND_BOT   = 9 * S + 12;
+const T_ROUND2_TOP  = 9 * S + 13;  // 526 autumn round tree
+const T_ROUND2_BOT  = 9 * S + 13;
+const T_STUMP       = 9 * S + 27;  // 540 bare/dead tree
 
-/** Project sim world coords to Phaser screen pixels (origin offset applied). */
-function worldToScreen(x: number, z: number, y = 0): { x: number; y: number } {
-  const p = worldToIso(x, z, y);
-  return { x: ISO_BOUNDS.originX + p.sx, y: ISO_BOUNDS.originY + p.sy };
+// ---- Shrubs (used where the map asked for "rocks") ----
+const T_ROCK1       = 9 * S + 24;  // 537 bush
+const T_ROCK2       = 9 * S + 25;  // 538 bush
+const T_ROCK3       = 9 * S + 26;  // 539 bush
+
+// ---- Small plants / flowers (sheet row 9, cols 24-29) ----
+const T_FLOWER_R    = 9 * S + 28;  // 541 flower cluster
+const T_FLOWER_Y    = 9 * S + 29;  // 542 flower cluster
+const T_MUSHROOM    = 9 * S + 26;  // 539 small bush
+const T_PLANT       = 9 * S + 24;  // 537 small bush
+
+// ---- Houses: uniform tan brick wall (869) + tan roof ----
+const T_HOUSE_TL = 15 * S + 14; const T_HOUSE_TM = 15 * S + 14; const T_HOUSE_TR = 15 * S + 14;
+const T_HOUSE_ML = 15 * S + 14; const T_HOUSE_MM = 15 * S + 14; const T_HOUSE_MR = 15 * S + 14;
+const T_HOUSE_BL = 15 * S + 14; const T_HOUSE_BM = 15 * S + 14; const T_HOUSE_BR = 15 * S + 14;
+
+// Roof: ridge row (1040) over body row (1097)
+const T_ROOF_TL = 18 * S + 14; const T_ROOF_TM = 18 * S + 14; const T_ROOF_TR = 18 * S + 14;
+const T_ROOF_BL = 19 * S + 14; const T_ROOF_BM = 19 * S + 14; const T_ROOF_BR = 19 * S + 14;
+
+// Tents -> small roofed huts (reuse roof tiles)
+const T_TENT_TL = 18 * S + 14; const T_TENT_TM = 18 * S + 14; const T_TENT_TR = 18 * S + 14;
+const T_TENT_BL = 19 * S + 14; const T_TENT_BM = 19 * S + 14; const T_TENT_BR = 19 * S + 14;
+
+// Fence -> hedge (bush) row
+const T_FENCE_H  = 9 * S + 25; const T_FENCE_V  = 9 * S + 25;
+const T_FENCE_TL = 9 * S + 25; const T_FENCE_TR = 9 * S + 25;
+const T_FENCE_BL = 9 * S + 25; const T_FENCE_BR = 9 * S + 25;
+
+// Campfire (sheet row 8, col 14)
+const T_FIRE        = 8 * S + 14;  // 470
+
+// Sign -> bare-tree post
+const T_SIGN        = 9 * S + 27;  // 540
+
+// ---- Scale factor: render each 16x16 tile at 4x = 64x64 screen pixels ----
+const TILE_PX  = 16;   // source tile size
+const TILE_SCL = 4;    // display scale
+const TILE_SZ  = TILE_PX * TILE_SCL; // 64 pixels on screen
+
+// World map dimensions in tiles
+const MAP_W = 80;  // columns
+const MAP_H = 60;  // rows
+
+// Depth layers
+const D_GROUND   = 0;
+const D_OBJECT   = 1;
+const D_ENTITY   = 2;
+const D_UI       = 10;
+
+// Click-to-move arrival radius
+const ARRIVE_PX = 8;
+
+// ---- Tile map definition ----
+// We define a handcrafted map inspired exactly by Sample1.png:
+// grass base + lake + dirt roads + pine forest + buildings + tents
+
+function buildTileMap(): { ground: number[][]; objects: (number | null)[][] } {
+  const ground: number[][] = [];
+  const objects: (number | null)[][] = [];
+
+  for (let r = 0; r < MAP_H; r++) {
+    ground.push(new Array(MAP_W).fill(T_GRASS));
+    objects.push(new Array(MAP_W).fill(null));
+  }
+
+  // ---- Helper to set tiles ----
+  const g = (r: number, c: number, tile: number) => {
+    if (r >= 0 && r < MAP_H && c >= 0 && c < MAP_W) ground[r][c] = tile;
+  };
+  const o = (r: number, c: number, tile: number) => {
+    if (r >= 0 && r < MAP_H && c >= 0 && c < MAP_W) objects[r][c] = tile;
+  };
+
+  // ---- Grass variation (random-looking but deterministic) ----
+  for (let r = 0; r < MAP_H; r++) {
+    for (let c = 0; c < MAP_W; c++) {
+      const h = hash2(c, r, 42);
+      if (h < 0.04) g(r, c, T_GRASS2);
+      else if (h < 0.06) g(r, c, T_GRASS3);
+    }
+  }
+
+  // ---- Lake (center-left area, rows 18-32, cols 28-42) ----
+  // Fill water center
+  for (let r = 20; r <= 34; r++) {
+    for (let c = 28; c <= 44; c++) {
+      g(r, c, T_WATER_C);
+    }
+  }
+  // Irregular lake shape (carve corners)
+  for (let r = 20; r <= 22; r++) for (let c = 28; c <= 30; c++) g(r, c, T_GRASS);
+  for (let r = 20; r <= 21; r++) for (let c = 41; c <= 44; c++) g(r, c, T_GRASS);
+  for (let r = 32; r <= 34; r++) for (let c = 28; c <= 29; c++) g(r, c, T_GRASS);
+  for (let r = 33; r <= 34; r++) for (let c = 42; c <= 44; c++) g(r, c, T_GRASS);
+  // Extra bump top
+  for (let c = 37; c <= 39; c++) g(18, c, T_WATER_C);
+  for (let c = 36; c <= 40; c++) g(19, c, T_WATER_C);
+  // Water edges (transition tiles: just use grass-adjacent water tiles)
+  // N edge
+  for (let c = 31; c <= 40; c++) g(19, c, T_WATER_N);
+  for (let c = 37; c <= 38; c++) g(17, c, T_WATER_N);
+  for (let c = 36; c <= 40; c++) g(18, c, T_WATER_C);
+  // S edge
+  for (let c = 29; c <= 41; c++) g(35, c, T_WATER_S);
+  // W edge  
+  for (let r = 21; r <= 33; r++) g(r, 27, T_WATER_W);
+  // E edge
+  for (let r = 21; r <= 33; r++) g(r, 45, T_WATER_E);
+
+  // Water lily / lily pad decoration objects on water
+  o(23, 37, T_FLOWER_Y);
+  o(27, 31, T_FLOWER_Y);
+  o(29, 41, T_FLOWER_Y);
+  o(31, 35, T_PLANT);
+  o(25, 43, T_PLANT);
+
+  // ---- Dirt road: horizontal path across map (row 10-11) ----
+  for (let c = 0; c < MAP_W; c++) {
+    g(10, c, T_DIRT);
+    g(11, c, T_DIRT2);
+  }
+  // Dirt road: vertical right side (cols 62-63)
+  for (let r = 0; r < MAP_H; r++) {
+    g(r, 62, T_DIRT);
+    g(r, 63, T_DIRT2);
+  }
+  // Bottom path (rows 46-47)
+  for (let c = 28; c < MAP_W; c++) {
+    g(46, c, T_DIRT);
+    g(47, c, T_DIRT2);
+  }
+  // Vertical path connecting road to bottom (cols 45-46, rows 10-47)
+  for (let r = 10; r <= 47; r++) {
+    g(r, 55, T_DIRT);
+    g(r, 56, T_DIRT2);
+  }
+  // Short path near lake top (campsite access)
+  for (let r = 0; r <= 10; r++) {
+    g(r, 42, T_DIRT);
+    g(r, 43, T_DIRT2);
+  }
+  // Path from lake west shore to road
+  for (let c = 24; c <= 28; c++) {
+    g(28, c, T_DIRT);
+    g(29, c, T_DIRT2);
+  }
+
+  // ---- Dark grass (swampy area, left side) ----
+  for (let r = 5; r <= 18; r++) {
+    for (let c = 0; c <= 10; c++) {
+      const h = hash2(c, r, 99);
+      if (h < 0.5) g(r, c, T_GRASS_DARK);
+    }
+  }
+
+  // ---- Stone/grey area (right side, "town plaza") ----
+  for (let r = 12; r <= 20; r++) {
+    for (let c = 64; c <= 78; c++) {
+      const h = hash2(c, r, 77);
+      if (h < 0.6) g(r, c, T_STONE);
+    }
+  }
+  // Pool on right side
+  for (let r = 14; r <= 19; r++) {
+    for (let c = 70; c <= 77; c++) {
+      g(r, c, T_WATER_C);
+    }
+  }
+
+  // ---- Pine forest (left side, rows 5-45, cols 0-20) ----
+  const pinePositions: [number, number][] = [];
+  for (let r = 3; r < 50; r += 3) {
+    for (let c = 0; c < 22; c += 3) {
+      const h = hash2(c, r, 13);
+      if (h < 0.75) {
+        const dr = Math.round((hash2(c, r, 101) - 0.5) * 1.5);
+        const dc = Math.round((hash2(c, r, 202) - 0.5) * 1.5);
+        pinePositions.push([r + dr, c + dc]);
+      }
+    }
+  }
+  for (const [r, c] of pinePositions) {
+    if (r >= 0 && r < MAP_H && c >= 0 && c < MAP_W) {
+      // Single-tile pine (two variants for variety)
+      o(r, c, hash2(c, r, 88) > 0.5 ? T_PINE_TOP : T_PINE_BOT);
+    }
+  }
+
+  // ---- Round trees scattered on grass (middle/right areas) ----
+  const roundTreePositions: [number, number][] = [
+    [4, 32], [4, 48], [5, 55], [7, 38], [7, 60], [12, 25], [12, 50],
+    [15, 35], [15, 68], [17, 47], [18, 60], [22, 18], [25, 22], [25, 68],
+    [30, 18], [35, 18], [38, 25], [40, 55], [42, 62], [45, 35], [48, 48],
+    [50, 25], [52, 38], [55, 18], [55, 55], [58, 42],
+  ];
+  for (const [r, c] of roundTreePositions) {
+    if (r >= 0 && r < MAP_H && c < MAP_W) {
+      // Single-tile round tree (green / autumn variant)
+      o(r, c, hash2(c, r, 55) > 0.5 ? T_ROUND2_TOP : T_ROUND_TOP);
+    }
+  }
+
+  // ---- Rocks ----
+  const rocks: [number, number][] = [
+    [14, 28], [28, 20], [33, 26], [40, 30], [42, 45], [48, 52],
+  ];
+  for (const [r, c] of rocks) {
+    const t = [T_ROCK1, T_ROCK2, T_ROCK3][Math.floor(hash2(c, r, 7) * 3)];
+    o(r, c, t);
+  }
+
+  // ---- Flowers and mushrooms scattered on grass ----
+  for (let r = 5; r < MAP_H - 2; r += 4) {
+    for (let c = 22; c < 62; c += 4) {
+      const h = hash2(c, r, 33);
+      if (h < 0.12) {
+        const t = h < 0.04 ? T_FLOWER_R : h < 0.08 ? T_FLOWER_Y : T_MUSHROOM;
+        const dr = Math.round((hash2(c, r, 401) - 0.5) * 3);
+        const dc = Math.round((hash2(c, r, 501) - 0.5) * 3);
+        o(r + dr, c + dc, t);
+      }
+    }
+  }
+
+  // ---- Campsite top-center: a small dirt clearing under the tents + fire ----
+  for (let r = 2; r <= 5; r++) for (let c = 37; c <= 48; c++) {
+    g(r, c, hash2(c, r, 66) < 0.3 ? T_DIRT2 : T_DIRT);
+  }
+  // Tent 1 (rows 2-3, cols 38-41)
+  o(2, 38, T_TENT_TL); o(2, 39, T_TENT_TM); o(2, 40, T_TENT_TM); o(2, 41, T_TENT_TR);
+  o(3, 38, T_TENT_BL); o(3, 39, T_TENT_BM); o(3, 40, T_TENT_BM); o(3, 41, T_TENT_BR);
+  // Tent 2 (rows 2-3, cols 44-47)
+  o(2, 44, T_TENT_TL); o(2, 45, T_TENT_TM); o(2, 46, T_TENT_TM); o(2, 47, T_TENT_TR);
+  o(3, 44, T_TENT_BL); o(3, 45, T_TENT_BM); o(3, 46, T_TENT_BM); o(3, 47, T_TENT_BR);
+  // Campfire center
+  o(5, 43, T_FIRE);
+
+  // ---- House 1: bottom-left area (dirt hugs the footprint) ----
+  for (let r = 35; r <= 38; r++) for (let c = 16; c <= 21; c++) g(r, c, T_DIRT);
+  // House walls 4x3 grid
+  o(35, 17, T_HOUSE_TL); o(35, 18, T_HOUSE_TM); o(35, 19, T_HOUSE_TM); o(35, 20, T_HOUSE_TR);
+  o(36, 17, T_HOUSE_ML); o(36, 18, T_HOUSE_MM); o(36, 19, T_HOUSE_MM); o(36, 20, T_HOUSE_MR);
+  o(37, 17, T_HOUSE_BL); o(37, 18, T_HOUSE_BM); o(37, 19, T_HOUSE_BM); o(37, 20, T_HOUSE_BR);
+  // Roof
+  o(33, 17, T_ROOF_TL); o(33, 18, T_ROOF_TM); o(33, 19, T_ROOF_TM); o(33, 20, T_ROOF_TR);
+  o(34, 17, T_ROOF_BL); o(34, 18, T_ROOF_BM); o(34, 19, T_ROOF_BM); o(34, 20, T_ROOF_BR);
+
+  // ---- House 2: bottom-center (dirt hugs the footprint) ----
+  for (let r = 42; r <= 45; r++) for (let c = 38; c <= 43; c++) g(r, c, T_DIRT);
+  o(42, 39, T_HOUSE_TL); o(42, 40, T_HOUSE_TM); o(42, 41, T_HOUSE_TM); o(42, 42, T_HOUSE_TR);
+  o(43, 39, T_HOUSE_ML); o(43, 40, T_HOUSE_MM); o(43, 41, T_HOUSE_MM); o(43, 42, T_HOUSE_MR);
+  o(44, 39, T_HOUSE_BL); o(44, 40, T_HOUSE_BM); o(44, 41, T_HOUSE_BM); o(44, 42, T_HOUSE_BR);
+  o(40, 39, T_ROOF_TL); o(40, 40, T_ROOF_TM); o(40, 41, T_ROOF_TM); o(40, 42, T_ROOF_TR);
+  o(41, 39, T_ROOF_BL); o(41, 40, T_ROOF_BM); o(41, 41, T_ROOF_BM); o(41, 42, T_ROOF_BR);
+
+  // ---- Town buildings (right side): dirt only under each building + plaza paths ----
+  for (let r = 19; r <= 24; r++) for (let c = 64; c <= 68; c++) g(r, c, T_DIRT); // A
+  for (let r = 26; r <= 31; r++) for (let c = 67; c <= 71; c++) g(r, c, T_DIRT); // B
+  for (let r = 31; r <= 36; r++) for (let c = 63; c <= 68; c++) g(r, c, T_DIRT); // C
+  // Building A
+  o(21, 65, T_HOUSE_TL); o(21, 66, T_HOUSE_TM); o(21, 67, T_HOUSE_TR);
+  o(22, 65, T_HOUSE_ML); o(22, 66, T_HOUSE_MM); o(22, 67, T_HOUSE_MR);
+  o(23, 65, T_HOUSE_BL); o(23, 66, T_HOUSE_BM); o(23, 67, T_HOUSE_BR);
+  o(19, 65, T_ROOF_TL); o(19, 66, T_ROOF_TM); o(19, 67, T_ROOF_TR);
+  o(20, 65, T_ROOF_BL); o(20, 66, T_ROOF_BM); o(20, 67, T_ROOF_BR);
+  // Building B
+  o(28, 68, T_HOUSE_TL); o(28, 69, T_HOUSE_TM); o(28, 70, T_HOUSE_TR);
+  o(29, 68, T_HOUSE_ML); o(29, 69, T_HOUSE_MM); o(29, 70, T_HOUSE_MR);
+  o(30, 68, T_HOUSE_BL); o(30, 69, T_HOUSE_BM); o(30, 70, T_HOUSE_BR);
+  o(26, 68, T_ROOF_TL); o(26, 69, T_ROOF_TM); o(26, 70, T_ROOF_TR);
+  o(27, 68, T_ROOF_BL); o(27, 69, T_ROOF_BM); o(27, 70, T_ROOF_BR);
+  // Building C (large)
+  o(33, 64, T_HOUSE_TL); o(33, 65, T_HOUSE_TM); o(33, 66, T_HOUSE_TM); o(33, 67, T_HOUSE_TR);
+  o(34, 64, T_HOUSE_ML); o(34, 65, T_HOUSE_MM); o(34, 66, T_HOUSE_MM); o(34, 67, T_HOUSE_MR);
+  o(35, 64, T_HOUSE_BL); o(35, 65, T_HOUSE_BM); o(35, 66, T_HOUSE_BM); o(35, 67, T_HOUSE_BR);
+  o(31, 64, T_ROOF_TL); o(31, 65, T_ROOF_TM); o(31, 66, T_ROOF_TM); o(31, 67, T_ROOF_TR);
+  o(32, 64, T_ROOF_BL); o(32, 65, T_ROOF_BM); o(32, 66, T_ROOF_BM); o(32, 67, T_ROOF_BR);
+
+  // ---- Fences (right side, bottom) ----
+  for (let c = 64; c <= 75; c++) o(44, c, T_FENCE_H);
+  for (let r = 38; r <= 43; r++) o(r, 64, T_FENCE_V);
+  o(38, 64, T_FENCE_TL); o(38, 75, T_FENCE_TR);
+  o(44, 64, T_FENCE_BL); o(44, 75, T_FENCE_BR);
+  for (let r = 38; r <= 43; r++) o(r, 75, T_FENCE_V);
+
+  // ---- Signs ----
+  o(10, 54, T_SIGN);
+  o(47, 45, T_SIGN);
+
+  // ---- Stumps ----
+  o(20, 8, T_STUMP);
+  o(38, 14, T_STUMP);
+
+  return { ground, objects };
 }
 
-/** Multiply each RGB channel of a packed color by `f`, clamped to [0,255]. */
-function shadeColor(hex: number, f: number): number {
-  const r = Math.min(255, Math.round(((hex >> 16) & 0xff) * f));
-  const g = Math.min(255, Math.round(((hex >> 8) & 0xff) * f));
-  const b = Math.min(255, Math.round((hex & 0xff) * f));
-  return (r << 16) | (g << 8) | b;
+// Pre-build the map once
+const { ground: GROUND_MAP, objects: OBJECT_MAP } = buildTileMap();
+
+// Sim world bounds (from sim/data.ts — hardcoded here to avoid circular import)
+const SIM_X_MIN = -180;
+const SIM_Z_MIN = -180;
+const SIM_X_MAX =  180;
+const SIM_Z_MAX =  900;
+const TILE_WORLD_X = (SIM_X_MAX - SIM_X_MIN) / MAP_W;
+const TILE_WORLD_Z = (SIM_Z_MAX - SIM_Z_MIN) / MAP_H;
+
+function worldToTile(x: number, z: number): { col: number; row: number } {
+  return {
+    col: (x - SIM_X_MIN) / TILE_WORLD_X,
+    row: (z - SIM_Z_MIN) / TILE_WORLD_Z,
+  };
 }
 
+function worldToPixel(x: number, z: number): { px: number; py: number } {
+  const t = worldToTile(x, z);
+  return { px: t.col * TILE_SZ, py: t.row * TILE_SZ };
+}
+
+function pixelToWorld(px: number, py: number): { x: number; z: number } {
+  return {
+    x: (px / TILE_SZ) * TILE_WORLD_X + SIM_X_MIN,
+    z: (py / TILE_SZ) * TILE_WORLD_Z + SIM_Z_MIN,
+  };
+}
+
+// ---- WorldScene ----
 export class WorldScene extends Scene {
   private world!: IWorld;
   private bridge!: SimBridge;
 
-  // Player
   private playerView!: EntityView;
 
-  // Keyboard inputs
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private wasd!: {
     up: Input.Keyboard.Key;
@@ -75,17 +398,12 @@ export class WorldScene extends Scene {
     right: Input.Keyboard.Key;
   };
 
-  // Per-entity in-world views (maps simulation entityId -> EntityView)
   private entityViews = new Map<number, EntityView>();
-
   private inCombat = false;
   private offline = false;
   private zoneLabel!: GameObjects.Text;
   private targetRing!: GameObjects.Graphics;
-
-  // Click-to-move destination in world (x,z); null when steering by keys / idle.
   private moveTarget: { x: number; z: number } | null = null;
-  // Optional marker shown at the click-to-move destination.
   private moveMarker!: GameObjects.Graphics;
 
   constructor() {
@@ -96,328 +414,182 @@ export class WorldScene extends Scene {
     this.world = this.registry.get('world') as IWorld;
     this.bridge = this.registry.get('simBridge') as SimBridge;
     this.inCombat = false;
-    // Offline (solo) play has no realm string. Only there do we steer the player
-    // by writing facing directly + click-to-move; online stays server-authoritative.
     this.offline = this.world.realm === '';
   }
 
   create(): void {
-    const { width } = this.scale;
+    const { width, height } = this.scale;
 
-    // ---- Isometric terrain, sampled from the sim's own heightfield ----
-    const seed = this.world.cfg.seed;
-    this.drawTerrain(seed);
-    this.makeDecoTextures();
-    this.drawDecorations(seed);
-    this.drawLandmarks(seed);
-    generateCharacterTextures(this); // procedural per-archetype sprites
+    // Build ground + object layers from tile map
+    this.buildGroundLayer();
+    this.buildObjectLayer();
 
-    // Zone name text (screen-space UI, above the world)
-    this.zoneLabel = this.add.text(width / 2, 16, 'Vidya Nagar - Gangapur Nagari', {
+    // Procedural character textures (fallback)
+    generateCharacterTextures(this);
+
+    // Zone label
+    this.zoneLabel = this.add.text(width / 2, 16, 'Vidya Nagar', {
       fontSize: '14px',
       fontFamily: '"Noto Sans", sans-serif',
-      color: '#fbbf24',
-      backgroundColor: '#00000088',
-      padding: { x: 10, y: 5 },
-    }).setOrigin(0.5, 0).setDepth(DEPTH_UI).setScrollFactor(0);
+      color: '#fde68a',
+      stroke: '#000000',
+      strokeThickness: 3,
+    }).setOrigin(0.5, 0).setDepth(D_UI).setScrollFactor(0);
 
-    // ---- Player ----
-    const p = this.world.player;
-    const startPos = worldToScreen(p.pos.x, p.pos.z, p.pos.y);
-    this.playerView = new EntityView(this, p, true)
-      .setPosition(startPos.x, startPos.y)
-      .setDepth(isoDepth(p.pos.x, p.pos.z));
+    // Target ring
+    this.targetRing = this.add.graphics().setDepth(D_ENTITY - 0.5);
+    this.targetRing.lineStyle(3, 0xffd700, 0.85);
+    this.targetRing.strokeCircle(0, 0, TILE_SZ * 0.5);
+    this.targetRing.setVisible(false);
 
-    // Set camera bounds & follow
-    this.cameras.main.setBounds(0, 0, ISO_BOUNDS.width, ISO_BOUNDS.height);
-    this.cameras.main.startFollow(this.playerView.container, true, 0.1, 0.1);
-    this.cameras.main.setZoom(1.2);
+    // Move-to marker
+    this.moveMarker = this.add.graphics().setDepth(D_UI - 1);
+    this.moveMarker.lineStyle(2, 0x00ff88, 0.9);
+    this.moveMarker.strokeCircle(0, 0, 10);
+    this.moveMarker.setVisible(false);
 
-    // ---- Target ring (drawn under the current target's feet) ----
-    this.targetRing = this.add.graphics().setVisible(false);
-    this.targetRing.lineStyle(2, 0xfde047, 0.95); // gold
-    this.targetRing.strokeEllipse(0, 0, 30, 15);  // 2:1 iso footprint
+    // Player view
+    const pp = worldToPixel(this.world.player.pos.x, this.world.player.pos.z);
+    this.playerView = new EntityView(this, this.world.player, true)
+      .setPosition(pp.px, pp.py)
+      .setDepth(D_ENTITY);
 
-    // ---- Click-to-move destination marker (offline) ----
-    this.moveMarker = this.add.graphics().setVisible(false).setDepth(DEPTH_GROUND + 1);
-    this.moveMarker.lineStyle(2, 0x67e8f9, 0.9); // cyan
-    this.moveMarker.strokeEllipse(0, 0, 22, 11);
-
-    // Click an empty patch of ground to walk there (offline). Clicks that land on
-    // an interactive entity (currentlyOver non-empty) are left to targeting.
-    if (this.offline) {
-      this.input.on('pointerdown', (pointer: Phaser.Input.Pointer, currentlyOver: GameObjects.GameObject[]) => {
-        if (currentlyOver.length > 0) return; // entity click -> target, not move
-        this.moveTarget = this.screenToWorld(pointer.worldX, pointer.worldY, seed);
-      });
-    }
-
-    // ---- Keyboard input setup ----
-    this.cursors = this.input.keyboard!.createCursorKeys();
+    // Keyboard input
+    const kb = this.input.keyboard!;
+    this.cursors = kb.createCursorKeys();
     this.wasd = {
-      up: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.W),
-      down: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.S),
-      left: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.A),
-      right: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D),
+      up: kb.addKey(Input.Keyboard.KeyCodes.W),
+      down: kb.addKey(Input.Keyboard.KeyCodes.S),
+      left: kb.addKey(Input.Keyboard.KeyCodes.A),
+      right: kb.addKey(Input.Keyboard.KeyCodes.D),
     };
 
-    // Tab cycles the nearest hostile target (server/sim decides which).
-    this.input.keyboard!.addCapture('TAB');
-    this.input.keyboard!.on('keydown-TAB', () => this.world.tabTarget());
+    // Camera: follow player, bounded by the world map
+    const mapPxW = MAP_W * TILE_SZ;
+    const mapPxH = MAP_H * TILE_SZ;
+    this.cameras.main.setBounds(0, 0, mapPxW, mapPxH);
+    this.cameras.main.startFollow(this.playerView.container, true, 0.1, 0.1);
+    this.cameras.main.setZoom(1);
 
-    // Listen for combat end
+    // Click-to-move
+    this.input.on('pointerdown', (ptr: Phaser.Input.Pointer) => {
+      const wx = ptr.worldX;
+      const wy = ptr.worldY;
+      const w = pixelToWorld(wx, wy);
+      this.moveTarget = { x: w.x, z: w.z };
+    });
+
+    // Combat end listener
     this.events.on(Events.COMBAT_END, this.onCombatEnd, this);
 
-    // Launch HUD
+    // HUD scene
     this.scene.launch('HUDScene');
   }
 
-  /**
-   * Isometric terrain baked once from the sim's own heightfield, so the Phaser
-   * ground matches the simulation exactly (the repo invariant: renderer samples
-   * the same `world.ts` functions). Each cell is a flat iso tile lifted to its
-   * sampled height, tinted by biome + height, flooded to a flat water plane
-   * below WATER_LEVEL, and tan-tinted along roads. Real art / props are WP2.
-   */
-  private drawTerrain(seed: number): void {
-    const g = this.add.graphics().setDepth(DEPTH_GROUND);
-    const step = 6; // finer cells than before => smoother-reading ground
-    const s2 = step / 2;
-
-    interface Cell { x: number; z: number; h: number; color: number }
-    const cells: Cell[] = [];
-    for (let z = WORLD_MIN_Z; z <= WORLD_MAX_Z; z += step) {
-      for (let x = WORLD_MIN_X; x <= WORLD_MAX_X; x += step) {
-        const th = terrainHeight(x, z, seed);
-        let color: number;
-        let h: number;
-        if (th < WATER_LEVEL) {
-          // Flat water surface with a gentle deterministic ripple in brightness.
-          const ripple = 0.9 + noise2(x * 0.25, z * 0.25, seed + 71) * 0.2;
-          color = shadeColor(COLOR_WATER, ripple);
-          h = WATER_LEVEL;
-        } else if (roadDistance(x, z) < 3.5) {
-          color = COLOR_ROAD;
-          h = th;
+  private buildGroundLayer(): void {
+    const hasSheet = this.textures.exists('roguelike_sheet');
+    for (let r = 0; r < MAP_H; r++) {
+      for (let c = 0; c < MAP_W; c++) {
+        const frame = GROUND_MAP[r][c];
+        const x = c * TILE_SZ;
+        const y = r * TILE_SZ;
+        if (hasSheet) {
+          this.add.image(x + TILE_SZ / 2, y + TILE_SZ / 2, 'roguelike_sheet', frame)
+            .setScale(TILE_SCL)
+            .setDepth(D_GROUND);
         } else {
-          const base = BIOME_BASE[zoneBiomeAt(z)] ?? BIOME_BASE.vale;
-          // brighter with elevation; clamped so peaks do not blow out
-          let shade = 0.7 + Math.min(1, Math.max(0, (th - WATER_LEVEL) / 40)) * 0.6;
-          // Organic grass mottling: two octaves of deterministic value noise so
-          // the ground breaks up into soft patches instead of flat color blocks.
-          const mottle = noise2(x * 0.12, z * 0.12, seed) * 0.7
-                       + noise2(x * 0.4, z * 0.4, seed + 19) * 0.3;
-          shade *= 0.86 + mottle * 0.28; // ~+/-14% brightness variation
-          color = shadeColor(base, shade);
-          h = th;
+          // Color fallback
+          const g = this.add.graphics().setDepth(D_GROUND);
+          const col = frame === T_WATER_C || frame === T_WATER_N || frame === T_WATER_S
+            ? 0x4a9fd4
+            : frame === T_DIRT || frame === T_DIRT2
+            ? 0xb89b6a
+            : frame === T_STONE
+            ? 0x9a9080
+            : frame === T_GRASS_DARK
+            ? 0x4f6032
+            : 0x5a8c3a;
+          g.fillStyle(col, 1);
+          g.fillRect(x, y, TILE_SZ, TILE_SZ);
         }
-        cells.push({ x, z, h, color });
-      }
-    }
-
-    // Painter's order: back (small x+z) to front, so raised tiles overlap right.
-    // Overlap (e) past the half-cell hides seams between adjacent diamonds: the
-    // antialiased edges in smooth mode, and the vertical gaps that open between
-    // tiles at different sampled heights (a larger diamond's front corner reaches
-    // down over the lower tile in front of it). Drawn back-to-front so the nearer,
-    // lower tile always paints over the overlap.
-    cells.sort((a, b) => (a.x + a.z) - (b.x + b.z));
-    const e = s2 + 1.0;
-    for (const c of cells) {
-      const p1 = worldToScreen(c.x + e, c.z + e, c.h);
-      const p2 = worldToScreen(c.x + e, c.z - e, c.h);
-      const p3 = worldToScreen(c.x - e, c.z - e, c.h);
-      const p4 = worldToScreen(c.x - e, c.z + e, c.h);
-      g.fillStyle(c.color, 1);
-      g.beginPath();
-      g.moveTo(p1.x, p1.y);
-      g.lineTo(p2.x, p2.y);
-      g.lineTo(p3.x, p3.y);
-      g.lineTo(p4.x, p4.y);
-      g.closePath();
-      g.fillPath();
-    }
-  }
-
-  /** Build the small reusable tree/rock textures used by drawDecorations. */
-  private makeDecoTextures(): void {
-    const g = this.make.graphics({ x: 0, y: 0 });
-    // Broadleaf tree
-    g.fillStyle(0x5a3b22, 1); g.fillRect(11, 24, 4, 12);
-    g.fillStyle(0x3f7d34, 1); g.fillCircle(13, 16, 13);
-    g.fillStyle(0x4f9442, 1); g.fillCircle(9, 13, 7);
-    g.generateTexture('bv-tree', 26, 36); g.clear();
-    // Pine
-    g.fillStyle(0x5a3b22, 1); g.fillRect(11, 26, 4, 10);
-    g.fillStyle(0x356b2e, 1); g.fillTriangle(2, 28, 24, 28, 13, 2);
-    g.fillStyle(0x3f7d34, 1); g.fillTriangle(5, 18, 21, 18, 13, 6);
-    g.generateTexture('bv-tree2', 26, 36); g.clear();
-    // Rock
-    g.fillStyle(0x8a8a8a, 1); g.fillEllipse(13, 11, 24, 14);
-    g.fillStyle(0x6f6f6f, 1); g.fillEllipse(16, 13, 11, 8);
-    g.generateTexture('bv-rock', 26, 20);
-    g.destroy();
-  }
-
-  /**
-   * Place trees/rocks from the sim's deterministic generateDecorations(), each a
-   * depth-sorted billboard so it occludes entities correctly. Same seed as the
-   * sim, so placement matches everywhere.
-   */
-  private drawDecorations(seed: number): void {
-    const has = (k: string) => this.textures.exists(k);
-    for (const d of generateDecorations(seed)) {
-      const pos = worldToScreen(d.x, d.z, terrainHeight(d.x, d.z, seed));
-      const tex = resolveDecoTexture(has, d.kind);
-      const real = isRealArtKey(tex);
-      const img = this.add.image(pos.x, pos.y, tex)
-        .setOrigin(0.5, 1)
-        .setDepth(isoDepth(d.x, d.z));
-      if (real) {
-        // Real art comes at ~1k px; normalize to a target on-screen height (px)
-        // per kind, then apply the placement scale. The procedural path already
-        // uses textures authored at the right size, so it keeps d.scale as-is.
-        const targetH = d.kind === 'rock' ? 34 : 72;
-        img.setScale((targetH / (img.height || targetH)) * d.scale);
-      } else {
-        img.setScale(d.scale);
-        // Biome tint only on the procedural texture; real art keeps its own colors.
-        const tint = decoTint(d.kind, d.biome);
-        if (tint !== 0xffffff) img.setTint(tint);
       }
     }
   }
 
-  /**
-   * A procedural isometric landmark at each zone hub, themed by biome: the vale
-   * gets a Statue-of-Unity obelisk, the marsh a Taj-style marble dome, the peaks
-   * a Tanjore-style stepped gopuram. Depth-sorted at the hub so the player can
-   * walk in front of and behind it. Real modeled landmarks are later art.
-   */
-  private drawLandmarks(seed: number): void {
-    for (const zone of ZONES) {
-      const h = zone.hub;
-      const base = worldToScreen(h.x, h.z, terrainHeight(h.x, h.z, seed));
-      const g = this.add.graphics();
-      if (zone.biome === 'vale') this.paintObelisk(g);
-      else if (zone.biome === 'marsh') this.paintDome(g);
-      else this.paintGopuram(g);
-      const label = this.add.text(0, -100, h.name, {
-        fontSize: '12px',
-        fontFamily: '"Noto Sans", sans-serif',
-        color: '#fde68a',
-        stroke: '#000000',
-        strokeThickness: 3,
-      }).setOrigin(0.5, 1);
-      this.add.container(base.x, base.y, [g, label]).setDepth(isoDepth(h.x, h.z));
+  private buildObjectLayer(): void {
+    const hasSheet = this.textures.exists('roguelike_sheet');
+    for (let r = 0; r < MAP_H; r++) {
+      for (let c = 0; c < MAP_W; c++) {
+        const frame = OBJECT_MAP[r][c];
+        if (frame === null) continue;
+        const x = c * TILE_SZ + TILE_SZ / 2;
+        const y = r * TILE_SZ + TILE_SZ / 2;
+        if (hasSheet) {
+          this.add.image(x, y, 'roguelike_sheet', frame)
+            .setScale(TILE_SCL)
+            .setDepth(D_OBJECT + r * 0.001); // painter's order by row
+        } else {
+          // No fallback for objects; they're decorative only
+        }
+      }
     }
-  }
-
-  private paintObelisk(g: Phaser.GameObjects.Graphics): void {
-    g.fillStyle(0x6b5536, 1); g.fillRect(-18, -20, 36, 20); // pedestal
-    g.fillStyle(0x7d6440, 1); g.fillRect(-22, -6, 44, 8);   // plinth
-    g.fillStyle(0x9c7a3c, 1);                               // bronze figure
-    g.beginPath();
-    g.moveTo(-9, -20); g.lineTo(9, -20); g.lineTo(5, -86); g.lineTo(-5, -86);
-    g.closePath(); g.fillPath();
-    g.fillStyle(0xb08d57, 1); g.fillCircle(0, -90, 6);
-  }
-
-  private paintDome(g: Phaser.GameObjects.Graphics): void {
-    g.fillStyle(0xd1d5db, 1); g.fillRect(-26, -12, 52, 12); // platform
-    g.fillStyle(0xe5e7eb, 1);                                // minarets
-    g.fillRect(-24, -58, 4, 46); g.fillRect(20, -58, 4, 46);
-    g.fillStyle(0xf1f5f9, 1); g.fillCircle(-22, -60, 3); g.fillCircle(22, -60, 3);
-    g.fillStyle(0xf3f4f6, 1); g.fillRect(-16, -46, 32, 34); // main block
-    g.fillStyle(0xf9fafb, 1); g.fillEllipse(0, -50, 34, 30); // onion dome
-    g.fillStyle(0xb0893f, 1); g.fillRect(-1, -72, 2, 8); g.fillCircle(0, -73, 2);
-  }
-
-  private paintGopuram(g: Phaser.GameObjects.Graphics): void {
-    const tiers = 6;
-    for (let i = 0; i < tiers; i++) {
-      const y0 = -i * 13;
-      const y1 = y0 - 13;
-      const hw = 28 - i * 4;
-      const tw = hw - 4;
-      g.fillStyle(i % 2 === 0 ? 0xb08d57 : 0x9c7a47, 1);
-      g.beginPath();
-      g.moveTo(-hw, y0); g.lineTo(hw, y0); g.lineTo(tw, y1); g.lineTo(-tw, y1);
-      g.closePath(); g.fillPath();
-    }
-    g.fillStyle(0xd4af5a, 1); g.fillCircle(0, -tiers * 13 - 4, 4); // kalasham
   }
 
   update(): void {
-    // Drain this frame's simulation events for downstream consumers (FCT, death,
-    // loot...). Done every frame, even mid-combat, so the queue never backs up.
     const events = this.bridge ? this.bridge.drain() : [];
     if (events.length) this.events.emit(Events.SIM_EVENTS, events);
 
     if (this.inCombat) return;
 
-    // Render interpolation factor between the last two sim ticks.
     const alpha = this.bridge ? this.bridge.alpha : 1;
 
-    // ---- 1. Process Input & Send to Simulation ----
-    const up = this.cursors.up.isDown || this.wasd.up.isDown;
-    const down = this.cursors.down.isDown || this.wasd.down.isDown;
-    const left = this.cursors.left.isDown || this.wasd.left.isDown;
+    const up    = this.cursors.up.isDown    || this.wasd.up.isDown;
+    const down  = this.cursors.down.isDown  || this.wasd.down.isDown;
+    const left  = this.cursors.left.isDown  || this.wasd.left.isDown;
     const right = this.cursors.right.isDown || this.wasd.right.isDown;
 
     if (this.offline) this.steerOffline(up, down, left, right);
     else {
-      // Online: server-authoritative, facing-relative WASD (legacy mapping).
-      this.world.moveInput.forward = up;
-      this.world.moveInput.back = down;
-      this.world.moveInput.strafeLeft = left;
+      this.world.moveInput.forward     = up;
+      this.world.moveInput.back        = down;
+      this.world.moveInput.strafeLeft  = left;
       this.world.moveInput.strafeRight = right;
     }
 
-    // ---- 2. Sync Player View from Sim (interpolated) ----
+    // Sync player view
     const playerIp = interpPos(this.world.player, alpha);
-    const playerPhaserPos = worldToScreen(playerIp.x, playerIp.z, playerIp.y);
+    const pp = worldToPixel(playerIp.x, playerIp.z);
     this.playerView
-      .setPosition(playerPhaserPos.x, playerPhaserPos.y)
-      .setDepth(isoDepth(playerIp.x, playerIp.z));
+      .setPosition(pp.px, pp.py)
+      .setDepth(D_ENTITY + pp.py * 0.0001);
     this.playerView.update(this.world.player);
 
-    // ---- 3. Sync Other Entities from Sim ----
+    // Sync entities
     this.syncEntities(alpha);
 
-    // ---- 4. Target ring on the current target ----
+    // Target ring
     this.updateTargetRing(alpha);
 
-    // ---- 5. Check Proximity for Combat ----
+    // Aggro check
     this.checkAggroEncounters();
+
+    // Zone label
+    this.updateZoneLabel();
   }
 
-  /** Position/show the gold ring under the player's current target. */
-  private updateTargetRing(alpha: number): void {
-    const tid = this.world.player.targetId;
-    const target = tid != null ? this.world.entities.get(tid) : undefined;
-    if (!target || target.dead) {
-      this.targetRing.setVisible(false);
-      return;
+  private updateZoneLabel(): void {
+    const p = this.world.player;
+    for (const zone of ZONES) {
+      const dx = p.pos.x - zone.hub.x;
+      const dz = p.pos.z - zone.hub.z;
+      if (Math.sqrt(dx * dx + dz * dz) < zone.hub.radius * 2) {
+        this.zoneLabel.setText(zone.hub.name);
+        return;
+      }
     }
-    const ip = interpPos(target, alpha);
-    const pos = worldToScreen(ip.x, ip.z, ip.y);
-    this.targetRing
-      .setVisible(true)
-      .setPosition(pos.x, pos.y)
-      .setDepth(isoDepth(ip.x, ip.z) - 0.5); // just behind the target body
+    this.zoneLabel.setText('');
   }
 
-  /**
-   * Offline steering. With a fixed (non-rotating) isometric camera, arrow/WASD
-   * keys should move the character the way the screen reads — up = toward the top
-   * of the screen, etc. — not relative to a facing the player can't see turning.
-   * We convert the pressed keys into a world-space direction, point the player at
-   * it, and push `forward`, so every direction runs at full speed (no backpedal).
-   * With no keys held, we walk toward any click-to-move destination. Steering by
-   * writing `facing` directly is safe only offline, where `world.player` is the
-   * live sim entity; online play keeps the server-authoritative WASD mapping.
-   */
   private steerOffline(up: boolean, down: boolean, left: boolean, right: boolean): void {
     const mi = this.world.moveInput;
     mi.forward = mi.back = mi.strafeLeft = mi.strafeRight = mi.turnLeft = mi.turnRight = false;
@@ -426,64 +598,55 @@ export class WorldScene extends Scene {
     let facing: number | null = null;
 
     const dsx = (right ? 1 : 0) - (left ? 1 : 0);
-    const dsy = (down ? 1 : 0) - (up ? 1 : 0);
+    const dsy = (down  ? 1 : 0) - (up   ? 1 : 0);
     if (dsx !== 0 || dsy !== 0) {
-      this.moveTarget = null; // a key press cancels click-to-move
-      // Screen direction -> world direction (inverse of the iso projection).
-      const dx = dsx / ISO_PPY_X + dsy / ISO_PPY_Y;
-      const dz = dsy / ISO_PPY_Y - dsx / ISO_PPY_X;
-      facing = Math.atan2(dx, dz);
+      this.moveTarget = null;
+      facing = Math.atan2(dsx, -dsy); // screen x = world x, screen y = world z
     } else if (this.moveTarget) {
       const dx = this.moveTarget.x - p.pos.x;
       const dz = this.moveTarget.z - p.pos.z;
-      if (dx * dx + dz * dz <= ARRIVE_DIST * ARRIVE_DIST) this.moveTarget = null;
-      else facing = Math.atan2(dx, dz);
+      if (dx * dx + dz * dz <= (ARRIVE_PX / TILE_SZ * TILE_WORLD_X) ** 2)
+        this.moveTarget = null;
+      else
+        facing = Math.atan2(dx, -dz);
     }
 
     if (facing !== null) {
-      p.facing = facing; // offline: live entity, sim reads it on the next tick
+      p.facing = facing;
       mi.forward = true;
     }
 
-    // Destination marker follows the active click-to-move target.
     if (this.moveTarget) {
-      const seed = this.world.cfg.seed;
-      const mp = worldToScreen(this.moveTarget.x, this.moveTarget.z, terrainHeight(this.moveTarget.x, this.moveTarget.z, seed));
-      this.moveMarker.setVisible(true).setPosition(mp.x, mp.y);
+      const mp = worldToPixel(this.moveTarget.x, this.moveTarget.z);
+      this.moveMarker.setVisible(true).setPosition(mp.px, mp.py);
     } else {
       this.moveMarker.setVisible(false);
     }
   }
 
-  /**
-   * Turn a pointer position (already in camera/world pixels) into a ground
-   * destination. Solve the inverse projection at y=0, sample the terrain there,
-   * then re-solve once with that height for a close fit, and clamp to the world.
-   */
-  private screenToWorld(px: number, py: number, seed: number): { x: number; z: number } {
-    const sx = px - ISO_BOUNDS.originX;
-    const sy = py - ISO_BOUNDS.originY;
-    let w = isoToWorld(sx, sy, 0);
-    const h = terrainHeight(w.x, w.z, seed);
-    w = isoToWorld(sx, sy, h);
-    return {
-      x: Phaser.Math.Clamp(w.x, WORLD_MIN_X, WORLD_MAX_X),
-      z: Phaser.Math.Clamp(w.z, WORLD_MIN_Z, WORLD_MAX_Z),
-    };
+  private updateTargetRing(alpha: number): void {
+    const tid = this.world.player.targetId;
+    const target = tid != null ? this.world.entities.get(tid) : undefined;
+    if (!target || target.dead) {
+      this.targetRing.setVisible(false);
+      return;
+    }
+    const ip = interpPos(target, alpha);
+    const pp = worldToPixel(ip.x, ip.z);
+    this.targetRing
+      .setVisible(true)
+      .setPosition(pp.px, pp.py);
   }
 
   private syncEntities(alpha: number): void {
     const currentIds = new Set<number>();
-
     for (const [id, entity] of this.world.entities.entries()) {
-      if (id === this.world.playerId) continue; // skip local player
-      // Offline: hide other players for now (solo experience).
+      if (id === this.world.playerId) continue;
       if (this.offline && entity.kind === 'player') continue;
-
       currentIds.add(id);
+
       const ip = interpPos(entity, alpha);
-      const pos = worldToScreen(ip.x, ip.z, ip.y);
-      const depth = isoDepth(ip.x, ip.z);
+      const pp = worldToPixel(ip.x, ip.z);
 
       let view = this.entityViews.get(id);
       if (!view) {
@@ -491,11 +654,10 @@ export class WorldScene extends Scene {
           .setInteractiveTarget(() => this.world.targetEntity(id));
         this.entityViews.set(id, view);
       }
-      view.setPosition(pos.x, pos.y).setDepth(depth);
+      view.setPosition(pp.px, pp.py).setDepth(D_ENTITY + pp.py * 0.0001);
       view.update(entity);
     }
 
-    // Clean up views for entities no longer present
     for (const id of this.entityViews.keys()) {
       if (!currentIds.has(id)) {
         this.entityViews.get(id)!.destroy();
@@ -505,49 +667,33 @@ export class WorldScene extends Scene {
   }
 
   private checkAggroEncounters(): void {
-    // Check if the simulation reports player in combat
-    if (this.world.player.inCombat) {
-      // Find the entity targeting the player or nearest hostile entity
-      let closestHostile: Entity | null = null;
-      let minDist = 99999;
-
-      for (const entity of this.world.entities.values()) {
-        if (entity.kind === 'npc' || entity.dead || entity.id === this.world.playerId) continue;
-
-        const dist = Phaser.Math.Distance.Between(
-          this.world.player.pos.x, this.world.player.pos.z,
-          entity.pos.x, entity.pos.z
-        );
-
-        if (dist < 10 && dist < minDist) { // 10 yards aggro radius
-          minDist = dist;
-          closestHostile = entity;
-        }
-      }
-
-      if (closestHostile) {
-        this.startCombat(closestHostile);
-      }
+    if (!this.world.player.inCombat) return;
+    let closestHostile: Entity | null = null;
+    let minDist = 99999;
+    for (const entity of this.world.entities.values()) {
+      if (entity.kind === 'npc' || entity.dead || entity.id === this.world.playerId) continue;
+      const dist = Math.hypot(
+        this.world.player.pos.x - entity.pos.x,
+        this.world.player.pos.z - entity.pos.z,
+      );
+      if (dist < 10 && dist < minDist) { minDist = dist; closestHostile = entity; }
     }
+    if (closestHostile) this.startCombat(closestHostile);
   }
 
   private startCombat(enemy: Entity): void {
     this.inCombat = true;
     this.cameras.main.flash(200, 220, 38, 38);
-
-    // Stop movement inputs immediately
-    this.world.moveInput.forward = false;
-    this.world.moveInput.back = false;
-    this.world.moveInput.strafeLeft = false;
-    this.world.moveInput.strafeRight = false;
+    this.world.moveInput.forward = this.world.moveInput.back =
+      this.world.moveInput.strafeLeft = this.world.moveInput.strafeRight = false;
 
     this.time.delayedCall(250, () => {
       this.scene.launch('CombatScene', {
         enemy: {
           id: enemy.id,
           label: enemy.name || 'Monster',
-          subject: 'maths', // default to maths
-          tier: Math.max(1, Math.min(6, Math.floor((entityLevel(enemy) ?? 1) / 10) + 1)),
+          subject: 'maths',
+          tier: Math.max(1, Math.min(6, Math.floor(((enemy as any).level ?? 1) / 10) + 1)),
           hp: enemy.hp ?? 60,
           maxHp: enemy.maxHp ?? 60,
         },
@@ -556,28 +702,19 @@ export class WorldScene extends Scene {
         playerClass: this.world.cfg.playerClass,
         questions: this.registry.get('questions'),
       });
-
       this.scene.pause('WorldScene');
     });
   }
 
-  private onCombatEnd(result: { won: boolean; remainingHp: number; xpGained: number; mindcoins: number; enemyId: number }): void {
+  private onCombatEnd(_result: { won: boolean; remainingHp: number; xpGained: number; mindcoins: number; enemyId: number }): void {
     this.inCombat = false;
     this.pushHUDUpdate();
     this.scene.resume('WorldScene');
   }
 
   private pushHUDUpdate(): void {
-    this.events.emit(Events.HUD_UPDATE_HP, {
-      hp: this.world.player.hp,
-      maxHp: this.world.player.maxHp,
-    });
+    this.events.emit(Events.HUD_UPDATE_HP, { hp: this.world.player.hp, maxHp: this.world.player.maxHp });
     this.events.emit(Events.HUD_UPDATE_MINDCOINS, this.world.copper);
     this.events.emit(Events.HUD_UPDATE_XP, this.world.xp);
   }
-}
-
-// Small helper to get level if not directly exposed
-function entityLevel(e: any): number {
-  return e.level ?? 1;
 }

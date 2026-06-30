@@ -18,8 +18,8 @@ import { QuizScene } from './scenes/QuizScene';
 import { HUDScene } from './scenes/HUDScene';
 
 /** Base logical resolution - scales to fill device screen. */
-export const GAME_WIDTH = 480;
-export const GAME_HEIGHT = 854; // 9:16 portrait mobile ratio
+export const GAME_WIDTH = 960;
+export const GAME_HEIGHT = 540; // Landscape ratio
 
 /**
  * Shared event bus keys used across scenes.
@@ -71,8 +71,8 @@ export function createPhaserGame(parentElement: HTMLElement): Phaser.Game {
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,
       min: {
-        width: 320,
-        height: 568,
+        width: 480,
+        height: 270,
       },
       max: {
         width: 1920,
