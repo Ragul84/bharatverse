@@ -37,6 +37,19 @@ export function worldToIso(x: number, z: number, y = 0): IsoPoint {
 }
 
 /**
+ * Inverse of `worldToIso`: recover world (x, z) from a screen point in the same
+ * pre-origin space, for a given world height `y`. Click-to-move uses this to turn
+ * a pointer position into a ground destination. Because `y` shifts `sy`, callers
+ * that don't know the height can solve at y=0, sample the terrain there, then
+ * re-solve once with that height for a close fit.
+ */
+export function isoToWorld(sx: number, sy: number, y = 0): { x: number; z: number } {
+  const xMinusZ = sx / ISO_PPY_X;
+  const xPlusZ = (sy + y * ISO_HEIGHT_PPY) / ISO_PPY_Y;
+  return { x: (xPlusZ + xMinusZ) / 2, z: (xPlusZ - xMinusZ) / 2 };
+}
+
+/**
  * Painter's-order depth for a ground entity. Larger (x + z) is nearer the
  * camera (further down-screen) and must draw on top, so depth increases with
  * (x + z). Height is intentionally excluded: a jumping entity should not sort

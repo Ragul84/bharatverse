@@ -91,3 +91,13 @@ Archive actions (one-time):
   art when present (tint only applied to procedural). Renderer switched to HD
   (`pixelArt:false`, `antialias:true`). Drop-in guide: `public/assets/README.md`.
   Zero art files needed to run; add PNGs incrementally. tsc + vite build green.
+- WP2 offline movement: with the fixed iso camera, arrow/WASD now move the
+  character screen-intuitively (up = toward top of screen, etc.) at full speed in
+  any of 8 directions, and clicking empty ground walks the player there
+  (click-to-move with a cyan destination marker; a key press cancels it). New pure
+  `isoToWorld` inverse projection in `iso.ts` (round-trip tested). Steering writes
+  `player.facing` + `forward` and is gated to offline (`world.realm===''`) where
+  `world.player` is the live sim entity; online keeps the server-authoritative
+  facing-relative WASD mapping. Other players are hidden offline for a solo feel
+  (`syncEntities` skips `kind==='player'`). tsc + vite build green; iso 10/10,
+  45 phaser tests pass.

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  worldToIso, isoDepth, isoWorldBounds, isoWorldBoundsRect,
+  worldToIso, isoToWorld, isoDepth, isoWorldBounds, isoWorldBoundsRect,
   ISO_PPY_X, ISO_PPY_Y, ISO_HEIGHT_PPY,
 } from '../src/render-phaser/iso';
 
@@ -25,6 +25,25 @@ describe('worldToIso', () => {
     const air = worldToIso(3, 7, 10);
     expect(air.sx).toBe(ground.sx); // height never moves a point horizontally
     expect(ground.sy - air.sy).toBe(10 * ISO_HEIGHT_PPY); // up = smaller sy
+  });
+});
+
+describe('isoToWorld', () => {
+  it('is the exact inverse of worldToIso on the ground plane', () => {
+    for (const [x, z] of [[0, 0], [10, 0], [0, 10], [37, -84], [-180, 900]]) {
+      const p = worldToIso(x, z, 0);
+      const w = isoToWorld(p.sx, p.sy, 0);
+      expect(w.x).toBeCloseTo(x, 9);
+      expect(w.z).toBeCloseTo(z, 9);
+    }
+  });
+
+  it('inverts correctly when a world height is given', () => {
+    const [x, z, y] = [12, -5, 8];
+    const p = worldToIso(x, z, y);
+    const w = isoToWorld(p.sx, p.sy, y);
+    expect(w.x).toBeCloseTo(x, 9);
+    expect(w.z).toBeCloseTo(z, 9);
   });
 });
 

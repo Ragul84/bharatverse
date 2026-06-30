@@ -11,7 +11,7 @@
 import Phaser, { Scene, GameObjects, Input } from 'phaser';
 import { Events } from '../index';
 import { SimBridge, interpPos } from '../sim_bridge';
-import { worldToIso, isoDepth, isoWorldBoundsRect } from '../iso';
+import { worldToIso, isoToWorld, isoDepth, isoWorldBoundsRect, ISO_PPY_X, ISO_PPY_Y } from '../iso';
 import { EntityView } from '../entity_view';
 import { generateCharacterTextures } from '../character_sprites';
 import { decoTint } from '../decoration_style';
@@ -30,6 +30,10 @@ const ISO_BOUNDS = isoWorldBoundsRect(WORLD_MIN_X, WORLD_MAX_X, WORLD_MIN_Z, WOR
 // roughly [WORLD_MIN_X+WORLD_MIN_Z, WORLD_MAX_X+WORLD_MAX_Z]).
 const DEPTH_GROUND = -100000;
 const DEPTH_UI = 100000;
+
+// Click-to-move: stop once within this many yards of the destination, so the
+// player doesn't jitter trying to land exactly on the point.
+const ARRIVE_DIST = 1.2;
 
 // Base ground tint per biome; height shading is applied on top.
 const BIOME_BASE: Record<string, number> = {
@@ -74,8 +78,14 @@ export class WorldScene extends Scene {
   private entityViews = new Map<number, EntityView>();
 
   private inCombat = false;
+  private offline = false;
   private zoneLabel!: GameObjects.Text;
   private targetRing!: GameObjects.Graphics;
+
+  // Click-to-move destination in world (x,z); null when steering by keys / idle.
+  private moveTarget: { x: number; z: number } | null = null;
+  // Optional marker shown at the click-to-move destination.
+  private moveMarker!: GameObjects.Graphics;
 
   constructor() {
     super({ key: 'WorldScene', active: false });
@@ -85,6 +95,9 @@ export class WorldScene extends Scene {
     this.world = this.registry.get('world') as IWorld;
     this.bridge = this.registry.get('simBridge') as SimBridge;
     this.inCombat = false;
+    // Offline (solo) play has no realm string. Only there do we steer the player
+    // by writing facing directly + click-to-move; online stays server-authoritative.
+    this.offline = this.world.realm === '';
   }
 
   create(): void {
@@ -123,6 +136,20 @@ export class WorldScene extends Scene {
     this.targetRing = this.add.graphics().setVisible(false);
     this.targetRing.lineStyle(2, 0xfde047, 0.95); // gold
     this.targetRing.strokeEllipse(0, 0, 30, 15);  // 2:1 iso footprint
+
+    // ---- Click-to-move destination marker (offline) ----
+    this.moveMarker = this.add.graphics().setVisible(false).setDepth(DEPTH_GROUND + 1);
+    this.moveMarker.lineStyle(2, 0x67e8f9, 0.9); // cyan
+    this.moveMarker.strokeEllipse(0, 0, 22, 11);
+
+    // Click an empty patch of ground to walk there (offline). Clicks that land on
+    // an interactive entity (currentlyOver non-empty) are left to targeting.
+    if (this.offline) {
+      this.input.on('pointerdown', (pointer: Phaser.Input.Pointer, currentlyOver: GameObjects.GameObject[]) => {
+        if (currentlyOver.length > 0) return; // entity click -> target, not move
+        this.moveTarget = this.screenToWorld(pointer.worldX, pointer.worldY, seed);
+      });
+    }
 
     // ---- Keyboard input setup ----
     this.cursors = this.input.keyboard!.createCursorKeys();
@@ -315,11 +342,14 @@ export class WorldScene extends Scene {
     const left = this.cursors.left.isDown || this.wasd.left.isDown;
     const right = this.cursors.right.isDown || this.wasd.right.isDown;
 
-    // Assign to simulation moveInput directly
-    this.world.moveInput.forward = up;
-    this.world.moveInput.back = down;
-    this.world.moveInput.strafeLeft = left;
-    this.world.moveInput.strafeRight = right;
+    if (this.offline) this.steerOffline(up, down, left, right);
+    else {
+      // Online: server-authoritative, facing-relative WASD (legacy mapping).
+      this.world.moveInput.forward = up;
+      this.world.moveInput.back = down;
+      this.world.moveInput.strafeLeft = left;
+      this.world.moveInput.strafeRight = right;
+    }
 
     // ---- 2. Sync Player View from Sim (interpolated) ----
     const playerIp = interpPos(this.world.player, alpha);
@@ -355,11 +385,77 @@ export class WorldScene extends Scene {
       .setDepth(isoDepth(ip.x, ip.z) - 0.5); // just behind the target body
   }
 
+  /**
+   * Offline steering. With a fixed (non-rotating) isometric camera, arrow/WASD
+   * keys should move the character the way the screen reads — up = toward the top
+   * of the screen, etc. — not relative to a facing the player can't see turning.
+   * We convert the pressed keys into a world-space direction, point the player at
+   * it, and push `forward`, so every direction runs at full speed (no backpedal).
+   * With no keys held, we walk toward any click-to-move destination. Steering by
+   * writing `facing` directly is safe only offline, where `world.player` is the
+   * live sim entity; online play keeps the server-authoritative WASD mapping.
+   */
+  private steerOffline(up: boolean, down: boolean, left: boolean, right: boolean): void {
+    const mi = this.world.moveInput;
+    mi.forward = mi.back = mi.strafeLeft = mi.strafeRight = mi.turnLeft = mi.turnRight = false;
+
+    const p = this.world.player;
+    let facing: number | null = null;
+
+    const dsx = (right ? 1 : 0) - (left ? 1 : 0);
+    const dsy = (down ? 1 : 0) - (up ? 1 : 0);
+    if (dsx !== 0 || dsy !== 0) {
+      this.moveTarget = null; // a key press cancels click-to-move
+      // Screen direction -> world direction (inverse of the iso projection).
+      const dx = dsx / ISO_PPY_X + dsy / ISO_PPY_Y;
+      const dz = dsy / ISO_PPY_Y - dsx / ISO_PPY_X;
+      facing = Math.atan2(dx, dz);
+    } else if (this.moveTarget) {
+      const dx = this.moveTarget.x - p.pos.x;
+      const dz = this.moveTarget.z - p.pos.z;
+      if (dx * dx + dz * dz <= ARRIVE_DIST * ARRIVE_DIST) this.moveTarget = null;
+      else facing = Math.atan2(dx, dz);
+    }
+
+    if (facing !== null) {
+      p.facing = facing; // offline: live entity, sim reads it on the next tick
+      mi.forward = true;
+    }
+
+    // Destination marker follows the active click-to-move target.
+    if (this.moveTarget) {
+      const seed = this.world.cfg.seed;
+      const mp = worldToScreen(this.moveTarget.x, this.moveTarget.z, terrainHeight(this.moveTarget.x, this.moveTarget.z, seed));
+      this.moveMarker.setVisible(true).setPosition(mp.x, mp.y);
+    } else {
+      this.moveMarker.setVisible(false);
+    }
+  }
+
+  /**
+   * Turn a pointer position (already in camera/world pixels) into a ground
+   * destination. Solve the inverse projection at y=0, sample the terrain there,
+   * then re-solve once with that height for a close fit, and clamp to the world.
+   */
+  private screenToWorld(px: number, py: number, seed: number): { x: number; z: number } {
+    const sx = px - ISO_BOUNDS.originX;
+    const sy = py - ISO_BOUNDS.originY;
+    let w = isoToWorld(sx, sy, 0);
+    const h = terrainHeight(w.x, w.z, seed);
+    w = isoToWorld(sx, sy, h);
+    return {
+      x: Phaser.Math.Clamp(w.x, WORLD_MIN_X, WORLD_MAX_X),
+      z: Phaser.Math.Clamp(w.z, WORLD_MIN_Z, WORLD_MAX_Z),
+    };
+  }
+
   private syncEntities(alpha: number): void {
     const currentIds = new Set<number>();
 
     for (const [id, entity] of this.world.entities.entries()) {
       if (id === this.world.playerId) continue; // skip local player
+      // Offline: hide other players for now (solo experience).
+      if (this.offline && entity.kind === 'player') continue;
 
       currentIds.add(id);
       const ip = interpPos(entity, alpha);
