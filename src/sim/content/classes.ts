@@ -134,7 +134,8 @@ export const CLASSES: Record<PlayerClass, ClassDef> = {
     startChest: 'footpad_jerkin',
     abilities: ['lightning_bolt', 'rockbiter_weapon', 'healing_wave', 'earth_shock', 'lightning_shield', 'flame_shock', 'flametongue_weapon', 'frost_shock', 'frostbrand_weapon', 'ghost_wolf', 'stormstrike'],
     color: 0x0070de,
-  },
+    subjectBonus: { subject: 'languages', xpMult: 1.25 },
+  } as ClassDef & { subjectBonus?: { subject: string; xpMult: number } },
   warlock: {
     id: 'warlock',
     name: 'Warlock',
@@ -166,7 +167,119 @@ export const CLASSES: Record<PlayerClass, ClassDef> = {
     abilities: ['wrath', 'healing_touch', 'mark_of_the_wild', 'moonfire', 'rejuvenation', 'thorns', 'entangling_roots', 'bear_form', 'bear_charge', 'maul', 'growl', 'demoralizing_roar', 'cat_form', 'prowl', 'rake', 'claw', 'regrowth', 'ferocious_bite', 'barkskin', 'swipe', 'starfire', 'travel_form', 'enrage', 'bash', 'faerie_fire', 'hibernate', 'dash', 'pounce', 'insect_swarm', 'tigers_fury', 'rip'],
     color: 0xff7d0a,
   },
+  // ---------------------------------------------------------------------------
+  // BharatVerse Archetypes — 5 Indian hero classes
+  // Each maps to an existing set of WoW-classic mechanics.
+  // Deprecated original classes remain in the CLASSES record so combat
+  // formulas that key off class ID keep working unchanged.
+  // ---------------------------------------------------------------------------
+  brahmarishi: {
+    id: 'brahmarishi',
+    name: 'Chanakya Scholar',
+    // Scholar-Sage: Healer + Buffer — maps to Priest mechanics
+    baseStats: { str: 10, agi: 11, sta: 13, int: 22, spi: 24, armor: 20 },
+    statsPerLevel: { str: 0, agi: 0, sta: 1, int: 2, spi: 3, armor: 4 },
+    baseHp: 38,
+    hpPerLevel: 11,
+    baseMana: 110,
+    manaPerLevel: 26,
+    resourceType: 'mana',
+    startWeapon: 'gnarled_staff',
+    startChest: 'apprentice_robe',
+    ranged: { min: 3, max: 6, speed: 1.8, maxRange: 30, minRange: 0, wand: true, school: 'holy' },
+    abilities: ['smite', 'lesser_heal', 'power_word_fortitude', 'shadow_word_pain', 'power_word_shield', 'renew', 'mind_blast', 'heal', 'mind_flay', 'flash_heal'],
+    color: 0xfffff0,
+    subjectBonus: { subject: 'history', xpMult: 1.25 },
+  } as ClassDef & { subjectBonus?: { subject: string; xpMult: number } },
+  kshatriya: {
+    id: 'kshatriya',
+    name: 'Subhash Warrior',
+    // Warrior-Protector: Tank/DPS — maps to Warrior mechanics
+    baseStats: { str: 23, agi: 20, sta: 22, int: 10, spi: 11, armor: 50 },
+    statsPerLevel: { str: 2, agi: 1, sta: 2, int: 0, spi: 0, armor: 12 },
+    baseHp: 50,
+    hpPerLevel: 18,
+    baseMana: 100, // rage cap
+    manaPerLevel: 0,
+    resourceType: 'rage',
+    startWeapon: 'worn_sword',
+    startChest: 'recruit_tunic',
+    abilities: ['heroic_strike', 'battle_shout', 'commanding_shout', 'charge', 'rend', 'thunder_clap', 'hamstring', 'bloodrage', 'overpower', 'execute', 'slam', 'cleave', 'defensive_stance', 'demoralizing_shout', 'sunder_armor', 'taunt'],
+    color: 0xc79c6e,
+    subjectBonus: { subject: 'civics', xpMult: 1.25 },
+  } as ClassDef & { subjectBonus?: { subject: string; xpMult: number } },
+  vaishya: {
+    id: 'vaishya',
+    name: 'Arjuna Archer',
+    // Archer-Strategist: Ranged DPS — maps to Hunter mechanics
+    baseStats: { str: 14, agi: 25, sta: 19, int: 13, spi: 14, armor: 45 },
+    statsPerLevel: { str: 1, agi: 3, sta: 2, int: 1, spi: 1, armor: 8 },
+    baseHp: 50,
+    hpPerLevel: 15,
+    baseMana: 80,
+    manaPerLevel: 18,
+    resourceType: 'mana',
+    startWeapon: 'rusty_hatchet',
+    startChest: 'footpad_jerkin',
+    ranged: { min: 5, max: 9, speed: 2.3, maxRange: 35, minRange: 8 },
+    abilities: ['raptor_strike', 'aspect_of_the_hawk', 'serpent_sting', 'arcane_shot', 'concussive_shot', 'mongoose_bite', 'wing_clip', 'tame_beast', 'dismiss_pet', 'revive_pet', 'aspect_of_the_monkey', 'aspect_of_the_cheetah', 'aimed_shot', 'rapid_fire'],
+    color: 0xabd473,
+    subjectBonus: { subject: 'maths', xpMult: 1.25 },
+  } as ClassDef & { subjectBonus?: { subject: string; xpMult: number } },
+  shilpi: {
+    id: 'shilpi',
+    name: 'Aryabhatta Mage',
+    // Scholar-Astronomer: Ranged Elemental — maps to Mage mechanics
+    baseStats: { str: 10, agi: 12, sta: 14, int: 24, spi: 22, armor: 25 },
+    statsPerLevel: { str: 0, agi: 0, sta: 1, int: 3, spi: 2, armor: 4 },
+    baseHp: 40,
+    hpPerLevel: 12,
+    baseMana: 100,
+    manaPerLevel: 24,
+    resourceType: 'mana',
+    startWeapon: 'gnarled_staff',
+    startChest: 'apprentice_robe',
+    ranged: { min: 3, max: 6, speed: 1.8, maxRange: 30, minRange: 0, wand: true, school: 'arcane' },
+    abilities: ['fireball', 'frost_armor', 'arcane_intellect', 'frostbolt', 'conjure_water', 'conjure_food', 'fire_blast', 'arcane_missiles', 'polymorph', 'frost_nova', 'arcane_explosion', 'scorch', 'ice_barrier', 'pyroblast'],
+    color: 0x69ccf0,
+    subjectBonus: { subject: 'physics', xpMult: 1.25 },
+  } as ClassDef & { subjectBonus?: { subject: string; xpMult: number } },
+  vaidya: {
+    id: 'vaidya',
+    name: 'Dhanvantari Healer',
+    // Healer-Physician: Restorer + Shapeshifter — maps to Druid mechanics
+    baseStats: { str: 15, agi: 15, sta: 17, int: 19, spi: 20, armor: 30 },
+    statsPerLevel: { str: 1, agi: 1, sta: 2, int: 2, spi: 2, armor: 6 },
+    baseHp: 45,
+    hpPerLevel: 13,
+    baseMana: 95,
+    manaPerLevel: 22,
+    resourceType: 'mana',
+    startWeapon: 'gnarled_staff',
+    startChest: 'footpad_jerkin',
+    abilities: ['wrath', 'healing_touch', 'mark_of_the_wild', 'moonfire', 'rejuvenation', 'thorns', 'entangling_roots', 'bear_form', 'bear_charge', 'maul', 'growl', 'demoralizing_roar', 'cat_form', 'prowl', 'rake', 'claw', 'regrowth', 'ferocious_bite', 'barkskin', 'swipe', 'starfire', 'travel_form', 'enrage', 'bash', 'faerie_fire', 'hibernate', 'dash', 'pounce', 'insect_swarm', 'tigers_fury', 'rip'],
+    color: 0xff7d0a,
+    subjectBonus: { subject: 'biology', xpMult: 1.25 },
+  } as ClassDef & { subjectBonus?: { subject: string; xpMult: number } },
 };
+
+// BharatVerse: which class IDs are available in character creation
+export const BHARATVERSE_CLASSES: PlayerClass[] = ['brahmarishi', 'kshatriya', 'vaishya', 'shilpi', 'vaidya', 'shaman'];
+
+// Classes deprecated from BharatVerse character creation (kept for combat formula compatibility)
+export const DEPRECATED_CLASSES: PlayerClass[] = ['paladin', 'hunter', 'mage', 'warlock'];
+
+// Mechanical base class for each BharatVerse archetype
+// (the sim engine uses these when it needs to look up base mechanics by archetype)
+export const BHARATVERSE_BASE_CLASS: Partial<Record<PlayerClass, PlayerClass>> = {
+  brahmarishi: 'priest',
+  kshatriya:   'warrior',
+  vaishya:     'hunter',
+  shilpi:      'mage',
+  vaidya:      'druid',
+};
+
+
 
 // ---------------------------------------------------------------------------
 // Abilities — rank values and learn levels from vanilla (levels 1-10)

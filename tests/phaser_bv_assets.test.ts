@@ -45,7 +45,7 @@ describe('resolveDecoTexture', () => {
 describe('optionalAssets', () => {
   it('lists one entry per character archetype plus every prop', () => {
     const assets = optionalAssets();
-    expect(assets).toHaveLength(Object.keys(CHAR_PALETTES).length + PROP_NAMES.length);
+    expect(assets).toHaveLength(Object.keys(CHAR_PALETTES).length * 3 + PROP_NAMES.length);
     // urls all live under assets/
     expect(assets.every(a => a.url.startsWith('assets/'))).toBe(true);
     // keys are unique

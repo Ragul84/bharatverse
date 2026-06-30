@@ -11,9 +11,9 @@ export type MusicZone =
   | 'dungeon_hollow_crypt' | 'dungeon_sunken_bastion' | 'dungeon_gravewyrm_sanctum';
 
 const TOWN_MUSIC: Record<string, MusicZone> = {
-  eastbrook_vale: 'town_eastbrook',
-  mirefen_marsh: 'town_fenbridge',
-  thornpeak_heights: 'town_highwatch',
+  gangapur_nagari: 'town_eastbrook',
+  vigyan_vana: 'town_fenbridge',
+  gyan_shikhar: 'town_highwatch',
 };
 
 const DUNGEON_MUSIC: Record<string, MusicZone> = {

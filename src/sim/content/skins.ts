@@ -105,6 +105,12 @@ export function rankAllowsMechChroma(granted: SkinRank, skin: number): boolean {
 export const SKIN_COUNTS: Record<PlayerClass, number> = {
   warrior: 4, paladin: 2, hunter: 4, rogue: 4, priest: 4,
   mage: 4, warlock: 4, shaman: 4, druid: 4,
+  // BharatVerse classes: reuse existing skin model counts until custom art ships
+  brahmarishi: 4,   // uses priest models
+  kshatriya:   4,   // uses warrior models
+  vaishya:     4,   // uses rogue models
+  shilpi:      4,   // uses shaman models
+  vaidya:      4,   // uses druid models
 };
 
 /** Whether `skin` is a valid appearance index for `cls` (0 = default). */

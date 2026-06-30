@@ -103,7 +103,7 @@ async function bvTriggerKnowledgeCheck(
         if (tier) console.info(`[BharatVerse] ${tier} ×${bvCombo}`);
 
         if (!result.correct && bvMIGA) {
-          void bvMIGA.showWrongAnswer(q.text, chosen, q.correct, q.explanation);
+          void bvMIGA.showWrongAnswer(q.question, chosen, q.correct, q.explanation);
         }
 
         resolve(result.damageMultiplier);

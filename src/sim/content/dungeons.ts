@@ -34,11 +34,11 @@ export const DUNGEON_MOBS: Record<string, MobTemplate> = {
     scale: 1.2, color: 0x839192,
   },
   morthen: {
-    id: 'morthen', name: 'Morthen the Gravecaller', minLevel: 10, maxLevel: 10, family: 'undead',
+    id: 'morthen', name: 'Agyaan Asura', minLevel: 10, maxLevel: 10, family: 'undead',
     elite: true, boss: true,
     hpBase: 230, hpPerLevel: 32, dmgBase: 11, dmgPerLevel: 2.6, attackSpeed: 2.6,
     armorPerLevel: 26, moveSpeed: 7, aggroRadius: 16,
-    aoePulse: { min: 12, max: 18, radius: 12, every: 10, name: 'Shadow Pulse' },
+    aoePulse: { min: 12, max: 18, radius: 12, every: 10, name: 'Vigyan Nasha (Knowledge Drain)' },
     loot: [
       { copper: 2500, chance: 1 },
       { itemId: 'cryptbone_greaves', chance: 0.34, rollGroup: 'morthen_guaranteed_uncommon' },
@@ -183,11 +183,11 @@ export const DUNGEON_MOBS: Record<string, MobTemplate> = {
     scale: 1.25, color: 0x512e5f,
   },
   korzul_the_gravewyrm: {
-    id: 'korzul_the_gravewyrm', name: 'Korzul the Gravewyrm', minLevel: 20, maxLevel: 20, family: 'dragonkin',
+    id: 'korzul_the_gravewyrm', name: 'Andhkaar Naga', minLevel: 20, maxLevel: 20, family: 'dragonkin',
     elite: true, boss: true,
     hpBase: 420, hpPerLevel: 48, dmgBase: 15, dmgPerLevel: 3.0, attackSpeed: 2.6,
     armorPerLevel: 34, moveSpeed: 7, aggroRadius: 18,
-    aoePulse: { min: 30, max: 42, radius: 14, every: 8, name: 'Necrotic Shockwave' },
+    aoePulse: { min: 30, max: 42, radius: 14, every: 8, name: 'Agyaan Tufaan (Ignorance Storm)' },
     enrage: { belowHpPct: 0.30, dmgMult: 1.5, hasteMult: 1.3 },
     loot: [
       { copper: 50000, chance: 1 },
@@ -277,33 +277,33 @@ const SANCTUM_SPAWN_LIST: DungeonSpawn[] = [
 export const DUNGEON_DEFS: Record<string, DungeonDef> = {
   hollow_crypt: {
     id: 'hollow_crypt',
-    name: 'The Hollow Crypt',
+    name: 'Itihas Kund',  // BharatVerse: History Well — where forgotten knowledge drowns
     index: 0,
-    doorPos: { x: 80, z: 90 }, // entrance portal at the chapel ruin
+    doorPos: { x: 80, z: 90 }, // entrance portal at the fallen Mandir
     entry: { x: 0, z: 4 },
     exitOffset: { x: 0, z: -6 },
     spawns: CRYPT_SPAWN_LIST,
     interior: 'crypt',
     suggestedPlayers: 5,
-    enterText: 'You descend into the Hollow Crypt...',
-    leaveText: 'You climb back into daylight.',
+    enterText: 'You descend into the Itihas Kund — where the past waits to be remembered...',
+    leaveText: 'You climb back into daylight, carrying the lessons of history.',
   },
   sunken_bastion: {
     id: 'sunken_bastion',
-    name: 'The Sunken Bastion',
+    name: 'Vigyan Garh',  // BharatVerse: Science Fort — where knowledge is weaponised
     index: 1,
-    doorPos: { x: 45, z: 515 }, // drowned keep south of the Gravecaller camp
+    doorPos: { x: 45, z: 515 }, // flooded science keep in the Agyaan camp
     entry: { x: 0, z: 4 },
     exitOffset: { x: 0, z: -6 },
     spawns: BASTION_SPAWN_LIST,
     interior: 'crypt',
     suggestedPlayers: 5,
-    enterText: 'You wade down into the Sunken Bastion...',
-    leaveText: 'You climb out of the drowning dark.',
+    enterText: 'You wade into Vigyan Garh. Science twisted by ignorance awaits...',
+    leaveText: 'You climb out of the drowning dark — science lives again.',
   },
   gravewyrm_sanctum: {
     id: 'gravewyrm_sanctum',
-    name: 'Gravewyrm Sanctum',
+    name: 'Brahmastra Mandir',  // BharatVerse: The Temple of Ultimate Knowledge
     index: 2,
     doorPos: { x: 0, z: 880 }, // sealed gate at the head of the Sanctum Approach
     entry: { x: 0, z: 4 },
@@ -311,8 +311,8 @@ export const DUNGEON_DEFS: Record<string, DungeonDef> = {
     spawns: SANCTUM_SPAWN_LIST,
     interior: 'sanctum',
     suggestedPlayers: 5,
-    enterText: 'The air goes cold. Something vast breathes below...',
-    leaveText: 'You stagger back into the mountain wind.',
+    enterText: 'The air grows dense with forgotten mantras. Andhkaar Naga waits below...',
+    leaveText: 'Brahmastra\'s light returns. You have earned the title of Mahavidyarthi.',
   },
   nythraxis_crypt: {
     id: 'nythraxis_crypt',

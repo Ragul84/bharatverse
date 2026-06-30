@@ -258,7 +258,7 @@ async function main() {
 
       // events: pulse + boss death
       for (const ev of b.events) {
-        if (ev.type === 'damage' && ev.ability === 'Shadow Pulse') sawPulse = true;
+        if (ev.type === 'damage' && (ev.ability === 'Shadow Pulse' || ev.ability === 'Vigyan Nasha (Knowledge Drain)')) sawPulse = true;
         if (ev.type === 'death') {
           const dead = b.ents.get(ev.entityId);
           if (dead?.tid === 'morthen') bossDead = true;

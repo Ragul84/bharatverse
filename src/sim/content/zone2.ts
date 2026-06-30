@@ -1,7 +1,7 @@
-// Zone 2 — Mirefen Marsh (levels 6-13). Brother Aldric follows the
-// Gravecaller trail north of the causeway: drowned dead rise from the fen,
-// trolls dig into barrow-mounds, and Vael the Mistcaller waits in the
-// Sunken Bastion.
+// Zone 2 — Vigyan Vana (levels 6-13). Guru Shukracharya follows the
+// Agyaan trail north of the causeway: drowned knowledge-seekers rise from the fen,
+// and Bhram Asura (Illusion Demon) waits in the Vigyan Garh (Science Fort).
+// BharatVerse fork of world-of-claudecraft zone 2 (Mirefen Marsh).
 
 import type {
   CampDef, GroundObjectDef, ItemDef, MobTemplate, NpcDef, PlayerClass, QuestDef, ZoneDef, ZonePropsDef,
@@ -10,13 +10,13 @@ import type {
 export const DEEPFEN_SHALLOWS_LAKE = { x: -110, z: 310, radius: 35 };
 
 export const ZONE2_ZONE: ZoneDef = {
-  id: 'mirefen_marsh',
-  name: 'Mirefen Marsh',
+  id: 'vigyan_vana',
+  name: 'Vigyan Vana',
   zMin: 180,
   zMax: 540,
   levelRange: [6, 13],
   biome: 'marsh',
-  hub: { x: 0, z: 300, radius: 20, name: 'Fenbridge' },
+  hub: { x: 0, z: 300, radius: 20, name: 'Shastra Gram' },
   graveyard: { x: -18, z: 286 },
   lakes: [
     DEEPFEN_SHALLOWS_LAKE,
@@ -24,16 +24,16 @@ export const ZONE2_ZONE: ZoneDef = {
     { x: -40, z: 450, radius: 20 },
   ],
   pois: [
-    { x: 0, z: 300, label: 'Fenbridge' },
-    { x: -40, z: 230, label: 'Prowler Reeds' },
-    { x: -105, z: 300, label: 'Deepfen Shallows' },
-    { x: 80, z: 315, label: 'Widow Thicket' },
-    { x: 100, z: 435, label: 'Drowned Chapel' },
-    { x: -95, z: 440, label: 'Troll Mounds' },
-    { x: 0, z: 485, label: 'Gravecaller Encampment' },
-    { x: 45, z: 515, label: 'The Sunken Bastion' },
+    { x: 0, z: 300, label: 'Shastra Gram' },
+    { x: -40, z: 230, label: 'Vigyan Vana Entry' },
+    { x: -105, z: 300, label: 'Rasayan Kund (Chemistry Pool)' },
+    { x: 80, z: 315, label: 'Jeevan Vatika (Biology Garden)' },
+    { x: 100, z: 435, label: 'Dooba Prakashsthal' },
+    { x: -95, z: 440, label: 'Agyaan Mounds' },
+    { x: 0, z: 485, label: 'Bhram Asura Camp' },
+    { x: 45, z: 515, label: 'Vigyan Garh (Science Fort)' },
   ],
-  welcome: 'Report to Warden Fenwick at the Fenbridge gate.',
+  welcome: 'Report to Vidyarthi Rakshak at the Shastra Gram gate.',
 };
 
 // Causeway north from Eastbrook to Fenbridge, then spokes to each hub.

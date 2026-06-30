@@ -542,14 +542,14 @@ export const BASE_ITEMS: Record<string, ItemDef> = {
 export interface FishingEntry { itemId: string | null; weight: number }
 
 export const FISHING_TABLES: Record<string, FishingEntry[]> = {
-  eastbrook_vale: [
+  gangapur_nagari: [
     { itemId: 'raw_mirror_trout', weight: 45 },
     { itemId: 'raw_river_perch', weight: 30 },
     { itemId: 'tangled_weed', weight: 12 },
     { itemId: 'glimmerfin_koi', weight: 3 },
     { itemId: null, weight: 10 },
   ],
-  mirefen_marsh: [
+  vigyan_vana: [
     { itemId: 'raw_marsh_pike', weight: 40 },
     { itemId: 'raw_bog_eel', weight: 30 },
     { itemId: 'soggy_boot', weight: 8 },
@@ -557,7 +557,7 @@ export const FISHING_TABLES: Record<string, FishingEntry[]> = {
     { itemId: 'glimmerfin_koi', weight: 3 },
     { itemId: null, weight: 10 },
   ],
-  thornpeak_heights: [
+  gyan_shikhar: [
     { itemId: 'raw_frostgill_trout', weight: 40 },
     { itemId: 'raw_stonescale_carp', weight: 30 },
     { itemId: 'tangled_weed', weight: 14 },

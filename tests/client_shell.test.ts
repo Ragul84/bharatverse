@@ -40,16 +40,16 @@ describe('client HTML shell', () => {
 
   it('ships crawlable SEO metadata and sitemap hints', () => {
     expect(html).toContain('<meta name="robots" content="index, follow, max-image-preview:large" />');
-    expect(html).toContain('<link rel="canonical" href="https://worldofclaudecraft.com/" />');
-    expect(html).toContain('<meta property="og:site_name" content="World of ClaudeCraft" />');
-    expect(html).toContain('"alternateName": "World of Claudecraft"');
+    expect(html).toContain('<link rel="canonical" href="https://bharatverse.in/" />');
+    expect(html).toContain('<meta property="og:site_name" content="BharatVerse" />');
+    expect(html).toContain('"alternateName": "BharatVerse"');
     expect(html).toContain('"https://github.com/levy-street/world-of-claudecraft"');
-    expect(mainTs).toContain("alternateName: 'World of Claudecraft'");
+    expect(mainTs).toContain("alternateName: 'BharatVerse'");
     expect(mainTs).toContain("'https://github.com/levy-street/world-of-claudecraft'");
-    expect(robotsTxt.trim()).toBe('User-agent: *\nAllow: /\n\nSitemap: https://worldofclaudecraft.com/sitemap.xml');
-    expect(robotsTxt).toContain('Sitemap: https://worldofclaudecraft.com/sitemap.xml');
-    expect(sitemapXml).toContain('<loc>https://worldofclaudecraft.com/</loc>');
-    expect(sitemapXml).toContain('<loc>https://worldofclaudecraft.com/links</loc>');
+    expect(robotsTxt.trim()).toBe('User-agent: *\nAllow: /\n\nSitemap: https://bharatverse.in/sitemap.xml');
+    expect(robotsTxt).toContain('Sitemap: https://bharatverse.in/sitemap.xml');
+    expect(sitemapXml).toContain('<loc>https://bharatverse.in/</loc>');
+    expect(sitemapXml).toContain('<loc>https://bharatverse.in/links</loc>');
   });
 
   it('offers the quest log in the mobile controls drawer', () => {

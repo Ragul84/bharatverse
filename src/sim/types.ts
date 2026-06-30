@@ -13,9 +13,16 @@ export const FISHING_CAST_ID = 'fishing';
 export const FISHING_CAST_NAME = 'Fishing';
 export const FISHING_CAST_TIME = 5;
 
+// BharatVerse player classes (map to original mechanics; originals kept for compatibility)
 export type PlayerClass =
   | 'warrior' | 'paladin' | 'hunter' | 'rogue' | 'priest'
-  | 'shaman' | 'mage' | 'warlock' | 'druid';
+  | 'shaman' | 'mage' | 'warlock' | 'druid'
+  // ── BharatVerse archetypes ─────────────────────────────────────────────────
+  | 'brahmarishi'   // Scholar-Sage → Priest mechanics
+  | 'kshatriya'     // Warrior-Protector → Warrior mechanics
+  | 'vaishya'       // Merchant-Strategist → Rogue mechanics
+  | 'shilpi'        // Artisan-Engineer → Shaman mechanics
+  | 'vaidya';       // Healer-Scientist → Druid mechanics
 // '1v1'/'2v2' are the ranked Ashen Coliseum ladders; 'fiesta' is the
 // dopamine-maxxed 2v2 party mode (score-based, respawns, augments, a shrinking
 // ring) — see docs/design and the Fiesta region of sim.ts.
@@ -541,6 +548,7 @@ export interface MobTemplate {
   // mob is meaningless and a friendly pet (mobSwing's other caller) must never
   // strip its owner's party. Rides the existing aura system — no new aura kind.
   purgeOnHit?: { chance: number; name: string };
+  subjectTag?: string;
 }
 
 export type AbilityEffect =

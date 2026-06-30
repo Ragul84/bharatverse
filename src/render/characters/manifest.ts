@@ -210,6 +210,12 @@ export const SKINS: Record<string, (string | null)[]> = {
   player_warlock: [null, `${SKINS_DIR}/mage/alt_a.png`, `${SKINS_DIR}/mage/alt_b.png`, `${SKINS_DIR}/mage/alt_c.png`],
   player_shaman: [null, `${SKINS_DIR}/barbarian/alt_a.png`, `${SKINS_DIR}/barbarian/alt_b.png`, `${SKINS_DIR}/barbarian/alt_c.png`],
   player_druid: [null, `${SKINS_DIR}/druid/alt_a.png`, `${SKINS_DIR}/druid/alt_b.png`, `${SKINS_DIR}/druid/alt_c.png`],
+  // BharatVerse classes (map to their respective model skins)
+  player_brahmarishi: [null, `${SKINS_DIR}/mage/alt_a.png`, `${SKINS_DIR}/mage/alt_b.png`, `${SKINS_DIR}/mage/alt_c.png`],
+  player_kshatriya: [null, `${SKINS_DIR}/knight/alt_a.png`, `${SKINS_DIR}/knight/alt_b.png`, `${SKINS_DIR}/knight/alt_c.png`],
+  player_vaishya: [null, `${SKINS_DIR}/rogue/alt_a.png`, `${SKINS_DIR}/rogue/alt_b.png`, `${SKINS_DIR}/rogue/alt_c.png`],
+  player_shilpi: [null, `${SKINS_DIR}/barbarian/alt_a.png`, `${SKINS_DIR}/barbarian/alt_b.png`, `${SKINS_DIR}/barbarian/alt_c.png`],
+  player_vaidya: [null, `${SKINS_DIR}/druid/alt_a.png`, `${SKINS_DIR}/druid/alt_b.png`, `${SKINS_DIR}/druid/alt_c.png`],
   // Combat Mech chromas — every index is a real full-model texture (no null
   // default; the embedded base texture is not one of the rewards).
   player_mech: MECH_CHROMAS.map(mechChromaUrl),

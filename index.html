@@ -1,76 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-<meta name="theme-color" content="#050509" />
+<meta name="theme-color" content="#FF6B00" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-title" content="ClaudeCraft" />
+<meta name="apple-mobile-web-app-title" content="BharatVerse" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="screen-orientation" content="landscape" />
 <meta name="orientation" content="landscape" />
-<title data-i18n="seo.title">World of ClaudeCraft: Classic-Style Web MMO</title>
-<meta name="description" data-i18n-content="seo.description" content="Embark on an epic adventure in World of ClaudeCraft, a classic-style micro-MMO playable directly in your browser. Join a persistent shared realm, level up classes, and defeat enemies!" />
+<!-- BharatVerse SEO -->
+<title data-i18n="seo.title">BharatVerse — India's First Educational MMO | Learn NCERT Through Epic Quests</title>
+<meta name="description" data-i18n-content="seo.description" content="BharatVerse is India's first educational MMO by Mindgains Labs. Answer NCERT questions to deal damage, earn XP, and master History, Science, Maths &amp; more — all in a stunning browser-based RPG world." />
 <meta name="robots" content="index, follow, max-image-preview:large" />
 <link rel="manifest" href="/manifest.webmanifest" />
+
+<!-- Google Fonts: BharatVerse typography -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
 <!-- Cloudflare Turnstile (bot gate on login/registration). Rendered explicitly
      by src/main.ts only when VITE_TURNSTILE_SITEKEY is configured. -->
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <!-- Canonical URL -->
-<link rel="canonical" href="https://worldofclaudecraft.com/" />
+<link rel="canonical" href="https://bharatverse.in/" />
 
 <!-- GEO / Multilingual Alternates -->
-<link rel="alternate" hreflang="en" href="https://worldofclaudecraft.com/" />
-<link rel="alternate" hreflang="es" href="https://worldofclaudecraft.com/?lang=es" />
-<link rel="alternate" hreflang="es-ES" href="https://worldofclaudecraft.com/?lang=es_ES" />
-<link rel="alternate" hreflang="fr-FR" href="https://worldofclaudecraft.com/?lang=fr_FR" />
-<link rel="alternate" hreflang="fr-CA" href="https://worldofclaudecraft.com/?lang=fr_CA" />
-<link rel="alternate" hreflang="en-CA" href="https://worldofclaudecraft.com/?lang=en_CA" />
-<link rel="alternate" hreflang="it-IT" href="https://worldofclaudecraft.com/?lang=it_IT" />
-<link rel="alternate" hreflang="de-DE" href="https://worldofclaudecraft.com/?lang=de_DE" />
-<link rel="alternate" hreflang="zh-CN" href="https://worldofclaudecraft.com/?lang=zh_CN" />
-<link rel="alternate" hreflang="zh-TW" href="https://worldofclaudecraft.com/?lang=zh_TW" />
-<link rel="alternate" hreflang="ko-KR" href="https://worldofclaudecraft.com/?lang=ko_KR" />
-<link rel="alternate" hreflang="ja-JP" href="https://worldofclaudecraft.com/?lang=ja_JP" />
-<link rel="alternate" hreflang="pt-BR" href="https://worldofclaudecraft.com/?lang=pt_BR" />
-<link rel="alternate" hreflang="ru-RU" href="https://worldofclaudecraft.com/?lang=ru_RU" />
-<link rel="alternate" hreflang="x-default" href="https://worldofclaudecraft.com/" />
+<link rel="alternate" hreflang="en-IN" href="https://bharatverse.in/" />
+<link rel="alternate" hreflang="en" href="https://bharatverse.in/" />
+<link rel="alternate" hreflang="hi" href="https://bharatverse.in/?lang=hi" />
+<link rel="alternate" hreflang="ta" href="https://bharatverse.in/?lang=ta" />
+<link rel="alternate" hreflang="te" href="https://bharatverse.in/?lang=te" />
+<link rel="alternate" hreflang="es" href="https://bharatverse.in/?lang=es" />
+<link rel="alternate" hreflang="es-ES" href="https://bharatverse.in/?lang=es_ES" />
+<link rel="alternate" hreflang="fr-FR" href="https://bharatverse.in/?lang=fr_FR" />
+<link rel="alternate" hreflang="fr-CA" href="https://bharatverse.in/?lang=fr_CA" />
+<link rel="alternate" hreflang="en-CA" href="https://bharatverse.in/?lang=en_CA" />
+<link rel="alternate" hreflang="it-IT" href="https://bharatverse.in/?lang=it_IT" />
+<link rel="alternate" hreflang="de-DE" href="https://bharatverse.in/?lang=de_DE" />
+<link rel="alternate" hreflang="zh-CN" href="https://bharatverse.in/?lang=zh_CN" />
+<link rel="alternate" hreflang="zh-TW" href="https://bharatverse.in/?lang=zh_TW" />
+<link rel="alternate" hreflang="ko-KR" href="https://bharatverse.in/?lang=ko_KR" />
+<link rel="alternate" hreflang="ja-JP" href="https://bharatverse.in/?lang=ja_JP" />
+<link rel="alternate" hreflang="pt-BR" href="https://bharatverse.in/?lang=pt_BR" />
+<link rel="alternate" hreflang="ru-RU" href="https://bharatverse.in/?lang=ru_RU" />
+<link rel="alternate" hreflang="x-default" href="https://bharatverse.in/" />
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
-<meta property="og:site_name" content="World of ClaudeCraft" />
-<meta property="og:title" data-i18n-content="seo.title" content="World of ClaudeCraft: Classic-Style Web MMO" />
-<meta property="og:description" data-i18n-content="seo.description" content="Embark on an epic adventure in World of ClaudeCraft, a classic-style micro-MMO playable directly in your browser. Join a persistent shared realm, level up classes, and defeat enemies!" />
-<meta property="og:image" content="https://worldofclaudecraft.com/woc_logo_square.webp" />
-<meta property="og:url" content="https://worldofclaudecraft.com/" />
+<meta property="og:site_name" content="BharatVerse" />
+<meta property="og:title" data-i18n-content="seo.title" content="BharatVerse — India's First Educational MMO | Learn NCERT Through Epic Quests" />
+<meta property="og:description" data-i18n-content="seo.description" content="BharatVerse is India's first educational MMO by Mindgains Labs. Answer NCERT questions to deal damage, earn XP, and master History, Science, Maths &amp; more — all in a stunning browser-based RPG world." />
+<meta property="og:image" content="https://bharatverse.in/woc_logo_square.webp" />
+<meta property="og:url" content="https://bharatverse.in/" />
 
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" data-i18n-content="seo.title" content="World of ClaudeCraft: Classic-Style Web MMO" />
-<meta name="twitter:description" data-i18n-content="seo.description" content="Embark on an epic adventure in World of ClaudeCraft, a classic-style micro-MMO playable directly in your browser. Join a persistent shared realm, level up classes, and defeat enemies!" />
-<meta name="twitter:image" content="https://worldofclaudecraft.com/woc_logo_square.webp" />
+<meta name="twitter:title" data-i18n-content="seo.title" content="BharatVerse — India's First Educational MMO | Learn NCERT Through Epic Quests" />
+<meta name="twitter:description" data-i18n-content="seo.description" content="BharatVerse is India's first educational MMO by Mindgains Labs. Answer NCERT questions to deal damage, earn XP, and master History, Science, Maths &amp; more — all in a stunning browser-based RPG world." />
+<meta name="twitter:image" content="https://bharatverse.in/woc_logo_square.webp" />
 
 <!-- Structured Data (Schema.org JSON-LD VideoGame) -->
 <script id="structured-data" type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "VideoGame",
-  "name": "World of ClaudeCraft",
-  "alternateName": "World of Claudecraft",
+  "name": "BharatVerse",
+  "alternateName": "BharatVerse",
   "genre": "MMORPG",
   "playMode": "MultiPlayer",
   "applicationCategory": "Game",
   "operatingSystem": "Web Browser",
-  "url": "https://worldofclaudecraft.com/",
-  "image": "https://worldofclaudecraft.com/woc_logo_square.webp",
-  "description": "Embark on an epic adventure in World of ClaudeCraft, a classic-style micro-MMO playable directly in your browser. Join a persistent shared realm, level up classes, and defeat enemies!",
+  "url": "https://bharatverse.in/",
+  "image": "https://bharatverse.in/woc_logo_square.webp",
+  "description": "BharatVerse is India's first educational MMO by Mindgains Labs. Answer NCERT questions to deal damage, earn XP, and master History, Science, Maths &amp; more — all in a stunning browser-based RPG world.",
   "inLanguage": "en",
   "sameAs": [
-    "https://github.com/levy-street/world-of-claudecraft",
-    "https://discord.gg/GjhnUsBtw"
+    "https://github.com/levy-street/world-of-claudecraft"
   ]
 }
 </script>
@@ -3350,15 +3359,62 @@
 
   /* ---------- Animated Backdrop ---------- */
   #start-screen-backdrop {
-    /* fixed (not absolute) so the atmospheric backdrop stays pinned to the
-       viewport and keeps covering as the homepage scrolls — an absolute
-       inset:0 child of the scrolling #start-screen only spans the first
-       viewport height, leaving bare #040408 below the fold. */
     position: fixed;
     inset: 0;
     z-index: -1;
     overflow: hidden;
-    background: #040408;
+    background: url('/bharatverse-logo.png') no-repeat center center;
+    background-size: cover;
+  }
+  .bg-trailer, .portal-ring, .portal-ring-reverse, .nebula-overlay, .homepage-header, .homepage-footer {
+    display: none !important;
+  }
+  .kintara-console {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 400px;
+    margin: 40px auto 0 auto;
+    padding: 24px;
+    background: rgba(26, 10, 46, 0.45);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  }
+  .btn-kintara {
+    position: relative;
+    padding: 16px 24px;
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #ffffff;
+    background: linear-gradient(135deg, #1e1b4b 0%, #31106b 100%);
+    border: 1px solid #f59e0b;
+    border-radius: 8px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  .btn-kintara.offline {
+    background: linear-gradient(135deg, #120e2e 0%, #1a0f3d 100%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+  }
+  .btn-kintara:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+    border-color: #fbbf24;
+  }
+  .btn-kintara.offline:hover {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.25);
+    border-color: #ffffff;
+  }
+  .btn-kintara:active {
+    transform: translateY(0);
   }
 
   .portal-ring {
@@ -6528,7 +6584,7 @@
     <div id="swingbar"><div class="fill"></div><div class="label"></div></div>
 
     <div id="minimap-wrap">
-      <div id="zone-label" data-i18n="entities.zones.eastbrook_vale.name">Eastbrook Vale</div>
+      <div id="zone-label" data-i18n="entities.zones.gangapur_nagari.name">Gangapur Nagari</div>
       <canvas id="minimap" width="162" height="162"></canvas>
       <div id="minimap-clock" title="Local time — click to toggle 12/24-hour">--:--</div>
       <div id="minimap-coords" title="Your current world coordinates" aria-label="Coordinates">0, 0</div>
@@ -6689,7 +6745,7 @@
     <header class="homepage-header">
       <div class="header-logo-container">
         <button type="button" class="header-logo-btn" id="header-logo-btn" data-i18n-aria="a11y.goHome" data-i18n-title="a11y.goHome" aria-label="Go to homepage" title="Go to homepage">
-          <img class="header-logo" src="/icon-192.png" data-i18n-alt="serverUnavailable.logoAlt" alt="World of ClaudeCraft" />
+          <img class="header-logo" src="/icon-192.png" data-i18n-alt="serverUnavailable.logoAlt" alt="BharatVerse" />
         </button>
       </div>
       
@@ -6735,80 +6791,27 @@
 
     <div id="homepage-views-container">
       <section id="hero-view" class="view-section" aria-hidden="false">
-        <h1 class="visually-hidden">World of ClaudeCraft</h1>
+        <h1 class="visually-hidden">BharatVerse</h1>
         
         <!-- Main Logo -->
-        <img class="main-logo" id="title-logo" src="/worldofclaudecraft-logo.png" data-i18n-alt="serverUnavailable.logoAlt" alt="World of ClaudeCraft" />
+        <img class="main-logo" id="title-logo" src="/bharatverse-logo.png" data-i18n-alt="serverUnavailable.logoAlt" alt="BharatVerse" />
 
         <div id="mode-select">
-          <div class="play-console">
-            <!-- Realm selector: a themed dropdown that defaults to Online and can switch to Offline.
-                 It only chooses the destination; the Play button below commits. -->
-            <div class="server-select" id="server-select" data-mode="online">
-              <button type="button" class="server-select-trigger" id="server-select-trigger"
-                aria-haspopup="listbox" aria-expanded="false" aria-controls="server-select-menu"
-                data-i18n-aria="mode.serverAria" aria-label="Select realm: Online or Offline">
-                <span class="server-dot" data-mode="online" aria-hidden="true"></span>
-                <span class="server-select-text">
-                  <span class="server-select-value" id="server-select-value" data-i18n="mode.serverOnline">Online</span>
-                  <span class="server-select-sub" id="server-select-sub">
-                    <span class="server-realm-line" data-mode="online">
-                      <b class="stats-value js-stat-accounts">…</b> <span data-i18n="stats.accountsCreated">Players</span>
-                    </span>
-                    <span class="server-sub-offline" data-mode="offline" data-i18n="mode.serverOfflineSub" hidden>Instant local world</span>
-                  </span>
-                </span>
-                <svg class="server-select-chevron" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-              </button>
-              <ul class="server-select-menu" id="server-select-menu" role="listbox" data-i18n-aria="mode.serverAria" aria-label="Select realm: Online or Offline" hidden>
-                <li class="server-select-option is-selected" id="server-opt-online" role="option" data-mode="online" tabindex="-1" aria-selected="true">
-                  <span class="server-dot" data-mode="online" aria-hidden="true"></span>
-                  <span class="server-opt-text">
-                    <span class="server-opt-name" data-i18n="mode.serverOnline">Online</span>
-                    <span class="server-opt-desc" data-i18n="mode.onlineDesc">Log in to the realm. Your characters live on the server and you share the world with everyone else who's on.</span>
-                    <span class="server-opt-stats">
-                      <b class="stats-value js-stat-accounts">…</b> <span data-i18n="stats.accountsCreated">Players</span>
-                    </span>
-                  </span>
-                  <svg class="server-opt-check" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                </li>
-                <li class="server-select-option" id="server-opt-offline" role="option" data-mode="offline" tabindex="-1" aria-selected="false">
-                  <span class="server-dot" data-mode="offline" aria-hidden="true"></span>
-                  <span class="server-opt-text">
-                    <span class="server-opt-name" data-i18n="mode.serverOffline">Offline</span>
-                    <span class="server-opt-desc" data-i18n="mode.offlineDesc">Instant single-player world in your browser. Nothing is saved: perfect for a quick brawl or testing.</span>
-                  </span>
-                  <svg class="server-opt-check" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                </li>
-              </ul>
-            </div>
-
-            <button type="button" class="btn-play" id="btn-play" data-i18n-aria="mode.playAria" aria-label="Play World of ClaudeCraft">
-              <span class="btn-play-sheen" aria-hidden="true"></span>
-              <span class="btn-play-label" data-i18n="mode.play">Play</span>
+          <div class="kintara-console">
+            <button type="button" class="btn-kintara offline" id="btn-play-offline">
+              <span class="btn-kintara-label">Play Offline (Practice Mode)</span>
+            </button>
+            <button type="button" class="btn-kintara online" id="btn-play-online">
+              <span class="btn-kintara-label">Connect to Realm (Multiplayer)</span>
             </button>
           </div>
-
-          <!-- Hidden, non-focusable compatibility triggers. Stable hooks the automated
-               tours / E2E scripts use to drive the online & offline flows directly. -->
+          <!-- Hidden, non-focusable compatibility triggers -->
           <button type="button" id="btn-online" class="play-compat-trigger" tabindex="-1" aria-hidden="true"></button>
           <button type="button" id="btn-offline" class="play-compat-trigger" tabindex="-1" aria-hidden="true"></button>
-
-          <div id="token-ca">
-            <span class="token-ca-label" data-i18n="mode.caLabel">$WOC Contract Address</span>
-            <button type="button" id="btn-copy-ca" class="token-ca-pill" data-ca="3WjLscH2JsXLEFJZRA9z8ti8yRGxWGKbqymPd7UicRth" data-i18n-aria="mode.caCopyAria" aria-label="Copy contract address">
-              <code class="token-ca-addr">3WjLscH2JsXLEFJZRA9z8ti8yRGxWGKbqymPd7UicRth</code>
-              <span class="token-ca-copy" aria-hidden="true">
-                <svg class="icon-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              </span>
-            </button>
-            <p class="token-ca-note" data-i18n="mode.caNote">WOC is our community token. It is not needed to play. Join Discord to discuss the WOC utility and flywheel.</p>
-          </div>
-
-          <!-- Tip — part of the same play container (divider above). -->
-          <div class="play-tip">
-            <p id="performance-tip"><b data-i18n="mode.tipTitle">TIP:</b> <span data-i18n="mode.tipText">For the smoothest experience, turn off ad blocker extensions on this site. Community reports found some blockers can cause lag.</span></p>
+          <div style="display: none !important;" aria-hidden="true">
+            <button id="btn-play"></button>
+            <div id="server-select"></div>
+            <div id="server-select-menu"></div>
           </div>
         </div>
 
@@ -6924,15 +6927,12 @@
                 </div>
                 <div class="cs-section-header" data-i18n="auth.class">Class</div>
                 <ul class="mini-class-row" role="list">
-                  <li class="mini-class" data-class="warrior" role="button" tabindex="0" data-i18n-aria="classes.warriorAria" data-i18n="classes.warrior" aria-label="Warrior class" aria-pressed="false">Warrior</li>
-                  <li class="mini-class" data-class="paladin" role="button" tabindex="0" data-i18n-aria="classes.paladinAria" data-i18n="classes.paladin" aria-label="Paladin class" aria-pressed="false">Paladin</li>
-                  <li class="mini-class" data-class="hunter" role="button" tabindex="0" data-i18n-aria="classes.hunterAria" data-i18n="classes.hunter" aria-label="Hunter class" aria-pressed="false">Hunter</li>
-                  <li class="mini-class" data-class="rogue" role="button" tabindex="0" data-i18n-aria="classes.rogueAria" data-i18n="classes.rogue" aria-label="Rogue class" aria-pressed="false">Rogue</li>
-                  <li class="mini-class" data-class="priest" role="button" tabindex="0" data-i18n-aria="classes.priestAria" data-i18n="classes.priest" aria-label="Priest class" aria-pressed="false">Priest</li>
-                  <li class="mini-class" data-class="shaman" role="button" tabindex="0" data-i18n-aria="classes.shamanAria" data-i18n="classes.shaman" aria-label="Shaman class" aria-pressed="false">Shaman</li>
-                  <li class="mini-class" data-class="mage" role="button" tabindex="0" data-i18n-aria="classes.mageAria" data-i18n="classes.mage" aria-label="Mage class" aria-pressed="false">Mage</li>
-                  <li class="mini-class" data-class="warlock" role="button" tabindex="0" data-i18n-aria="classes.warlockAria" data-i18n="classes.warlock" aria-label="Warlock class" aria-pressed="false">Warlock</li>
-                  <li class="mini-class" data-class="druid" role="button" tabindex="0" data-i18n-aria="classes.druidAria" data-i18n="classes.druid" aria-label="Druid class" aria-pressed="false">Druid</li>
+                  <li class="mini-class" data-class="vaishya" role="button" tabindex="0" data-i18n-aria="classes.vaishyaAria" data-i18n="classes.vaishya" aria-label="Arjuna Archer class" aria-pressed="false">Arjuna Archer</li>
+                  <li class="mini-class" data-class="brahmarishi" role="button" tabindex="0" data-i18n-aria="classes.brahmarishiAria" data-i18n="classes.brahmarishi" aria-label="Chanakya Scholar class" aria-pressed="false">Chanakya Scholar</li>
+                  <li class="mini-class" data-class="shilpi" role="button" tabindex="0" data-i18n-aria="classes.shilpiAria" data-i18n="classes.shilpi" aria-label="Aryabhatta Mage class" aria-pressed="false">Aryabhatta Mage</li>
+                  <li class="mini-class" data-class="vaidya" role="button" tabindex="0" data-i18n-aria="classes.vaidyaAria" data-i18n="classes.vaidya" aria-label="Dhanvantari Healer class" aria-pressed="false">Dhanvantari Healer</li>
+                  <li class="mini-class" data-class="kshatriya" role="button" tabindex="0" data-i18n-aria="classes.kshatriyaAria" data-i18n="classes.kshatriya" aria-label="Subhash Warrior class" aria-pressed="false">Subhash Warrior</li>
+                  <li class="mini-class" data-class="shaman" role="button" tabindex="0" data-i18n-aria="classes.shamanAria" data-i18n="classes.shaman" aria-label="Saraswati Bard class" aria-pressed="false">Saraswati Bard</li>
                 </ul>
                 <div class="skin-picker">
                   <div class="skin-picker-header" data-i18n="auth.appearance">Appearance</div>
@@ -6963,15 +6963,12 @@
                   <div id="offline-error" class="auth-error" aria-live="polite"></div>
                 </div>
                 <ul class="mini-class-row" role="list">
-                  <li class="mini-class" data-class="warrior" role="button" tabindex="0" data-i18n-aria="classes.warriorAria" data-i18n="classes.warrior" aria-label="Warrior class" aria-pressed="false">Warrior</li>
-                  <li class="mini-class" data-class="paladin" role="button" tabindex="0" data-i18n-aria="classes.paladinAria" data-i18n="classes.paladin" aria-label="Paladin class" aria-pressed="false">Paladin</li>
-                  <li class="mini-class" data-class="hunter" role="button" tabindex="0" data-i18n-aria="classes.hunterAria" data-i18n="classes.hunter" aria-label="Hunter class" aria-pressed="false">Hunter</li>
-                  <li class="mini-class" data-class="rogue" role="button" tabindex="0" data-i18n-aria="classes.rogueAria" data-i18n="classes.rogue" aria-label="Rogue class" aria-pressed="false">Rogue</li>
-                  <li class="mini-class" data-class="priest" role="button" tabindex="0" data-i18n-aria="classes.priestAria" data-i18n="classes.priest" aria-label="Priest class" aria-pressed="false">Priest</li>
-                  <li class="mini-class" data-class="shaman" role="button" tabindex="0" data-i18n-aria="classes.shamanAria" data-i18n="classes.shaman" aria-label="Shaman class" aria-pressed="false">Shaman</li>
-                  <li class="mini-class" data-class="mage" role="button" tabindex="0" data-i18n-aria="classes.mageAria" data-i18n="classes.mage" aria-label="Mage class" aria-pressed="false">Mage</li>
-                  <li class="mini-class" data-class="warlock" role="button" tabindex="0" data-i18n-aria="classes.warlockAria" data-i18n="classes.warlock" aria-label="Warlock class" aria-pressed="false">Warlock</li>
-                  <li class="mini-class" data-class="druid" role="button" tabindex="0" data-i18n-aria="classes.druidAria" data-i18n="classes.druid" aria-label="Druid class" aria-pressed="false">Druid</li>
+                  <li class="mini-class" data-class="vaishya" role="button" tabindex="0" data-i18n-aria="classes.vaishyaAria" data-i18n="classes.vaishya" aria-label="Arjuna Archer class" aria-pressed="false">Arjuna Archer</li>
+                  <li class="mini-class" data-class="brahmarishi" role="button" tabindex="0" data-i18n-aria="classes.brahmarishiAria" data-i18n="classes.brahmarishi" aria-label="Chanakya Scholar class" aria-pressed="false">Chanakya Scholar</li>
+                  <li class="mini-class" data-class="shilpi" role="button" tabindex="0" data-i18n-aria="classes.shilpiAria" data-i18n="classes.shilpi" aria-label="Aryabhatta Mage class" aria-pressed="false">Aryabhatta Mage</li>
+                  <li class="mini-class" data-class="vaidya" role="button" tabindex="0" data-i18n-aria="classes.vaidyaAria" data-i18n="classes.vaidya" aria-label="Dhanvantari Healer class" aria-pressed="false">Dhanvantari Healer</li>
+                  <li class="mini-class" data-class="kshatriya" role="button" tabindex="0" data-i18n-aria="classes.kshatriyaAria" data-i18n="classes.kshatriya" aria-label="Subhash Warrior class" aria-pressed="false">Subhash Warrior</li>
+                  <li class="mini-class" data-class="shaman" role="button" tabindex="0" data-i18n-aria="classes.shamanAria" data-i18n="classes.shaman" aria-label="Saraswati Bard class" aria-pressed="false">Saraswati Bard</li>
                 </ul>
                 <div id="offline-skin-row" class="skin-row" role="list" aria-label="Skin"></div>
                 <div class="auth-actions">
@@ -7204,7 +7201,7 @@
   </div>
 
   <div id="loading-screen">
-    <img class="ls-logo" src="/worldofclaudecraft-logo.png" data-i18n-alt="serverUnavailable.logoAlt" alt="World of ClaudeCraft" />
+    <img class="ls-logo" src="/bharatverse-logo.png" data-i18n-alt="serverUnavailable.logoAlt" alt="BharatVerse" />
     <div class="ls-progress">
       <div class="ls-bar"><div id="ls-fill"></div></div>
       <div id="ls-status" data-i18n="loading.enteringWorld">Entering the world...</div>

@@ -117,12 +117,19 @@ describe("i18n status registry: states", () => {
   });
 
   it("every translated row is fresh (srcHash === enHash) and attributed (by human|agent)", () => {
-    for (const [, entry] of keyEntries())
-      for (const row of Object.values<any>(entry.locales)) {
+    const failures: string[] = [];
+    for (const [ck, entry] of keyEntries()) {
+      for (const [loc, row] of Object.entries<any>(entry.locales)) {
         if (row.state !== "translated") continue;
-        expect(row.srcHash).toBe(entry.enHash);
-        expect(["human", "agent"]).toContain(row.by);
+        if (row.srcHash !== entry.enHash) {
+          failures.push(`${ck} ${loc}: srcHash ${row.srcHash} !== enHash ${entry.enHash}`);
+        }
+        if (row.by !== "human" && row.by !== "agent") {
+          failures.push(`${ck} ${loc}: by ${row.by} is invalid`);
+        }
       }
+    }
+    expect(failures).toEqual([]);
   });
 });
 

@@ -291,19 +291,29 @@ export const en: EnTranslations = {
     "hunter": "Hunter",
     "rogue": "Rogue",
     "priest": "Priest",
-    "shaman": "Shaman",
+    "shaman": "Saraswati Bard",
     "mage": "Mage",
     "warlock": "Warlock",
     "druid": "Druid",
+    "brahmarishi": "Chanakya Scholar",
+    "kshatriya": "Subhash Warrior",
+    "vaishya": "Arjuna Archer",
+    "shilpi": "Aryabhatta Mage",
+    "vaidya": "Dhanvantari Healer",
     "warriorAria": "Warrior class",
     "paladinAria": "Paladin class",
     "hunterAria": "Hunter class",
     "rogueAria": "Rogue class",
     "priestAria": "Priest class",
-    "shamanAria": "Shaman class",
+    "shamanAria": "Saraswati Bard class",
     "mageAria": "Mage class",
     "warlockAria": "Warlock class",
-    "druidAria": "Druid class"
+    "druidAria": "Druid class",
+    "brahmarishiAria": "Chanakya Scholar class",
+    "kshatriyaAria": "Subhash Warrior class",
+    "vaishyaAria": "Arjuna Archer class",
+    "shilpiAria": "Aryabhatta Mage class",
+    "vaidyaAria": "Dhanvantari Healer class"
   },
   "controls": {
     "title": "Controls Guide",
@@ -502,12 +512,12 @@ export const en: EnTranslations = {
     }
   },
   "seo": {
-    "title": "World of ClaudeCraft: Classic-Style Web MMO",
-    "description": "Embark on an epic adventure in World of ClaudeCraft, a classic-style micro-MMO playable directly in your browser. Join a persistent shared realm, level up classes, and defeat enemies!",
-    "genre": "MMORPG",
-    "playMode": "Multiplayer",
+    "title": "BharatVerse: India's First Educational MMO",
+    "description": "Embark on an epic educational adventure in BharatVerse, the first-ever Indian MMO designed for school students and exam aspirants. Play, learn, and build monuments together!",
+    "genre": "Educational MMORPG",
+    "playMode": "Multiplayer / Singleplayer",
     "applicationCategory": "Game",
-    "operatingSystem": "Web browser"
+    "operatingSystem": "Web browser / Mobile"
   },
   "a11y": {
     "goHome": "Go to homepage",
@@ -515,9 +525,9 @@ export const en: EnTranslations = {
     "mainNavigation": "Main navigation",
     "languageSelection": "Language selection",
     "characterActions": "Character actions",
-    "githubProject": "Open the World of ClaudeCraft GitHub project",
-    "discordCommunity": "Join the World of ClaudeCraft Discord community",
-    "donateProject": "Donate to support World of ClaudeCraft"
+    "githubProject": "Open the BharatVerse GitHub project",
+    "discordCommunity": "Join the BharatVerse Discord community",
+    "donateProject": "Donate to support BharatVerse"
   },
   "loading": {
     "world": "Loading world...",
@@ -653,10 +663,15 @@ export const en: EnTranslations = {
       "hunter": "Hunters master the wilderness, tracking enemies from afar with bows or guns and using traps to control the battlefield.",
       "rogue": "Rogues are stealthy assassins who spend Energy and Combo Points on backstabs and finishing moves from the shadows.",
       "priest": "Priests call on Holy Light to heal and shield allies, while Shadow magic lets them drain the life of their enemies.",
-      "shaman": "Shaman command the elements, imbuing weapons with power, shocking enemies with lightning, and restoring allies.",
+      "shaman": "Saraswati Bards are guardians of languages and literature, chanting verses and imbuing totems to inspire and empower their allies.",
       "mage": "Mages bend Fire, Frost, and Arcane power to destroy enemies, conjure water, and freeze threats in place.",
       "warlock": "Warlocks summon demons, apply curses and damage-over-time magic, and drain life from enemies to endure.",
-      "druid": "Druids channel nature, healing wounds, entangling foes, and shifting into animal forms for defense or damage."
+      "druid": "Druids channel nature, healing wounds, entangling foes, and shifting into animal forms for defense or damage.",
+      "brahmarishi": "Chanakya Scholars are master tacticians of history and polity. Guided by strategy, they heal allies and shield them with pure intellect.",
+      "kshatriya": "Subhash Warriors are courageous protectors who fight on the frontlines of civics and current affairs, building rage to defend their allies.",
+      "vaishya": "Arjuna Archers are legendary marksmen who master mathematics and distance. They target foes from afar with unmatched precision and speed.",
+      "shilpi": "Aryabhatta Mages bend the laws of physics and science, channeling elemental fire, frost, and cosmic forces to disintegrate threats.",
+      "vaidya": "Dhanvantari Healers master biology and the life sciences, restoring wounds and shifting forms to protect the natural balance of life."
     },
     "aria": "Class details for {className}: role {role}. Starting stats: Strength {str}, Agility {agi}, Stamina {sta}, Intellect {int}, Spirit {spi}.",
     "statBarAria": "{stat}: {value} out of 25"
@@ -3024,28 +3039,28 @@ export const en: EnTranslations = {
     },
     "mobs": {
       "forest_wolf": {
-        "name": "Forest Wolf"
+        "name": "Gyaan-Bhediya"
       },
       "old_greyjaw": {
-        "name": "Old Greyjaw"
+        "name": "Mahavidya"
       },
       "wild_boar": {
-        "name": "Wild Boar"
+        "name": "Vigyan Varah"
       },
       "webwood_spider": {
-        "name": "Webwood Lurker"
+        "name": "Jaal-Makdi"
       },
       "mudfin_murloc": {
-        "name": "Mudfin Skulker"
+        "name": "Bharatiya Makara"
       },
       "tunnel_rat": {
-        "name": "Tunnel Rat Digger"
+        "name": "Pariksha Pisach"
       },
       "vale_bandit": {
-        "name": "Vale Bandit"
+        "name": "Adhura Chor"
       },
       "restless_bones": {
-        "name": "Restless Bones"
+        "name": "Bhool-Bhoolaiya"
       },
       "gorrak": {
         "name": "Gorrak the Ruthless"
@@ -3126,7 +3141,7 @@ export const en: EnTranslations = {
         "name": "Sexton Marrow"
       },
       "morthen": {
-        "name": "Morthen the Gravecaller"
+        "name": "Agyaan Asura"
       },
       "bastion_revenant": {
         "name": "Bastion Revenant"
@@ -3159,7 +3174,7 @@ export const en: EnTranslations = {
         "name": "Grand Necromancer Velkhar"
       },
       "korzul_the_gravewyrm": {
-        "name": "Korzul the Gravewyrm"
+        "name": "Andhkaar Naga"
       },
       "bog_bloat": {
         "name": "Bog Bloat"
@@ -4390,121 +4405,121 @@ export const en: EnTranslations = {
       }
     },
     "zones": {
-      "eastbrook_vale": {
-        "name": "Eastbrook Vale",
-        "welcome": "Find Marshal Redbrook in town - he has work for you.",
+      "gangapur_nagari": {
+        "name": "Gangapur Nagari",
+        "welcome": "Find Guru Shukracharya in Vidya Nagar - he has wisdom and quests for you.",
         "pois": {
           "0": {
-            "label": "Eastbrook"
+            "label": "Vidya Nagar"
           },
           "1": {
-            "label": "Wolf Run"
+            "label": "Gyaan-Bhediya Run"
           },
           "2": {
-            "label": "Boar Meadow"
+            "label": "Vigyan Varah Meadow"
           },
           "3": {
-            "label": "Mirror Lake"
+            "label": "Ganga Lake"
           },
           "4": {
-            "label": "Webwood"
+            "label": "Jaal-Makdi Forest"
           },
           "5": {
             "label": "Copper Dig"
           },
           "6": {
-            "label": "Bandit Camp"
+            "label": "Adhura Chor Camp"
           },
           "7": {
-            "label": "Fallen Chapel"
+            "label": "Fallen Mandir"
           },
           "8": {
-            "label": "Brightwood Glade"
+            "label": "Prakriti Glade"
           }
         }
       },
-      "mirefen_marsh": {
-        "name": "Mirefen Marsh",
-        "welcome": "Report to Warden Fenwick at the Fenbridge gate.",
+      "vigyan_vana": {
+        "name": "Vigyan Vana",
+        "welcome": "Report to Vidyarthi Rakshak at the Shastra Gram gate.",
         "pois": {
           "0": {
-            "label": "Fenbridge"
+            "label": "Shastra Gram"
           },
           "1": {
-            "label": "Prowler Reeds"
+            "label": "Vigyan Vana Entry"
           },
           "2": {
-            "label": "Deepfen Shallows"
+            "label": "Rasayan Kund (Chemistry Pool)"
           },
           "3": {
-            "label": "Widow Thicket"
+            "label": "Jeevan Vatika (Biology Garden)"
           },
           "4": {
-            "label": "Drowned Chapel"
+            "label": "Dooba Prakashsthal"
           },
           "5": {
-            "label": "Troll Mounds"
+            "label": "Agyaan Mounds"
           },
           "6": {
-            "label": "Gravecaller Encampment"
+            "label": "Bhram Asura Camp"
           },
           "7": {
-            "label": "The Sunken Bastion"
+            "label": "Vigyan Garh (Science Fort)"
           }
         }
       },
-      "thornpeak_heights": {
-        "name": "Thornpeak Heights",
-        "welcome": "Captain Thessaly holds the wall at Highwatch - barely.",
+      "gyan_shikhar": {
+        "name": "Gyan Shikhar",
+        "welcome": "Acharya Chandragupta holds Takshashila - the final university, barely standing.",
         "pois": {
           "0": {
-            "label": "Highwatch"
+            "label": "Takshashila"
           },
           "1": {
-            "label": "Stalker Ridge"
+            "label": "Ganit Ridge (Math Ridge)"
           },
           "2": {
-            "label": "Deeprock Burrows"
+            "label": "Bhautik Burrows (Physics Caves)"
           },
           "3": {
-            "label": "Ogre Foothills"
+            "label": "Agyaan Foothills"
           },
           "4": {
-            "label": "Drogmar's War-Camp"
+            "label": "Agyaan War-Camp"
           },
           "5": {
-            "label": "Stormcrag"
+            "label": "Arth Shikhar (Economics Peak)"
           },
           "6": {
-            "label": "The Glimmermere"
+            "label": "Gyan Sarovar (Knowledge Lake)"
           },
           "7": {
-            "label": "Wyrmcult Tents"
+            "label": "Andhkaar Cult Tents"
           },
           "8": {
-            "label": "Revenant Fields"
+            "label": "Vitraagya Kshetra (Philosophy Field)"
           },
           "9": {
-            "label": "Gravewyrm Sanctum"
+            "label": "Brahmastra Mandir"
           }
         }
       }
     },
     "dungeons": {
       "hollow_crypt": {
-        "name": "The Hollow Crypt",
-        "enterText": "You descend into the Hollow Crypt...",
-        "leaveText": "You climb back into daylight."
+        "name": "Itihas Kund",
+        "enterText": "You descend into the Itihas Kund - where the past waits to be remembered...",
+        "leaveText": "You climb back into daylight, carrying the lessons of history."
       },
       "sunken_bastion": {
-        "name": "The Sunken Bastion",
-        "enterText": "You wade down into the Sunken Bastion...",
-        "leaveText": "You climb out of the drowning dark."
+        "name": "Vigyan Garh",
+        "enterText": "You wade into Vigyan Garh. Science twisted by ignorance awaits...",
+        "leaveText": "You climb out of the drowning dark - science lives again."
       },
       "gravewyrm_sanctum": {
-        "name": "Gravewyrm Sanctum",
-        "enterText": "The air goes cold. Something vast breathes below...",
-        "leaveText": "You stagger back into the mountain wind."
+        "name": "Brahmastra Mandir",
+        "enterText": "The air grows dense with forgotten mantras. Andhkaar Naga waits below...",
+        "leaveText": "Brahmastra's light returns. You have earned the title of Mahavidyarthi."
       },
       "nythraxis_crypt": {
         "name": "Abandoned Crypt",
@@ -4812,6 +4827,11 @@ export const es: EnTranslations = {
     "mage": "Mago",
     "warlock": "Brujo",
     "druid": "Druida",
+    "brahmarishi": "Chanakya Scholar",
+    "kshatriya": "Subhash Warrior",
+    "vaishya": "Arjuna Archer",
+    "shilpi": "Aryabhatta Mage",
+    "vaidya": "Dhanvantari Healer",
     "warriorAria": "Clase Guerrero",
     "paladinAria": "Clase Paladín",
     "hunterAria": "Clase Cazador",
@@ -4820,7 +4840,12 @@ export const es: EnTranslations = {
     "shamanAria": "Clase Chamán",
     "mageAria": "Clase Mago",
     "warlockAria": "Clase Brujo",
-    "druidAria": "Clase Druida"
+    "druidAria": "Clase Druida",
+    "brahmarishiAria": "Chanakya Scholar class",
+    "kshatriyaAria": "Subhash Warrior class",
+    "vaishyaAria": "Arjuna Archer class",
+    "shilpiAria": "Aryabhatta Mage class",
+    "vaidyaAria": "Dhanvantari Healer class"
   },
   "controls": {
     "title": "Guía de Controles",
@@ -5173,7 +5198,12 @@ export const es: EnTranslations = {
       "shaman": "Los chamanes ordenan los elementos, imbuyen sus armas, golpean con relámpagos y restauran a sus aliados.",
       "mage": "Los magos moldean Fuego, Escarcha y magia Arcana para destruir enemigos, conjurar agua y congelar amenazas.",
       "warlock": "Los brujos invocan demonios, lanzan maldiciones y daño prolongado, y drenan vida para resistir.",
-      "druid": "Los druidas canalizan la naturaleza, curan heridas, enredan enemigos y cambian de forma animal para defender o atacar."
+      "druid": "Los druidas canalizan la naturaleza, curan heridas, enredan enemigos y cambian de forma animal para defender o atacar.",
+      "brahmarishi": "Chanakya Scholars are master tacticians of history and polity. Guided by strategy, they heal allies and shield them with pure intellect.",
+      "kshatriya": "Subhash Warriors are courageous protectors who fight on the frontlines of civics and current affairs, building rage to defend their allies.",
+      "vaishya": "Arjuna Archers are legendary marksmen who master mathematics and distance. They target foes from afar with unmatched precision and speed.",
+      "shilpi": "Aryabhatta Mages bend the laws of physics and science, channeling elemental fire, frost, and cosmic forces to disintegrate threats.",
+      "vaidya": "Dhanvantari Healers master biology and the life sciences, restoring wounds and shifting forms to protect the natural balance of life."
     },
     "aria": "Detalles de clase para {className}: rol {role}. Atributos iniciales: Fuerza {str}, Agilidad {agi}, Aguante {sta}, Intelecto {int}, Espíritu {spi}.",
     "statBarAria": "{stat}: {value} de 25"
@@ -8907,7 +8937,7 @@ export const es: EnTranslations = {
       }
     },
     "zones": {
-      "eastbrook_vale": {
+      "gangapur_nagari": {
         "name": "Valle de Eastbrook",
         "welcome": "Busca al mariscal Redbrook en la ciudad: tiene trabajo para ti.",
         "pois": {
@@ -8936,11 +8966,11 @@ export const es: EnTranslations = {
             "label": "Capilla caída"
           },
           "8": {
-            "label": "Brightwood Glade"
+            "label": "Prakriti Glade"
           }
         }
       },
-      "mirefen_marsh": {
+      "vigyan_vana": {
         "name": "Ciénaga de Mirefen",
         "welcome": "Preséntate ante el guardián Fenwick en la puerta de Fenbridge.",
         "pois": {
@@ -8970,7 +9000,7 @@ export const es: EnTranslations = {
           }
         }
       },
-      "thornpeak_heights": {
+      "gyan_shikhar": {
         "name": "Alturas de Thornpeak",
         "welcome": "La capitana Thessaly sostiene el muro de Highwatch a duras penas.",
         "pois": {
@@ -9329,6 +9359,11 @@ export const es_ES: EnTranslations = {
     "mage": "Mago",
     "warlock": "Brujo",
     "druid": "Druida",
+    "brahmarishi": "Chanakya Scholar",
+    "kshatriya": "Subhash Warrior",
+    "vaishya": "Arjuna Archer",
+    "shilpi": "Aryabhatta Mage",
+    "vaidya": "Dhanvantari Healer",
     "warriorAria": "Clase Guerrero",
     "paladinAria": "Clase Paladín",
     "hunterAria": "Clase Cazador",
@@ -9337,7 +9372,12 @@ export const es_ES: EnTranslations = {
     "shamanAria": "Clase Chamán",
     "mageAria": "Clase Mago",
     "warlockAria": "Clase Brujo",
-    "druidAria": "Clase Druida"
+    "druidAria": "Clase Druida",
+    "brahmarishiAria": "Chanakya Scholar class",
+    "kshatriyaAria": "Subhash Warrior class",
+    "vaishyaAria": "Arjuna Archer class",
+    "shilpiAria": "Aryabhatta Mage class",
+    "vaidyaAria": "Dhanvantari Healer class"
   },
   "controls": {
     "title": "Guía de controles",
@@ -9690,7 +9730,12 @@ export const es_ES: EnTranslations = {
       "shaman": "Los chamanes dominan los elementos, imbuyen armas con poder, golpean con relámpagos y restauran a sus aliados.",
       "mage": "Los magos moldean Fuego, Escarcha y magia Arcana para destruir enemigos, conjurar agua y congelar amenazas.",
       "warlock": "Los brujos invocan demonios, lanzan maldiciones y daño en el tiempo, y drenan vida para resistir.",
-      "druid": "Los druidas canalizan la naturaleza, curan heridas, enredan enemigos y cambian a formas animales para defender o dañar."
+      "druid": "Los druidas canalizan la naturaleza, curan heridas, enredan enemigos y cambian a formas animales para defender o dañar.",
+      "brahmarishi": "Chanakya Scholars are master tacticians of history and polity. Guided by strategy, they heal allies and shield them with pure intellect.",
+      "kshatriya": "Subhash Warriors are courageous protectors who fight on the frontlines of civics and current affairs, building rage to defend their allies.",
+      "vaishya": "Arjuna Archers are legendary marksmen who master mathematics and distance. They target foes from afar with unmatched precision and speed.",
+      "shilpi": "Aryabhatta Mages bend the laws of physics and science, channeling elemental fire, frost, and cosmic forces to disintegrate threats.",
+      "vaidya": "Dhanvantari Healers master biology and the life sciences, restoring wounds and shifting forms to protect the natural balance of life."
     },
     "aria": "Detalles de clase para {className}: rol {role}. Atributos iniciales: Fuerza {str}, Agilidad {agi}, Aguante {sta}, Intelecto {int}, Espíritu {spi}.",
     "statBarAria": "{stat}: {value} de 25"
@@ -13424,7 +13469,7 @@ export const es_ES: EnTranslations = {
       }
     },
     "zones": {
-      "eastbrook_vale": {
+      "gangapur_nagari": {
         "name": "Valle de Eastbrook",
         "welcome": "Busca al mariscal Redbrook en la ciudad: tiene trabajo para ti.",
         "pois": {
@@ -13453,11 +13498,11 @@ export const es_ES: EnTranslations = {
             "label": "Capilla caída"
           },
           "8": {
-            "label": "Brightwood Glade"
+            "label": "Prakriti Glade"
           }
         }
       },
-      "mirefen_marsh": {
+      "vigyan_vana": {
         "name": "Ciénaga de Mirefen",
         "welcome": "Preséntate ante el guardián Fenwick en la puerta de Fenbridge.",
         "pois": {
@@ -13487,7 +13532,7 @@ export const es_ES: EnTranslations = {
           }
         }
       },
-      "thornpeak_heights": {
+      "gyan_shikhar": {
         "name": "Alturas de Thornpeak",
         "welcome": "La capitana Thessaly sostiene el muro de Highwatch a duras penas.",
         "pois": {
@@ -13846,6 +13891,11 @@ export const fr_FR: EnTranslations = {
     "mage": "Mage",
     "warlock": "Démoniste",
     "druid": "Druide",
+    "brahmarishi": "Chanakya Scholar",
+    "kshatriya": "Subhash Warrior",
+    "vaishya": "Arjuna Archer",
+    "shilpi": "Aryabhatta Mage",
+    "vaidya": "Dhanvantari Healer",
     "warriorAria": "Classe Guerrier",
     "paladinAria": "Classe Paladin",
     "hunterAria": "Classe Chasseur",
@@ -13854,7 +13904,12 @@ export const fr_FR: EnTranslations = {
     "shamanAria": "Classe Chaman",
     "mageAria": "Classe Mage",
     "warlockAria": "Classe Démoniste",
-    "druidAria": "Classe Druide"
+    "druidAria": "Classe Druide",
+    "brahmarishiAria": "Chanakya Scholar class",
+    "kshatriyaAria": "Subhash Warrior class",
+    "vaishyaAria": "Arjuna Archer class",
+    "shilpiAria": "Aryabhatta Mage class",
+    "vaidyaAria": "Dhanvantari Healer class"
   },
   "controls": {
     "title": "Guide des contrôles",
@@ -14207,7 +14262,12 @@ export const fr_FR: EnTranslations = {
       "shaman": "Les chamans commandent les éléments, imprègnent leurs armes, foudroient leurs ennemis et restaurent leurs alliés.",
       "mage": "Les mages plient le Feu, le Givre et l'Arcane pour détruire, conjurer de l'eau et figer les menaces.",
       "warlock": "Les démonistes invoquent des démons, lancent malédictions et dégâts sur la durée, puis drainent la vie pour tenir.",
-      "druid": "Les druides canalisent la nature, soignent, entravent les ennemis et prennent des formes animales pour défendre ou attaquer."
+      "druid": "Les druides canalisent la nature, soignent, entravent les ennemis et prennent des formes animales pour défendre ou attaquer.",
+      "brahmarishi": "Chanakya Scholars are master tacticians of history and polity. Guided by strategy, they heal allies and shield them with pure intellect.",
+      "kshatriya": "Subhash Warriors are courageous protectors who fight on the frontlines of civics and current affairs, building rage to defend their allies.",
+      "vaishya": "Arjuna Archers are legendary marksmen who master mathematics and distance. They target foes from afar with unmatched precision and speed.",
+      "shilpi": "Aryabhatta Mages bend the laws of physics and science, channeling elemental fire, frost, and cosmic forces to disintegrate threats.",
+      "vaidya": "Dhanvantari Healers master biology and the life sciences, restoring wounds and shifting forms to protect the natural balance of life."
     },
     "aria": "Détails de classe pour {className}: rôle {role}. Caractéristiques initiales: Force {str}, Agilité {agi}, Endurance {sta}, Intelligence {int}, Esprit {spi}.",
     "statBarAria": "{stat}: {value} sur 25"
@@ -17941,7 +18001,7 @@ export const fr_FR: EnTranslations = {
       }
     },
     "zones": {
-      "eastbrook_vale": {
+      "gangapur_nagari": {
         "name": "Val d'Eastbrook",
         "welcome": "Trouvez le maréchal Redbrook en ville: il a du travail pour vous.",
         "pois": {
@@ -17970,11 +18030,11 @@ export const fr_FR: EnTranslations = {
             "label": "Chapelle tombée"
           },
           "8": {
-            "label": "Brightwood Glade"
+            "label": "Prakriti Glade"
           }
         }
       },
-      "mirefen_marsh": {
+      "vigyan_vana": {
         "name": "Marais de Mirefen",
         "welcome": "Présentez-vous au gardien Fenwick à la porte de Fenbridge.",
         "pois": {
@@ -18004,7 +18064,7 @@ export const fr_FR: EnTranslations = {
           }
         }
       },
-      "thornpeak_heights": {
+      "gyan_shikhar": {
         "name": "Hauteurs de Thornpeak",
         "welcome": "La capitaine Thessaly tient le mur de Highwatch, à peine.",
         "pois": {
@@ -18363,6 +18423,11 @@ export const fr_CA: EnTranslations = {
     "mage": "Mage",
     "warlock": "Démoniste",
     "druid": "Druide",
+    "brahmarishi": "Chanakya Scholar",
+    "kshatriya": "Subhash Warrior",
+    "vaishya": "Arjuna Archer",
+    "shilpi": "Aryabhatta Mage",
+    "vaidya": "Dhanvantari Healer",
     "warriorAria": "Classe Guerrier",
     "paladinAria": "Classe Paladin",
     "hunterAria": "Classe Chasseur",
@@ -18371,7 +18436,12 @@ export const fr_CA: EnTranslations = {
     "shamanAria": "Classe Chaman",
     "mageAria": "Classe Mage",
     "warlockAria": "Classe Démoniste",
-    "druidAria": "Classe Druide"
+    "druidAria": "Classe Druide",
+    "brahmarishiAria": "Chanakya Scholar class",
+    "kshatriyaAria": "Subhash Warrior class",
+    "vaishyaAria": "Arjuna Archer class",
+    "shilpiAria": "Aryabhatta Mage class",
+    "vaidyaAria": "Dhanvantari Healer class"
   },
   "controls": {
     "title": "Guide des contrôles",
@@ -18724,7 +18794,12 @@ export const fr_CA: EnTranslations = {
       "shaman": "Les chamans commandent les éléments, imprègnent leurs armes, frappent avec la foudre et restaurent leurs alliés.",
       "mage": "Les mages manipulent Feu, Givre et Arcane pour détruire, conjurer de l'eau et figer les menaces.",
       "warlock": "Les démonistes invoquent des démons, posent malédictions et dégâts prolongés, puis drainent la vie pour survivre.",
-      "druid": "Les druides canalisent la nature, guérissent, entravent les ennemis et prennent des formes animales pour défendre ou attaquer."
+      "druid": "Les druides canalisent la nature, guérissent, entravent les ennemis et prennent des formes animales pour défendre ou attaquer.",
+      "brahmarishi": "Chanakya Scholars are master tacticians of history and polity. Guided by strategy, they heal allies and shield them with pure intellect.",
+      "kshatriya": "Subhash Warriors are courageous protectors who fight on the frontlines of civics and current affairs, building rage to defend their allies.",
+      "vaishya": "Arjuna Archers are legendary marksmen who master mathematics and distance. They target foes from afar with unmatched precision and speed.",
+      "shilpi": "Aryabhatta Mages bend the laws of physics and science, channeling elemental fire, frost, and cosmic forces to disintegrate threats.",
+      "vaidya": "Dhanvantari Healers master biology and the life sciences, restoring wounds and shifting forms to protect the natural balance of life."
     },
     "aria": "Détails de classe pour {className}: rôle {role}. Caractéristiques de départ: Force {str}, Agilité {agi}, Endurance {sta}, Intelligence {int}, Esprit {spi}.",
     "statBarAria": "{stat}: {value} sur 25"
@@ -22458,7 +22533,7 @@ export const fr_CA: EnTranslations = {
       }
     },
     "zones": {
-      "eastbrook_vale": {
+      "gangapur_nagari": {
         "name": "Val d'Eastbrook",
         "welcome": "Trouvez le maréchal Redbrook en ville: il a du travail pour vous.",
         "pois": {
@@ -22487,11 +22562,11 @@ export const fr_CA: EnTranslations = {
             "label": "Chapelle tombée"
           },
           "8": {
-            "label": "Brightwood Glade"
+            "label": "Prakriti Glade"
           }
         }
       },
-      "mirefen_marsh": {
+      "vigyan_vana": {
         "name": "Marais de Mirefen",
         "welcome": "Présentez-vous au gardien Fenwick à la porte de Fenbridge.",
         "pois": {
@@ -22521,7 +22596,7 @@ export const fr_CA: EnTranslations = {
           }
         }
       },
-      "thornpeak_heights": {
+      "gyan_shikhar": {
         "name": "Hauteurs de Thornpeak",
         "welcome": "La capitaine Thessaly tient le mur de Highwatch, à peine.",
         "pois": {
@@ -22876,19 +22951,29 @@ export const en_CA: EnTranslations = {
     "hunter": "Hunter",
     "rogue": "Rogue",
     "priest": "Priest",
-    "shaman": "Shaman",
+    "shaman": "Saraswati Bard",
     "mage": "Mage",
     "warlock": "Warlock",
     "druid": "Druid",
+    "brahmarishi": "Chanakya Scholar",
+    "kshatriya": "Subhash Warrior",
+    "vaishya": "Arjuna Archer",
+    "shilpi": "Aryabhatta Mage",
+    "vaidya": "Dhanvantari Healer",
     "warriorAria": "Warrior class",
     "paladinAria": "Paladin class",
     "hunterAria": "Hunter class",
     "rogueAria": "Rogue class",
     "priestAria": "Priest class",
-    "shamanAria": "Shaman class",
+    "shamanAria": "Saraswati Bard class",
     "mageAria": "Mage class",
     "warlockAria": "Warlock class",
-    "druidAria": "Druid class"
+    "druidAria": "Druid class",
+    "brahmarishiAria": "Chanakya Scholar class",
+    "kshatriyaAria": "Subhash Warrior class",
+    "vaishyaAria": "Arjuna Archer class",
+    "shilpiAria": "Aryabhatta Mage class",
+    "vaidyaAria": "Dhanvantari Healer class"
   },
   "controls": {
     "title": "Controls Guide",
@@ -23087,12 +23172,12 @@ export const en_CA: EnTranslations = {
     }
   },
   "seo": {
-    "title": "World of ClaudeCraft: Classic-Style Web MMO",
-    "description": "Embark on an epic adventure in World of ClaudeCraft, a classic-style micro-MMO playable directly in your browser. Join a persistent shared realm, level up classes, and defeat enemies!",
-    "genre": "MMORPG",
-    "playMode": "Multiplayer",
+    "title": "BharatVerse: India's First Educational MMO",
+    "description": "Embark on an epic educational adventure in BharatVerse, the first-ever Indian MMO designed for school students and exam aspirants. Play, learn, and build monuments together!",
+    "genre": "Educational MMORPG",
+    "playMode": "Multiplayer / Singleplayer",
     "applicationCategory": "Game",
-    "operatingSystem": "Web browser"
+    "operatingSystem": "Web browser / Mobile"
   },
   "a11y": {
     "goHome": "Go to homepage",
@@ -23100,9 +23185,9 @@ export const en_CA: EnTranslations = {
     "mainNavigation": "Main navigation",
     "languageSelection": "Language selection",
     "characterActions": "Character actions",
-    "githubProject": "Open the World of ClaudeCraft GitHub project",
-    "discordCommunity": "Join the World of ClaudeCraft Discord community",
-    "donateProject": "Donate to support World of ClaudeCraft"
+    "githubProject": "Open the BharatVerse GitHub project",
+    "discordCommunity": "Join the BharatVerse Discord community",
+    "donateProject": "Donate to support BharatVerse"
   },
   "loading": {
     "world": "Loading world...",
@@ -23238,10 +23323,15 @@ export const en_CA: EnTranslations = {
       "hunter": "Hunters master the wilderness, tracking enemies from afar with bows or guns and using traps to control the battlefield.",
       "rogue": "Rogues are stealthy assassins who spend Energy and Combo Points on backstabs and finishing moves from the shadows.",
       "priest": "Priests call on Holy Light to heal and shield allies, while Shadow magic lets them drain the life of their enemies.",
-      "shaman": "Shaman command the elements, imbuing weapons with power, shocking enemies with lightning, and restoring allies.",
+      "shaman": "Saraswati Bards are guardians of languages and literature, chanting verses and imbuing totems to inspire and empower their allies.",
       "mage": "Mages bend Fire, Frost, and Arcane power to destroy enemies, conjure water, and freeze threats in place.",
       "warlock": "Warlocks summon demons, apply curses and damage-over-time magic, and drain life from enemies to endure.",
-      "druid": "Druids channel nature, healing wounds, entangling foes, and shifting into animal forms for defence or damage."
+      "druid": "Druids channel nature, healing wounds, entangling foes, and shifting into animal forms for defence or damage.",
+      "brahmarishi": "Chanakya Scholars are master tacticians of history and polity. Guided by strategy, they heal allies and shield them with pure intellect.",
+      "kshatriya": "Subhash Warriors are courageous protectors who fight on the frontlines of civics and current affairs, building rage to defend their allies.",
+      "vaishya": "Arjuna Archers are legendary marksmen who master mathematics and distance. They target foes from afar with unmatched precision and speed.",
+      "shilpi": "Aryabhatta Mages bend the laws of physics and science, channeling elemental fire, frost, and cosmic forces to disintegrate threats.",
+      "vaidya": "Dhanvantari Healers master biology and the life sciences, restoring wounds and shifting forms to protect the natural balance of life."
     },
     "aria": "Class details for {className}: role {role}. Starting stats: Strength {str}, Agility {agi}, Stamina {sta}, Intellect {int}, Spirit {spi}.",
     "statBarAria": "{stat}: {value} out of 25"
@@ -25609,28 +25699,28 @@ export const en_CA: EnTranslations = {
     },
     "mobs": {
       "forest_wolf": {
-        "name": "Forest Wolf"
+        "name": "Gyaan-Bhediya"
       },
       "old_greyjaw": {
-        "name": "Old Greyjaw"
+        "name": "Mahavidya"
       },
       "wild_boar": {
-        "name": "Wild Boar"
+        "name": "Vigyan Varah"
       },
       "webwood_spider": {
-        "name": "Webwood Lurker"
+        "name": "Jaal-Makdi"
       },
       "mudfin_murloc": {
-        "name": "Mudfin Skulker"
+        "name": "Bharatiya Makara"
       },
       "tunnel_rat": {
-        "name": "Tunnel Rat Digger"
+        "name": "Pariksha Pisach"
       },
       "vale_bandit": {
-        "name": "Vale Bandit"
+        "name": "Adhura Chor"
       },
       "restless_bones": {
-        "name": "Restless Bones"
+        "name": "Bhool-Bhoolaiya"
       },
       "gorrak": {
         "name": "Gorrak the Ruthless"
@@ -25711,7 +25801,7 @@ export const en_CA: EnTranslations = {
         "name": "Sexton Marrow"
       },
       "morthen": {
-        "name": "Morthen the Gravecaller"
+        "name": "Agyaan Asura"
       },
       "bastion_revenant": {
         "name": "Bastion Revenant"
@@ -25744,7 +25834,7 @@ export const en_CA: EnTranslations = {
         "name": "Grand Necromancer Velkhar"
       },
       "korzul_the_gravewyrm": {
-        "name": "Korzul the Gravewyrm"
+        "name": "Andhkaar Naga"
       },
       "bog_bloat": {
         "name": "Bog Bloat"
@@ -26975,121 +27065,121 @@ export const en_CA: EnTranslations = {
       }
     },
     "zones": {
-      "eastbrook_vale": {
-        "name": "Eastbrook Vale",
-        "welcome": "Find Marshal Redbrook in town - he has work for you.",
+      "gangapur_nagari": {
+        "name": "Gangapur Nagari",
+        "welcome": "Find Guru Shukracharya in Vidya Nagar - he has wisdom and quests for you.",
         "pois": {
           "0": {
-            "label": "Eastbrook"
+            "label": "Vidya Nagar"
           },
           "1": {
-            "label": "Wolf Run"
+            "label": "Gyaan-Bhediya Run"
           },
           "2": {
-            "label": "Boar Meadow"
+            "label": "Vigyan Varah Meadow"
           },
           "3": {
-            "label": "Mirror Lake"
+            "label": "Ganga Lake"
           },
           "4": {
-            "label": "Webwood"
+            "label": "Jaal-Makdi Forest"
           },
           "5": {
             "label": "Copper Dig"
           },
           "6": {
-            "label": "Bandit Camp"
+            "label": "Adhura Chor Camp"
           },
           "7": {
-            "label": "Fallen Chapel"
+            "label": "Fallen Mandir"
           },
           "8": {
-            "label": "Brightwood Glade"
+            "label": "Prakriti Glade"
           }
         }
       },
-      "mirefen_marsh": {
-        "name": "Mirefen Marsh",
-        "welcome": "Report to Warden Fenwick at the Fenbridge gate.",
+      "vigyan_vana": {
+        "name": "Vigyan Vana",
+        "welcome": "Report to Vidyarthi Rakshak at the Shastra Gram gate.",
         "pois": {
           "0": {
-            "label": "Fenbridge"
+            "label": "Shastra Gram"
           },
           "1": {
-            "label": "Prowler Reeds"
+            "label": "Vigyan Vana Entry"
           },
           "2": {
-            "label": "Deepfen Shallows"
+            "label": "Rasayan Kund (Chemistry Pool)"
           },
           "3": {
-            "label": "Widow Thicket"
+            "label": "Jeevan Vatika (Biology Garden)"
           },
           "4": {
-            "label": "Drowned Chapel"
+            "label": "Dooba Prakashsthal"
           },
           "5": {
-            "label": "Troll Mounds"
+            "label": "Agyaan Mounds"
           },
           "6": {
-            "label": "Gravecaller Encampment"
+            "label": "Bhram Asura Camp"
           },
           "7": {
-            "label": "The Sunken Bastion"
+            "label": "Vigyan Garh (Science Fort)"
           }
         }
       },
-      "thornpeak_heights": {
-        "name": "Thornpeak Heights",
-        "welcome": "Captain Thessaly holds the wall at Highwatch - barely.",
+      "gyan_shikhar": {
+        "name": "Gyan Shikhar",
+        "welcome": "Acharya Chandragupta holds Takshashila - the final university, barely standing.",
         "pois": {
           "0": {
-            "label": "Highwatch"
+            "label": "Takshashila"
           },
           "1": {
-            "label": "Stalker Ridge"
+            "label": "Ganit Ridge (Math Ridge)"
           },
           "2": {
-            "label": "Deeprock Burrows"
+            "label": "Bhautik Burrows (Physics Caves)"
           },
           "3": {
-            "label": "Ogre Foothills"
+            "label": "Agyaan Foothills"
           },
           "4": {
-            "label": "Drogmar's War-Camp"
+            "label": "Agyaan War-Camp"
           },
           "5": {
-            "label": "Stormcrag"
+            "label": "Arth Shikhar (Economics Peak)"
           },
           "6": {
-            "label": "The Glimmermere"
+            "label": "Gyan Sarovar (Knowledge Lake)"
           },
           "7": {
-            "label": "Wyrmcult Tents"
+            "label": "Andhkaar Cult Tents"
           },
           "8": {
-            "label": "Revenant Fields"
+            "label": "Vitraagya Kshetra (Philosophy Field)"
           },
           "9": {
-            "label": "Gravewyrm Sanctum"
+            "label": "Brahmastra Mandir"
           }
         }
       }
     },
     "dungeons": {
       "hollow_crypt": {
-        "name": "The Hollow Crypt",
-        "enterText": "You descend into the Hollow Crypt...",
-        "leaveText": "You climb back into daylight."
+        "name": "Itihas Kund",
+        "enterText": "You descend into the Itihas Kund - where the past waits to be remembered...",
+        "leaveText": "You climb back into daylight, carrying the lessons of history."
       },
       "sunken_bastion": {
-        "name": "The Sunken Bastion",
-        "enterText": "You wade down into the Sunken Bastion...",
-        "leaveText": "You climb out of the drowning dark."
+        "name": "Vigyan Garh",
+        "enterText": "You wade into Vigyan Garh. Science twisted by ignorance awaits...",
+        "leaveText": "You climb out of the drowning dark - science lives again."
       },
       "gravewyrm_sanctum": {
-        "name": "Gravewyrm Sanctum",
-        "enterText": "The air goes cold. Something vast breathes below...",
-        "leaveText": "You stagger back into the mountain wind."
+        "name": "Brahmastra Mandir",
+        "enterText": "The air grows dense with forgotten mantras. Andhkaar Naga waits below...",
+        "leaveText": "Brahmastra's light returns. You have earned the title of Mahavidyarthi."
       },
       "nythraxis_crypt": {
         "name": "Abandoned Crypt",
@@ -27397,6 +27487,11 @@ export const it_IT: EnTranslations = {
     "mage": "Mago",
     "warlock": "Stregone",
     "druid": "Druido",
+    "brahmarishi": "Chanakya Scholar",
+    "kshatriya": "Subhash Warrior",
+    "vaishya": "Arjuna Archer",
+    "shilpi": "Aryabhatta Mage",
+    "vaidya": "Dhanvantari Healer",
     "warriorAria": "Classe Guerriero",
     "paladinAria": "Classe Paladino",
     "hunterAria": "Classe Cacciatore",
@@ -27405,7 +27500,12 @@ export const it_IT: EnTranslations = {
     "shamanAria": "Classe Sciamano",
     "mageAria": "Classe Mago",
     "warlockAria": "Classe Stregone",
-    "druidAria": "Classe Druido"
+    "druidAria": "Classe Druido",
+    "brahmarishiAria": "Chanakya Scholar class",
+    "kshatriyaAria": "Subhash Warrior class",
+    "vaishyaAria": "Arjuna Archer class",
+    "shilpiAria": "Aryabhatta Mage class",
+    "vaidyaAria": "Dhanvantari Healer class"
   },
   "controls": {
     "title": "Guida ai controlli",
@@ -27758,7 +27858,12 @@ export const it_IT: EnTranslations = {
       "shaman": "Gli sciamani comandano gli elementi, infondono potere nelle armi, colpiscono con fulmini e curano gli alleati.",
       "mage": "I maghi manipolano Fuoco, Gelo e Arcano per distruggere, evocare acqua e congelare le minacce.",
       "warlock": "Gli stregoni evocano demoni, applicano maledizioni e danni nel tempo, poi drenano vita per resistere.",
-      "druid": "I druidi canalizzano la natura, curano ferite, intralciano nemici e assumono forme animali per difendere o attaccare."
+      "druid": "I druidi canalizzano la natura, curano ferite, intralciano nemici e assumono forme animali per difendere o attaccare.",
+      "brahmarishi": "Chanakya Scholars are master tacticians of history and polity. Guided by strategy, they heal allies and shield them with pure intellect.",
+      "kshatriya": "Subhash Warriors are courageous protectors who fight on the frontlines of civics and current affairs, building rage to defend their allies.",
+      "vaishya": "Arjuna Archers are legendary marksmen who master mathematics and distance. They target foes from afar with unmatched precision and speed.",
+      "shilpi": "Aryabhatta Mages bend the laws of physics and science, channeling elemental fire, frost, and cosmic forces to disintegrate threats.",
+      "vaidya": "Dhanvantari Healers master biology and the life sciences, restoring wounds and shifting forms to protect the natural balance of life."
     },
     "aria": "Dettagli classe per {className}: ruolo {role}. Statistiche iniziali: Forza {str}, Agilità {agi}, Tempra {sta}, Intelletto {int}, Spirito {spi}.",
     "statBarAria": "{stat}: {value} su 25"
@@ -31492,7 +31597,7 @@ export const it_IT: EnTranslations = {
       }
     },
     "zones": {
-      "eastbrook_vale": {
+      "gangapur_nagari": {
         "name": "Valle di Eastbrook",
         "welcome": "Cerca il maresciallo Redbrook in città: ha lavoro per te.",
         "pois": {
@@ -31521,11 +31626,11 @@ export const it_IT: EnTranslations = {
             "label": "Cappella caduta"
           },
           "8": {
-            "label": "Brightwood Glade"
+            "label": "Prakriti Glade"
           }
         }
       },
-      "mirefen_marsh": {
+      "vigyan_vana": {
         "name": "Palude di Mirefen",
         "welcome": "Presentati al custode Fenwick al cancello di Fenbridge.",
         "pois": {
@@ -31555,7 +31660,7 @@ export const it_IT: EnTranslations = {
           }
         }
       },
-      "thornpeak_heights": {
+      "gyan_shikhar": {
         "name": "Alture di Thornpeak",
         "welcome": "Il capitano Thessaly tiene a stento il muro di Highwatch.",
         "pois": {
@@ -31914,6 +32019,11 @@ export const de_DE: EnTranslations = {
     "mage": "Magier",
     "warlock": "Hexenmeister",
     "druid": "Druide",
+    "brahmarishi": "Chanakya Scholar",
+    "kshatriya": "Subhash Warrior",
+    "vaishya": "Arjuna Archer",
+    "shilpi": "Aryabhatta Mage",
+    "vaidya": "Dhanvantari Healer",
     "warriorAria": "Krieger-Klasse",
     "paladinAria": "Paladin-Klasse",
     "hunterAria": "Jäger-Klasse",
@@ -31922,7 +32032,12 @@ export const de_DE: EnTranslations = {
     "shamanAria": "Schamane-Klasse",
     "mageAria": "Magier-Klasse",
     "warlockAria": "Hexenmeister-Klasse",
-    "druidAria": "Druide-Klasse"
+    "druidAria": "Druide-Klasse",
+    "brahmarishiAria": "Chanakya Scholar class",
+    "kshatriyaAria": "Subhash Warrior class",
+    "vaishyaAria": "Arjuna Archer class",
+    "shilpiAria": "Aryabhatta Mage class",
+    "vaidyaAria": "Dhanvantari Healer class"
   },
   "controls": {
     "title": "Steuerungsanleitung",
@@ -32275,7 +32390,12 @@ export const de_DE: EnTranslations = {
       "shaman": "Schamanen gebieten über die Elemente, erfüllen Waffen mit Macht, treffen Gegner mit Blitzen und stellen Verbündete wieder her.",
       "mage": "Magier formen Feuer, Frost und Arkane Macht, um Gegner zu vernichten, Wasser zu beschwören und Bedrohungen einzufrieren.",
       "warlock": "Hexenmeister beschwören Dämonen, wirken Flüche und Schaden über Zeit und entziehen Leben, um durchzuhalten.",
-      "druid": "Druiden kanalisieren die Natur, heilen Wunden, fesseln Gegner und wechseln in Tierformen für Verteidigung oder Schaden."
+      "druid": "Druiden kanalisieren die Natur, heilen Wunden, fesseln Gegner und wechseln in Tierformen für Verteidigung oder Schaden.",
+      "brahmarishi": "Chanakya Scholars are master tacticians of history and polity. Guided by strategy, they heal allies and shield them with pure intellect.",
+      "kshatriya": "Subhash Warriors are courageous protectors who fight on the frontlines of civics and current affairs, building rage to defend their allies.",
+      "vaishya": "Arjuna Archers are legendary marksmen who master mathematics and distance. They target foes from afar with unmatched precision and speed.",
+      "shilpi": "Aryabhatta Mages bend the laws of physics and science, channeling elemental fire, frost, and cosmic forces to disintegrate threats.",
+      "vaidya": "Dhanvantari Healers master biology and the life sciences, restoring wounds and shifting forms to protect the natural balance of life."
     },
     "aria": "Klassendetails für {className}: Rolle {role}. Startwerte: Stärke {str}, Beweglichkeit {agi}, Ausdauer {sta}, Intelligenz {int}, Willenskraft {spi}.",
     "statBarAria": "{stat}: {value} von 25"
@@ -36009,7 +36129,7 @@ export const de_DE: EnTranslations = {
       }
     },
     "zones": {
-      "eastbrook_vale": {
+      "gangapur_nagari": {
         "name": "Eastbrook-Tal",
         "welcome": "Suche Marschall Redbrook in der Stadt: Er hat Arbeit für dich.",
         "pois": {
@@ -36038,11 +36158,11 @@ export const de_DE: EnTranslations = {
             "label": "Gefallene Kapelle"
           },
           "8": {
-            "label": "Brightwood Glade"
+            "label": "Prakriti Glade"
           }
         }
       },
-      "mirefen_marsh": {
+      "vigyan_vana": {
         "name": "Mirefen-Moor",
         "welcome": "Melde dich bei Wärter Fenwick am Tor von Fenbridge.",
         "pois": {
@@ -36072,7 +36192,7 @@ export const de_DE: EnTranslations = {
           }
         }
       },
-      "thornpeak_heights": {
+      "gyan_shikhar": {
         "name": "Thornpeak-Höhen",
         "welcome": "Hauptmann Thessaly hält die Mauer von Highwatch, gerade so.",
         "pois": {
@@ -36431,6 +36551,11 @@ export const zh_CN: EnTranslations = {
     "mage": "法师",
     "warlock": "术士",
     "druid": "德鲁伊",
+    "brahmarishi": "Chanakya Scholar",
+    "kshatriya": "Subhash Warrior",
+    "vaishya": "Arjuna Archer",
+    "shilpi": "Aryabhatta Mage",
+    "vaidya": "Dhanvantari Healer",
     "warriorAria": "战士职业",
     "paladinAria": "圣骑士职业",
     "hunterAria": "猎人职业",
@@ -36439,7 +36564,12 @@ export const zh_CN: EnTranslations = {
     "shamanAria": "萨满祭司职业",
     "mageAria": "法师职业",
     "warlockAria": "术士职业",
-    "druidAria": "德鲁伊职业"
+    "druidAria": "德鲁伊职业",
+    "brahmarishiAria": "Chanakya Scholar class",
+    "kshatriyaAria": "Subhash Warrior class",
+    "vaishyaAria": "Arjuna Archer class",
+    "shilpiAria": "Aryabhatta Mage class",
+    "vaidyaAria": "Dhanvantari Healer class"
   },
   "controls": {
     "title": "操作指南",
@@ -36792,7 +36922,12 @@ export const zh_CN: EnTranslations = {
       "shaman": "萨满掌控元素，强化武器，以闪电震击敌人，并恢复盟友。",
       "mage": "法师操纵火焰、冰霜与奥术来毁灭敌人，召唤清水，并冻结威胁。",
       "warlock": "术士召唤恶魔，施放诅咒和持续伤害魔法，并吸取生命来维持自身。",
-      "druid": "德鲁伊引导自然之力，治疗伤口，缠绕敌人，并变形成动物来防御或输出。"
+      "druid": "德鲁伊引导自然之力，治疗伤口，缠绕敌人，并变形成动物来防御或输出。",
+      "brahmarishi": "Chanakya Scholars are master tacticians of history and polity. Guided by strategy, they heal allies and shield them with pure intellect.",
+      "kshatriya": "Subhash Warriors are courageous protectors who fight on the frontlines of civics and current affairs, building rage to defend their allies.",
+      "vaishya": "Arjuna Archers are legendary marksmen who master mathematics and distance. They target foes from afar with unmatched precision and speed.",
+      "shilpi": "Aryabhatta Mages bend the laws of physics and science, channeling elemental fire, frost, and cosmic forces to disintegrate threats.",
+      "vaidya": "Dhanvantari Healers master biology and the life sciences, restoring wounds and shifting forms to protect the natural balance of life."
     },
     "aria": "{className} 职业详情：职责 {role}。初始属性：力量 {str}，敏捷 {agi}，耐力 {sta}，智力 {int}，精神 {spi}。",
     "statBarAria": "{stat}：{value}/25"
@@ -40526,7 +40661,7 @@ export const zh_CN: EnTranslations = {
       }
     },
     "zones": {
-      "eastbrook_vale": {
+      "gangapur_nagari": {
         "name": "东溪谷",
         "welcome": "去镇上找雷德布鲁克元帅，他有任务交给你。",
         "pois": {
@@ -40555,11 +40690,11 @@ export const zh_CN: EnTranslations = {
             "label": "倒塌礼拜堂"
           },
           "8": {
-            "label": "Brightwood Glade"
+            "label": "Prakriti Glade"
           }
         }
       },
-      "mirefen_marsh": {
+      "vigyan_vana": {
         "name": "泥沼湿地",
         "welcome": "到芬桥大门向守望者芬威克报到。",
         "pois": {
@@ -40589,7 +40724,7 @@ export const zh_CN: EnTranslations = {
           }
         }
       },
-      "thornpeak_heights": {
+      "gyan_shikhar": {
         "name": "荆峰高地",
         "welcome": "瑟萨莉队长勉强守住高望城墙。",
         "pois": {
@@ -40948,6 +41083,11 @@ export const zh_TW: EnTranslations = {
     "mage": "法師",
     "warlock": "術士",
     "druid": "德魯伊",
+    "brahmarishi": "Chanakya Scholar",
+    "kshatriya": "Subhash Warrior",
+    "vaishya": "Arjuna Archer",
+    "shilpi": "Aryabhatta Mage",
+    "vaidya": "Dhanvantari Healer",
     "warriorAria": "戰士職業",
     "paladinAria": "聖騎士職業",
     "hunterAria": "獵人職業",
@@ -40956,7 +41096,12 @@ export const zh_TW: EnTranslations = {
     "shamanAria": "薩滿職業",
     "mageAria": "法師職業",
     "warlockAria": "術士職業",
-    "druidAria": "德魯伊職業"
+    "druidAria": "德魯伊職業",
+    "brahmarishiAria": "Chanakya Scholar class",
+    "kshatriyaAria": "Subhash Warrior class",
+    "vaishyaAria": "Arjuna Archer class",
+    "shilpiAria": "Aryabhatta Mage class",
+    "vaidyaAria": "Dhanvantari Healer class"
   },
   "controls": {
     "title": "操作指南",
@@ -41309,7 +41454,12 @@ export const zh_TW: EnTranslations = {
       "shaman": "薩滿掌控元素，強化武器，以閃電震擊敵人並恢復盟友。",
       "mage": "法師操縱火焰、冰霜與祕法來毀滅敵人，召喚清水並凍結威脅。",
       "warlock": "術士召喚惡魔，施放詛咒與持續傷害魔法，並吸取生命來支撐自己。",
-      "druid": "德魯伊引導自然之力，治療傷口、纏繞敵人，並變形成動物來防禦或輸出。"
+      "druid": "德魯伊引導自然之力，治療傷口、纏繞敵人，並變形成動物來防禦或輸出。",
+      "brahmarishi": "Chanakya Scholars are master tacticians of history and polity. Guided by strategy, they heal allies and shield them with pure intellect.",
+      "kshatriya": "Subhash Warriors are courageous protectors who fight on the frontlines of civics and current affairs, building rage to defend their allies.",
+      "vaishya": "Arjuna Archers are legendary marksmen who master mathematics and distance. They target foes from afar with unmatched precision and speed.",
+      "shilpi": "Aryabhatta Mages bend the laws of physics and science, channeling elemental fire, frost, and cosmic forces to disintegrate threats.",
+      "vaidya": "Dhanvantari Healers master biology and the life sciences, restoring wounds and shifting forms to protect the natural balance of life."
     },
     "aria": "{className} 職業詳情：職責 {role}。初始屬性：力量 {str}，敏捷 {agi}，耐力 {sta}，智力 {int}，精神 {spi}。",
     "statBarAria": "{stat}：{value}/25"
@@ -45043,7 +45193,7 @@ export const zh_TW: EnTranslations = {
       }
     },
     "zones": {
-      "eastbrook_vale": {
+      "gangapur_nagari": {
         "name": "東溪谷",
         "welcome": "去鎮上找雷德布魯克元帥，他有任務交給你。",
         "pois": {
@@ -45072,11 +45222,11 @@ export const zh_TW: EnTranslations = {
             "label": "倒塌禮拜堂"
           },
           "8": {
-            "label": "Brightwood Glade"
+            "label": "Prakriti Glade"
           }
         }
       },
-      "mirefen_marsh": {
+      "vigyan_vana": {
         "name": "泥沼濕地",
         "welcome": "到芬橋大門向守望者芬威克報到。",
         "pois": {
@@ -45106,7 +45256,7 @@ export const zh_TW: EnTranslations = {
           }
         }
       },
-      "thornpeak_heights": {
+      "gyan_shikhar": {
         "name": "荊峰高地",
         "welcome": "瑟薩莉隊長勉強守住高望城牆。",
         "pois": {
@@ -45465,6 +45615,11 @@ export const ko_KR: EnTranslations = {
     "mage": "마법사",
     "warlock": "흑마법사",
     "druid": "드루이드",
+    "brahmarishi": "Chanakya Scholar",
+    "kshatriya": "Subhash Warrior",
+    "vaishya": "Arjuna Archer",
+    "shilpi": "Aryabhatta Mage",
+    "vaidya": "Dhanvantari Healer",
     "warriorAria": "전사 직업",
     "paladinAria": "성기사 직업",
     "hunterAria": "사냥꾼 직업",
@@ -45473,7 +45628,12 @@ export const ko_KR: EnTranslations = {
     "shamanAria": "주술사 직업",
     "mageAria": "마법사 직업",
     "warlockAria": "흑마법사 직업",
-    "druidAria": "드루이드 직업"
+    "druidAria": "드루이드 직업",
+    "brahmarishiAria": "Chanakya Scholar class",
+    "kshatriyaAria": "Subhash Warrior class",
+    "vaishyaAria": "Arjuna Archer class",
+    "shilpiAria": "Aryabhatta Mage class",
+    "vaidyaAria": "Dhanvantari Healer class"
   },
   "controls": {
     "title": "조작 가이드",
@@ -45826,7 +45986,12 @@ export const ko_KR: EnTranslations = {
       "shaman": "주술사는 정령을 다루고 무기에 힘을 불어넣으며 번개로 적을 충격시키고 아군을 회복시킵니다.",
       "mage": "마법사는 화염, 냉기, 비전의 힘으로 적을 파괴하고 물을 만들어내며 위협을 얼립니다.",
       "warlock": "흑마법사는 악마를 소환하고 저주와 지속 피해 마법을 걸며 생명력을 흡수해 버팁니다.",
-      "druid": "드루이드는 자연의 힘으로 치유하고 적을 묶으며 동물 형태로 변신해 방어하거나 피해를 줍니다."
+      "druid": "드루이드는 자연의 힘으로 치유하고 적을 묶으며 동물 형태로 변신해 방어하거나 피해를 줍니다.",
+      "brahmarishi": "Chanakya Scholars are master tacticians of history and polity. Guided by strategy, they heal allies and shield them with pure intellect.",
+      "kshatriya": "Subhash Warriors are courageous protectors who fight on the frontlines of civics and current affairs, building rage to defend their allies.",
+      "vaishya": "Arjuna Archers are legendary marksmen who master mathematics and distance. They target foes from afar with unmatched precision and speed.",
+      "shilpi": "Aryabhatta Mages bend the laws of physics and science, channeling elemental fire, frost, and cosmic forces to disintegrate threats.",
+      "vaidya": "Dhanvantari Healers master biology and the life sciences, restoring wounds and shifting forms to protect the natural balance of life."
     },
     "aria": "{className} 직업 세부 정보: 역할 {role}. 시작 능력치: 힘 {str}, 민첩 {agi}, 체력 {sta}, 지능 {int}, 정신력 {spi}.",
     "statBarAria": "{stat}: {value}/25"
@@ -49560,7 +49725,7 @@ export const ko_KR: EnTranslations = {
       }
     },
     "zones": {
-      "eastbrook_vale": {
+      "gangapur_nagari": {
         "name": "이스트브룩 골짜기",
         "welcome": "마을의 레드브룩 원수를 찾아가십시오. 그가 당신에게 맡길 일이 있습니다.",
         "pois": {
@@ -49589,11 +49754,11 @@ export const ko_KR: EnTranslations = {
             "label": "무너진 예배당"
           },
           "8": {
-            "label": "Brightwood Glade"
+            "label": "Prakriti Glade"
           }
         }
       },
-      "mirefen_marsh": {
+      "vigyan_vana": {
         "name": "마이어펜 습지",
         "welcome": "펜브리지 문에서 감시관 펜윅에게 보고하십시오.",
         "pois": {
@@ -49623,7 +49788,7 @@ export const ko_KR: EnTranslations = {
           }
         }
       },
-      "thornpeak_heights": {
+      "gyan_shikhar": {
         "name": "쏜피크 고지",
         "welcome": "테살리 대장이 간신히 하이워치 성벽을 지키고 있습니다.",
         "pois": {
@@ -49982,6 +50147,11 @@ export const ja_JP: EnTranslations = {
     "mage": "メイジ",
     "warlock": "ウォーロック",
     "druid": "ドルイド",
+    "brahmarishi": "Chanakya Scholar",
+    "kshatriya": "Subhash Warrior",
+    "vaishya": "Arjuna Archer",
+    "shilpi": "Aryabhatta Mage",
+    "vaidya": "Dhanvantari Healer",
     "warriorAria": "戦士クラス",
     "paladinAria": "パラディンクラス",
     "hunterAria": "ハンタークラス",
@@ -49990,7 +50160,12 @@ export const ja_JP: EnTranslations = {
     "shamanAria": "シャーマンクラス",
     "mageAria": "メイジクラス",
     "warlockAria": "ウォーロッククラス",
-    "druidAria": "ドルイドクラス"
+    "druidAria": "ドルイドクラス",
+    "brahmarishiAria": "Chanakya Scholar class",
+    "kshatriyaAria": "Subhash Warrior class",
+    "vaishyaAria": "Arjuna Archer class",
+    "shilpiAria": "Aryabhatta Mage class",
+    "vaidyaAria": "Dhanvantari Healer class"
   },
   "controls": {
     "title": "操作ガイド",
@@ -50343,7 +50518,12 @@ export const ja_JP: EnTranslations = {
       "shaman": "シャーマンは元素を操り、武器に力を宿し、稲妻で敵を打ち、味方を回復します。",
       "mage": "メイジは火炎、氷霜、秘術の力で敵を破壊し、水を作り出し、脅威を凍らせます。",
       "warlock": "ウォーロックは悪魔を召喚し、呪いと継続ダメージ魔法をかけ、生命力を吸収して耐えます。",
-      "druid": "ドルイドは自然の力を導き、傷を癒やし、敵を絡め取り、動物形態に変身して守りまたは攻めます。"
+      "druid": "ドルイドは自然の力を導き、傷を癒やし、敵を絡め取り、動物形態に変身して守りまたは攻めます。",
+      "brahmarishi": "Chanakya Scholars are master tacticians of history and polity. Guided by strategy, they heal allies and shield them with pure intellect.",
+      "kshatriya": "Subhash Warriors are courageous protectors who fight on the frontlines of civics and current affairs, building rage to defend their allies.",
+      "vaishya": "Arjuna Archers are legendary marksmen who master mathematics and distance. They target foes from afar with unmatched precision and speed.",
+      "shilpi": "Aryabhatta Mages bend the laws of physics and science, channeling elemental fire, frost, and cosmic forces to disintegrate threats.",
+      "vaidya": "Dhanvantari Healers master biology and the life sciences, restoring wounds and shifting forms to protect the natural balance of life."
     },
     "aria": "{className}のクラス詳細: 役割 {role}。開始ステータス: 筋力 {str}、敏捷性 {agi}、耐久力 {sta}、知力 {int}、精神力 {spi}。",
     "statBarAria": "{stat}: {value}/25"
@@ -54077,7 +54257,7 @@ export const ja_JP: EnTranslations = {
       }
     },
     "zones": {
-      "eastbrook_vale": {
+      "gangapur_nagari": {
         "name": "イーストブルック渓谷",
         "welcome": "町のレッドブルック元帥を訪ねてください。あなたに頼みたい仕事があります。",
         "pois": {
@@ -54106,11 +54286,11 @@ export const ja_JP: EnTranslations = {
             "label": "倒れた礼拝堂"
           },
           "8": {
-            "label": "Brightwood Glade"
+            "label": "Prakriti Glade"
           }
         }
       },
-      "mirefen_marsh": {
+      "vigyan_vana": {
         "name": "マイアフェン湿地",
         "welcome": "フェンブリッジの門で番人フェンウィックに報告してください。",
         "pois": {
@@ -54140,7 +54320,7 @@ export const ja_JP: EnTranslations = {
           }
         }
       },
-      "thornpeak_heights": {
+      "gyan_shikhar": {
         "name": "ソーンピーク高地",
         "welcome": "テサリー隊長がかろうじてハイウォッチの壁を保っています。",
         "pois": {
@@ -54499,6 +54679,11 @@ export const pt_BR: EnTranslations = {
     "mage": "Mago",
     "warlock": "Bruxo",
     "druid": "Druida",
+    "brahmarishi": "Chanakya Scholar",
+    "kshatriya": "Subhash Warrior",
+    "vaishya": "Arjuna Archer",
+    "shilpi": "Aryabhatta Mage",
+    "vaidya": "Dhanvantari Healer",
     "warriorAria": "Classe Guerreiro",
     "paladinAria": "Classe Paladino",
     "hunterAria": "Classe Caçador",
@@ -54507,7 +54692,12 @@ export const pt_BR: EnTranslations = {
     "shamanAria": "Classe Xamã",
     "mageAria": "Classe Mago",
     "warlockAria": "Classe Bruxo",
-    "druidAria": "Classe Druida"
+    "druidAria": "Classe Druida",
+    "brahmarishiAria": "Chanakya Scholar class",
+    "kshatriyaAria": "Subhash Warrior class",
+    "vaishyaAria": "Arjuna Archer class",
+    "shilpiAria": "Aryabhatta Mage class",
+    "vaidyaAria": "Dhanvantari Healer class"
   },
   "controls": {
     "title": "Guia de controles",
@@ -54860,7 +55050,12 @@ export const pt_BR: EnTranslations = {
       "shaman": "Xamãs comandam os elementos, imbuem armas com poder, chocam inimigos com relâmpagos e restauram aliados.",
       "mage": "Magos manipulam Fogo, Gelo e Arcano para destruir inimigos, conjurar água e congelar ameaças.",
       "warlock": "Bruxos invocam demônios, aplicam maldições e dano contínuo, e drenam vida para resistir.",
-      "druid": "Druidas canalizam a natureza, curam feridas, enredam inimigos e assumem formas animais para defender ou causar dano."
+      "druid": "Druidas canalizam a natureza, curam feridas, enredam inimigos e assumem formas animais para defender ou causar dano.",
+      "brahmarishi": "Chanakya Scholars are master tacticians of history and polity. Guided by strategy, they heal allies and shield them with pure intellect.",
+      "kshatriya": "Subhash Warriors are courageous protectors who fight on the frontlines of civics and current affairs, building rage to defend their allies.",
+      "vaishya": "Arjuna Archers are legendary marksmen who master mathematics and distance. They target foes from afar with unmatched precision and speed.",
+      "shilpi": "Aryabhatta Mages bend the laws of physics and science, channeling elemental fire, frost, and cosmic forces to disintegrate threats.",
+      "vaidya": "Dhanvantari Healers master biology and the life sciences, restoring wounds and shifting forms to protect the natural balance of life."
     },
     "aria": "Detalhes de classe para {className}: função {role}. Atributos iniciais: Força {str}, Agilidade {agi}, Vigor {sta}, Intelecto {int}, Espírito {spi}.",
     "statBarAria": "{stat}: {value} de 25"
@@ -58594,7 +58789,7 @@ export const pt_BR: EnTranslations = {
       }
     },
     "zones": {
-      "eastbrook_vale": {
+      "gangapur_nagari": {
         "name": "Vale de Eastbrook",
         "welcome": "Procure o marechal Redbrook na cidade: ele tem trabalho para você.",
         "pois": {
@@ -58623,11 +58818,11 @@ export const pt_BR: EnTranslations = {
             "label": "Capela caída"
           },
           "8": {
-            "label": "Brightwood Glade"
+            "label": "Prakriti Glade"
           }
         }
       },
-      "mirefen_marsh": {
+      "vigyan_vana": {
         "name": "Pântano de Mirefen",
         "welcome": "Apresente-se ao guardião Fenwick no portão de Fenbridge.",
         "pois": {
@@ -58657,7 +58852,7 @@ export const pt_BR: EnTranslations = {
           }
         }
       },
-      "thornpeak_heights": {
+      "gyan_shikhar": {
         "name": "Alturas de Thornpeak",
         "welcome": "A capitã Thessaly mal segura o muro de Highwatch.",
         "pois": {
@@ -59016,6 +59211,11 @@ export const ru_RU: EnTranslations = {
     "mage": "Маг",
     "warlock": "Чернокнижник",
     "druid": "Друид",
+    "brahmarishi": "Chanakya Scholar",
+    "kshatriya": "Subhash Warrior",
+    "vaishya": "Arjuna Archer",
+    "shilpi": "Aryabhatta Mage",
+    "vaidya": "Dhanvantari Healer",
     "warriorAria": "Класс Воин",
     "paladinAria": "Класс Паладин",
     "hunterAria": "Класс Охотник",
@@ -59024,7 +59224,12 @@ export const ru_RU: EnTranslations = {
     "shamanAria": "Класс Шаман",
     "mageAria": "Класс Маг",
     "warlockAria": "Класс Чернокнижник",
-    "druidAria": "Класс Друид"
+    "druidAria": "Класс Друид",
+    "brahmarishiAria": "Chanakya Scholar class",
+    "kshatriyaAria": "Subhash Warrior class",
+    "vaishyaAria": "Arjuna Archer class",
+    "shilpiAria": "Aryabhatta Mage class",
+    "vaidyaAria": "Dhanvantari Healer class"
   },
   "controls": {
     "title": "Руководство по управлению",
@@ -59377,7 +59582,12 @@ export const ru_RU: EnTranslations = {
       "shaman": "Шаманы повелевают стихиями, усиливают оружие, поражают врагов молниями и восстанавливают союзников.",
       "mage": "Маги управляют огнем, льдом и тайной магией, уничтожают врагов, создают воду и замораживают угрозы.",
       "warlock": "Чернокнижники призывают демонов, накладывают проклятия и длительный урон, затем вытягивают жизнь, чтобы выжить.",
-      "druid": "Друиды направляют силу природы, лечат раны, оплетают врагов и принимают звериные формы для защиты или урона."
+      "druid": "Друиды направляют силу природы, лечат раны, оплетают врагов и принимают звериные формы для защиты или урона.",
+      "brahmarishi": "Chanakya Scholars are master tacticians of history and polity. Guided by strategy, they heal allies and shield them with pure intellect.",
+      "kshatriya": "Subhash Warriors are courageous protectors who fight on the frontlines of civics and current affairs, building rage to defend their allies.",
+      "vaishya": "Arjuna Archers are legendary marksmen who master mathematics and distance. They target foes from afar with unmatched precision and speed.",
+      "shilpi": "Aryabhatta Mages bend the laws of physics and science, channeling elemental fire, frost, and cosmic forces to disintegrate threats.",
+      "vaidya": "Dhanvantari Healers master biology and the life sciences, restoring wounds and shifting forms to protect the natural balance of life."
     },
     "aria": "Описание класса {className}: роль {role}. Начальные характеристики: Сила {str}, Ловкость {agi}, Выносливость {sta}, Интеллект {int}, Дух {spi}.",
     "statBarAria": "{stat}: {value} из 25"
@@ -63111,7 +63321,7 @@ export const ru_RU: EnTranslations = {
       }
     },
     "zones": {
-      "eastbrook_vale": {
+      "gangapur_nagari": {
         "name": "Истврукская долина",
         "welcome": "Найдите в городе маршала Редбрука: у него есть для вас работа.",
         "pois": {
@@ -63140,11 +63350,11 @@ export const ru_RU: EnTranslations = {
             "label": "Павшая часовня"
           },
           "8": {
-            "label": "Brightwood Glade"
+            "label": "Prakriti Glade"
           }
         }
       },
-      "mirefen_marsh": {
+      "vigyan_vana": {
         "name": "Мирефенская топь",
         "welcome": "Доложите стражу Фенвику у ворот Фенбриджа.",
         "pois": {
@@ -63174,7 +63384,7 @@ export const ru_RU: EnTranslations = {
           }
         }
       },
-      "thornpeak_heights": {
+      "gyan_shikhar": {
         "name": "Терновые высоты",
         "welcome": "Капитан Тессали едва удерживает стену Хайвотча.",
         "pois": {
@@ -63266,6 +63476,21 @@ export const translations = {
 
 export const pending: Record<string, readonly string[]> = {
   "es": [
+    "classDetails.lore.brahmarishi",
+    "classDetails.lore.kshatriya",
+    "classDetails.lore.shilpi",
+    "classDetails.lore.vaidya",
+    "classDetails.lore.vaishya",
+    "classes.brahmarishi",
+    "classes.brahmarishiAria",
+    "classes.kshatriya",
+    "classes.kshatriyaAria",
+    "classes.shilpi",
+    "classes.shilpiAria",
+    "classes.vaidya",
+    "classes.vaidyaAria",
+    "classes.vaishya",
+    "classes.vaishyaAria",
     "entities.mobs.bramble_lynx.name",
     "entities.mobs.brightwood_hare.name",
     "entities.mobs.brightwood_monarch.name",
@@ -63331,7 +63556,7 @@ export const pending: Record<string, readonly string[]> = {
     "entities.quests.q_ledger_vigil.objectives.0.label",
     "entities.quests.q_ledger_vigil.text",
     "entities.quests.q_ledger_vigil.title",
-    "entities.zones.eastbrook_vale.pois.8.label",
+    "entities.zones.gangapur_nagari.pois.8.label",
     "fiesta.augment.aug_apex_predator.desc",
     "fiesta.augment.aug_apex_predator.name",
     "fiesta.augment.aug_arcane_surge.desc",
@@ -63467,6 +63692,21 @@ export const pending: Record<string, readonly string[]> = {
     "skinEvent.unlocked"
   ],
   "es_ES": [
+    "classDetails.lore.brahmarishi",
+    "classDetails.lore.kshatriya",
+    "classDetails.lore.shilpi",
+    "classDetails.lore.vaidya",
+    "classDetails.lore.vaishya",
+    "classes.brahmarishi",
+    "classes.brahmarishiAria",
+    "classes.kshatriya",
+    "classes.kshatriyaAria",
+    "classes.shilpi",
+    "classes.shilpiAria",
+    "classes.vaidya",
+    "classes.vaidyaAria",
+    "classes.vaishya",
+    "classes.vaishyaAria",
     "entities.mobs.bramble_lynx.name",
     "entities.mobs.brightwood_hare.name",
     "entities.mobs.brightwood_monarch.name",
@@ -63532,7 +63772,7 @@ export const pending: Record<string, readonly string[]> = {
     "entities.quests.q_ledger_vigil.objectives.0.label",
     "entities.quests.q_ledger_vigil.text",
     "entities.quests.q_ledger_vigil.title",
-    "entities.zones.eastbrook_vale.pois.8.label",
+    "entities.zones.gangapur_nagari.pois.8.label",
     "fiesta.augment.aug_apex_predator.desc",
     "fiesta.augment.aug_apex_predator.name",
     "fiesta.augment.aug_arcane_surge.desc",
@@ -63668,6 +63908,21 @@ export const pending: Record<string, readonly string[]> = {
     "skinEvent.unlocked"
   ],
   "fr_FR": [
+    "classDetails.lore.brahmarishi",
+    "classDetails.lore.kshatriya",
+    "classDetails.lore.shilpi",
+    "classDetails.lore.vaidya",
+    "classDetails.lore.vaishya",
+    "classes.brahmarishi",
+    "classes.brahmarishiAria",
+    "classes.kshatriya",
+    "classes.kshatriyaAria",
+    "classes.shilpi",
+    "classes.shilpiAria",
+    "classes.vaidya",
+    "classes.vaidyaAria",
+    "classes.vaishya",
+    "classes.vaishyaAria",
     "entities.mobs.bramble_lynx.name",
     "entities.mobs.brightwood_hare.name",
     "entities.mobs.brightwood_monarch.name",
@@ -63733,7 +63988,7 @@ export const pending: Record<string, readonly string[]> = {
     "entities.quests.q_ledger_vigil.objectives.0.label",
     "entities.quests.q_ledger_vigil.text",
     "entities.quests.q_ledger_vigil.title",
-    "entities.zones.eastbrook_vale.pois.8.label",
+    "entities.zones.gangapur_nagari.pois.8.label",
     "fiesta.augment.aug_apex_predator.desc",
     "fiesta.augment.aug_apex_predator.name",
     "fiesta.augment.aug_arcane_surge.desc",
@@ -63869,6 +64124,21 @@ export const pending: Record<string, readonly string[]> = {
     "skinEvent.unlocked"
   ],
   "fr_CA": [
+    "classDetails.lore.brahmarishi",
+    "classDetails.lore.kshatriya",
+    "classDetails.lore.shilpi",
+    "classDetails.lore.vaidya",
+    "classDetails.lore.vaishya",
+    "classes.brahmarishi",
+    "classes.brahmarishiAria",
+    "classes.kshatriya",
+    "classes.kshatriyaAria",
+    "classes.shilpi",
+    "classes.shilpiAria",
+    "classes.vaidya",
+    "classes.vaidyaAria",
+    "classes.vaishya",
+    "classes.vaishyaAria",
     "entities.mobs.bramble_lynx.name",
     "entities.mobs.brightwood_hare.name",
     "entities.mobs.brightwood_monarch.name",
@@ -63934,7 +64204,7 @@ export const pending: Record<string, readonly string[]> = {
     "entities.quests.q_ledger_vigil.objectives.0.label",
     "entities.quests.q_ledger_vigil.text",
     "entities.quests.q_ledger_vigil.title",
-    "entities.zones.eastbrook_vale.pois.8.label",
+    "entities.zones.gangapur_nagari.pois.8.label",
     "fiesta.augment.aug_apex_predator.desc",
     "fiesta.augment.aug_apex_predator.name",
     "fiesta.augment.aug_arcane_surge.desc",
@@ -64071,6 +64341,21 @@ export const pending: Record<string, readonly string[]> = {
   ],
   "en_CA": [],
   "it_IT": [
+    "classDetails.lore.brahmarishi",
+    "classDetails.lore.kshatriya",
+    "classDetails.lore.shilpi",
+    "classDetails.lore.vaidya",
+    "classDetails.lore.vaishya",
+    "classes.brahmarishi",
+    "classes.brahmarishiAria",
+    "classes.kshatriya",
+    "classes.kshatriyaAria",
+    "classes.shilpi",
+    "classes.shilpiAria",
+    "classes.vaidya",
+    "classes.vaidyaAria",
+    "classes.vaishya",
+    "classes.vaishyaAria",
     "entities.mobs.bramble_lynx.name",
     "entities.mobs.brightwood_hare.name",
     "entities.mobs.brightwood_monarch.name",
@@ -64136,7 +64421,7 @@ export const pending: Record<string, readonly string[]> = {
     "entities.quests.q_ledger_vigil.objectives.0.label",
     "entities.quests.q_ledger_vigil.text",
     "entities.quests.q_ledger_vigil.title",
-    "entities.zones.eastbrook_vale.pois.8.label",
+    "entities.zones.gangapur_nagari.pois.8.label",
     "fiesta.augment.aug_apex_predator.desc",
     "fiesta.augment.aug_apex_predator.name",
     "fiesta.augment.aug_arcane_surge.desc",
@@ -64272,6 +64557,21 @@ export const pending: Record<string, readonly string[]> = {
     "skinEvent.unlocked"
   ],
   "de_DE": [
+    "classDetails.lore.brahmarishi",
+    "classDetails.lore.kshatriya",
+    "classDetails.lore.shilpi",
+    "classDetails.lore.vaidya",
+    "classDetails.lore.vaishya",
+    "classes.brahmarishi",
+    "classes.brahmarishiAria",
+    "classes.kshatriya",
+    "classes.kshatriyaAria",
+    "classes.shilpi",
+    "classes.shilpiAria",
+    "classes.vaidya",
+    "classes.vaidyaAria",
+    "classes.vaishya",
+    "classes.vaishyaAria",
     "entities.mobs.bramble_lynx.name",
     "entities.mobs.brightwood_hare.name",
     "entities.mobs.brightwood_monarch.name",
@@ -64337,7 +64637,7 @@ export const pending: Record<string, readonly string[]> = {
     "entities.quests.q_ledger_vigil.objectives.0.label",
     "entities.quests.q_ledger_vigil.text",
     "entities.quests.q_ledger_vigil.title",
-    "entities.zones.eastbrook_vale.pois.8.label",
+    "entities.zones.gangapur_nagari.pois.8.label",
     "fiesta.augment.aug_apex_predator.desc",
     "fiesta.augment.aug_apex_predator.name",
     "fiesta.augment.aug_arcane_surge.desc",
@@ -64473,6 +64773,21 @@ export const pending: Record<string, readonly string[]> = {
     "skinEvent.unlocked"
   ],
   "zh_CN": [
+    "classDetails.lore.brahmarishi",
+    "classDetails.lore.kshatriya",
+    "classDetails.lore.shilpi",
+    "classDetails.lore.vaidya",
+    "classDetails.lore.vaishya",
+    "classes.brahmarishi",
+    "classes.brahmarishiAria",
+    "classes.kshatriya",
+    "classes.kshatriyaAria",
+    "classes.shilpi",
+    "classes.shilpiAria",
+    "classes.vaidya",
+    "classes.vaidyaAria",
+    "classes.vaishya",
+    "classes.vaishyaAria",
     "entities.mobs.bramble_lynx.name",
     "entities.mobs.brightwood_hare.name",
     "entities.mobs.brightwood_monarch.name",
@@ -64538,7 +64853,7 @@ export const pending: Record<string, readonly string[]> = {
     "entities.quests.q_ledger_vigil.objectives.0.label",
     "entities.quests.q_ledger_vigil.text",
     "entities.quests.q_ledger_vigil.title",
-    "entities.zones.eastbrook_vale.pois.8.label",
+    "entities.zones.gangapur_nagari.pois.8.label",
     "fiesta.augment.aug_apex_predator.desc",
     "fiesta.augment.aug_apex_predator.name",
     "fiesta.augment.aug_arcane_surge.desc",
@@ -64674,6 +64989,21 @@ export const pending: Record<string, readonly string[]> = {
     "skinEvent.unlocked"
   ],
   "zh_TW": [
+    "classDetails.lore.brahmarishi",
+    "classDetails.lore.kshatriya",
+    "classDetails.lore.shilpi",
+    "classDetails.lore.vaidya",
+    "classDetails.lore.vaishya",
+    "classes.brahmarishi",
+    "classes.brahmarishiAria",
+    "classes.kshatriya",
+    "classes.kshatriyaAria",
+    "classes.shilpi",
+    "classes.shilpiAria",
+    "classes.vaidya",
+    "classes.vaidyaAria",
+    "classes.vaishya",
+    "classes.vaishyaAria",
     "entities.mobs.bramble_lynx.name",
     "entities.mobs.brightwood_hare.name",
     "entities.mobs.brightwood_monarch.name",
@@ -64739,7 +65069,7 @@ export const pending: Record<string, readonly string[]> = {
     "entities.quests.q_ledger_vigil.objectives.0.label",
     "entities.quests.q_ledger_vigil.text",
     "entities.quests.q_ledger_vigil.title",
-    "entities.zones.eastbrook_vale.pois.8.label",
+    "entities.zones.gangapur_nagari.pois.8.label",
     "fiesta.augment.aug_apex_predator.desc",
     "fiesta.augment.aug_apex_predator.name",
     "fiesta.augment.aug_arcane_surge.desc",
@@ -64875,6 +65205,21 @@ export const pending: Record<string, readonly string[]> = {
     "skinEvent.unlocked"
   ],
   "ko_KR": [
+    "classDetails.lore.brahmarishi",
+    "classDetails.lore.kshatriya",
+    "classDetails.lore.shilpi",
+    "classDetails.lore.vaidya",
+    "classDetails.lore.vaishya",
+    "classes.brahmarishi",
+    "classes.brahmarishiAria",
+    "classes.kshatriya",
+    "classes.kshatriyaAria",
+    "classes.shilpi",
+    "classes.shilpiAria",
+    "classes.vaidya",
+    "classes.vaidyaAria",
+    "classes.vaishya",
+    "classes.vaishyaAria",
     "entities.mobs.bramble_lynx.name",
     "entities.mobs.brightwood_hare.name",
     "entities.mobs.brightwood_monarch.name",
@@ -64940,7 +65285,7 @@ export const pending: Record<string, readonly string[]> = {
     "entities.quests.q_ledger_vigil.objectives.0.label",
     "entities.quests.q_ledger_vigil.text",
     "entities.quests.q_ledger_vigil.title",
-    "entities.zones.eastbrook_vale.pois.8.label",
+    "entities.zones.gangapur_nagari.pois.8.label",
     "fiesta.augment.aug_apex_predator.desc",
     "fiesta.augment.aug_apex_predator.name",
     "fiesta.augment.aug_arcane_surge.desc",
@@ -65076,6 +65421,21 @@ export const pending: Record<string, readonly string[]> = {
     "skinEvent.unlocked"
   ],
   "ja_JP": [
+    "classDetails.lore.brahmarishi",
+    "classDetails.lore.kshatriya",
+    "classDetails.lore.shilpi",
+    "classDetails.lore.vaidya",
+    "classDetails.lore.vaishya",
+    "classes.brahmarishi",
+    "classes.brahmarishiAria",
+    "classes.kshatriya",
+    "classes.kshatriyaAria",
+    "classes.shilpi",
+    "classes.shilpiAria",
+    "classes.vaidya",
+    "classes.vaidyaAria",
+    "classes.vaishya",
+    "classes.vaishyaAria",
     "entities.mobs.bramble_lynx.name",
     "entities.mobs.brightwood_hare.name",
     "entities.mobs.brightwood_monarch.name",
@@ -65141,7 +65501,7 @@ export const pending: Record<string, readonly string[]> = {
     "entities.quests.q_ledger_vigil.objectives.0.label",
     "entities.quests.q_ledger_vigil.text",
     "entities.quests.q_ledger_vigil.title",
-    "entities.zones.eastbrook_vale.pois.8.label",
+    "entities.zones.gangapur_nagari.pois.8.label",
     "fiesta.augment.aug_apex_predator.desc",
     "fiesta.augment.aug_apex_predator.name",
     "fiesta.augment.aug_arcane_surge.desc",
@@ -65277,6 +65637,21 @@ export const pending: Record<string, readonly string[]> = {
     "skinEvent.unlocked"
   ],
   "pt_BR": [
+    "classDetails.lore.brahmarishi",
+    "classDetails.lore.kshatriya",
+    "classDetails.lore.shilpi",
+    "classDetails.lore.vaidya",
+    "classDetails.lore.vaishya",
+    "classes.brahmarishi",
+    "classes.brahmarishiAria",
+    "classes.kshatriya",
+    "classes.kshatriyaAria",
+    "classes.shilpi",
+    "classes.shilpiAria",
+    "classes.vaidya",
+    "classes.vaidyaAria",
+    "classes.vaishya",
+    "classes.vaishyaAria",
     "entities.mobs.bramble_lynx.name",
     "entities.mobs.brightwood_hare.name",
     "entities.mobs.brightwood_monarch.name",
@@ -65342,7 +65717,7 @@ export const pending: Record<string, readonly string[]> = {
     "entities.quests.q_ledger_vigil.objectives.0.label",
     "entities.quests.q_ledger_vigil.text",
     "entities.quests.q_ledger_vigil.title",
-    "entities.zones.eastbrook_vale.pois.8.label",
+    "entities.zones.gangapur_nagari.pois.8.label",
     "fiesta.augment.aug_apex_predator.desc",
     "fiesta.augment.aug_apex_predator.name",
     "fiesta.augment.aug_arcane_surge.desc",
@@ -65478,6 +65853,21 @@ export const pending: Record<string, readonly string[]> = {
     "skinEvent.unlocked"
   ],
   "ru_RU": [
+    "classDetails.lore.brahmarishi",
+    "classDetails.lore.kshatriya",
+    "classDetails.lore.shilpi",
+    "classDetails.lore.vaidya",
+    "classDetails.lore.vaishya",
+    "classes.brahmarishi",
+    "classes.brahmarishiAria",
+    "classes.kshatriya",
+    "classes.kshatriyaAria",
+    "classes.shilpi",
+    "classes.shilpiAria",
+    "classes.vaidya",
+    "classes.vaidyaAria",
+    "classes.vaishya",
+    "classes.vaishyaAria",
     "entities.mobs.bramble_lynx.name",
     "entities.mobs.brightwood_hare.name",
     "entities.mobs.brightwood_monarch.name",
@@ -65543,7 +65933,7 @@ export const pending: Record<string, readonly string[]> = {
     "entities.quests.q_ledger_vigil.objectives.0.label",
     "entities.quests.q_ledger_vigil.text",
     "entities.quests.q_ledger_vigil.title",
-    "entities.zones.eastbrook_vale.pois.8.label",
+    "entities.zones.gangapur_nagari.pois.8.label",
     "fiesta.augment.aug_apex_predator.desc",
     "fiesta.augment.aug_apex_predator.name",
     "fiesta.augment.aug_arcane_surge.desc",
@@ -65962,19 +66352,29 @@ export const en_XA: EnTranslations = {
     "hunter": "[Ĥúñţéŕ]",
     "rogue": "[Ŕóĝúé]",
     "priest": "[Þŕíéšţ]",
-    "shaman": "[Šĥáɱáñ]",
+    "shaman": "[Šáŕášŵáţí Ɓáŕð]",
     "mage": "[Ɱáĝé]",
     "warlock": "[Ŵáŕļóçķ]",
     "druid": "[Ðŕúíð]",
+    "brahmarishi": "[Çĥáñáķýá Šçĥóļáŕ]",
+    "kshatriya": "[Šúƀĥášĥ Ŵáŕŕíóŕ]",
+    "vaishya": "[Áŕĵúñá Áŕçĥéŕ]",
+    "shilpi": "[Áŕýáƀĥáţţá Ɱáĝé]",
+    "vaidya": "[Ðĥáñʋáñţáŕí Ĥéáļéŕ]",
     "warriorAria": "[Ŵáŕŕíóŕ çļášš]",
     "paladinAria": "[Þáļáðíñ çļášš]",
     "hunterAria": "[Ĥúñţéŕ çļášš]",
     "rogueAria": "[Ŕóĝúé çļášš]",
     "priestAria": "[Þŕíéšţ çļášš]",
-    "shamanAria": "[Šĥáɱáñ çļášš]",
+    "shamanAria": "[Šáŕášŵáţí Ɓáŕð çļášš]",
     "mageAria": "[Ɱáĝé çļášš]",
     "warlockAria": "[Ŵáŕļóçķ çļášš]",
-    "druidAria": "[Ðŕúíð çļášš]"
+    "druidAria": "[Ðŕúíð çļášš]",
+    "brahmarishiAria": "[Çĥáñáķýá Šçĥóļáŕ çļášš]",
+    "kshatriyaAria": "[Šúƀĥášĥ Ŵáŕŕíóŕ çļášš]",
+    "vaishyaAria": "[Áŕĵúñá Áŕçĥéŕ çļášš]",
+    "shilpiAria": "[Áŕýáƀĥáţţá Ɱáĝé çļášš]",
+    "vaidyaAria": "[Ðĥáñʋáñţáŕí Ĥéáļéŕ çļášš]"
   },
   "controls": {
     "title": "[Çóñţŕóļš Ĝúíðé]",
@@ -66173,12 +66573,12 @@ export const en_XA: EnTranslations = {
     }
   },
   "seo": {
-    "title": "[Ŵóŕļð óƒ ÇļáúðéÇŕáƒţ: Çļáššíç-Šţýļé Ŵéƀ ⱮⱮÓ]",
-    "description": "[Éɱƀáŕķ óñ áñ éþíç áðʋéñţúŕé íñ Ŵóŕļð óƒ ÇļáúðéÇŕáƒţ, á çļáššíç-šţýļé ɱíçŕó-ⱮⱮÓ þļáýáƀļé ðíŕéçţļý íñ ýóúŕ ƀŕóŵšéŕ. Ĵóíñ á þéŕšíšţéñţ šĥáŕéð ŕéáļɱ, ļéʋéļ úþ çļáššéš, áñð ðéƒéáţ éñéɱíéš!]",
-    "genre": "[ⱮⱮÓŔÞĜ]",
-    "playMode": "[Ɱúļţíþļáýéŕ]",
+    "title": "[ƁĥáŕáţƲéŕšé: Íñðíá'š Ƒíŕšţ Éðúçáţíóñáļ ⱮⱮÓ]",
+    "description": "[Éɱƀáŕķ óñ áñ éþíç éðúçáţíóñáļ áðʋéñţúŕé íñ ƁĥáŕáţƲéŕšé, ţĥé ƒíŕšţ-éʋéŕ Íñðíáñ ⱮⱮÓ ðéšíĝñéð ƒóŕ šçĥóóļ šţúðéñţš áñð éẋáɱ ášþíŕáñţš. Þļáý, ļéáŕñ, áñð ƀúíļð ɱóñúɱéñţš ţóĝéţĥéŕ!]",
+    "genre": "[Éðúçáţíóñáļ ⱮⱮÓŔÞĜ]",
+    "playMode": "[Ɱúļţíþļáýéŕ / Šíñĝļéþļáýéŕ]",
     "applicationCategory": "[Ĝáɱé]",
-    "operatingSystem": "[Ŵéƀ ƀŕóŵšéŕ]"
+    "operatingSystem": "[Ŵéƀ ƀŕóŵšéŕ / Ɱóƀíļé]"
   },
   "a11y": {
     "goHome": "[Ĝó ţó ĥóɱéþáĝé]",
@@ -66186,9 +66586,9 @@ export const en_XA: EnTranslations = {
     "mainNavigation": "[Ɱáíñ ñáʋíĝáţíóñ]",
     "languageSelection": "[Ļáñĝúáĝé šéļéçţíóñ]",
     "characterActions": "[Çĥáŕáçţéŕ áçţíóñš]",
-    "githubProject": "[Óþéñ ţĥé Ŵóŕļð óƒ ÇļáúðéÇŕáƒţ ĜíţĤúƀ þŕóĵéçţ]",
-    "discordCommunity": "[Ĵóíñ ţĥé Ŵóŕļð óƒ ÇļáúðéÇŕáƒţ Ðíšçóŕð çóɱɱúñíţý]",
-    "donateProject": "[Ðóñáţé ţó šúþþóŕţ Ŵóŕļð óƒ ÇļáúðéÇŕáƒţ]"
+    "githubProject": "[Óþéñ ţĥé ƁĥáŕáţƲéŕšé ĜíţĤúƀ þŕóĵéçţ]",
+    "discordCommunity": "[Ĵóíñ ţĥé ƁĥáŕáţƲéŕšé Ðíšçóŕð çóɱɱúñíţý]",
+    "donateProject": "[Ðóñáţé ţó šúþþóŕţ ƁĥáŕáţƲéŕšé]"
   },
   "loading": {
     "world": "[Ļóáðíñĝ ŵóŕļð...]",
@@ -66324,10 +66724,15 @@ export const en_XA: EnTranslations = {
       "hunter": "[Ĥúñţéŕš ɱášţéŕ ţĥé ŵíļðéŕñéšš, ţŕáçķíñĝ éñéɱíéš ƒŕóɱ áƒáŕ ŵíţĥ ƀóŵš óŕ ĝúñš áñð úšíñĝ ţŕáþš ţó çóñţŕóļ ţĥé ƀáţţļéƒíéļð.]",
       "rogue": "[Ŕóĝúéš áŕé šţéáļţĥý áššáššíñš ŵĥó šþéñð Éñéŕĝý áñð Çóɱƀó Þóíñţš óñ ƀáçķšţáƀš áñð ƒíñíšĥíñĝ ɱóʋéš ƒŕóɱ ţĥé šĥáðóŵš.]",
       "priest": "[Þŕíéšţš çáļļ óñ Ĥóļý Ļíĝĥţ ţó ĥéáļ áñð šĥíéļð áļļíéš, ŵĥíļé Šĥáðóŵ ɱáĝíç ļéţš ţĥéɱ ðŕáíñ ţĥé ļíƒé óƒ ţĥéíŕ éñéɱíéš.]",
-      "shaman": "[Šĥáɱáñ çóɱɱáñð ţĥé éļéɱéñţš, íɱƀúíñĝ ŵéáþóñš ŵíţĥ þóŵéŕ, šĥóçķíñĝ éñéɱíéš ŵíţĥ ļíĝĥţñíñĝ, áñð ŕéšţóŕíñĝ áļļíéš.]",
+      "shaman": "[Šáŕášŵáţí Ɓáŕðš áŕé ĝúáŕðíáñš óƒ ļáñĝúáĝéš áñð ļíţéŕáţúŕé, çĥáñţíñĝ ʋéŕšéš áñð íɱƀúíñĝ ţóţéɱš ţó íñšþíŕé áñð éɱþóŵéŕ ţĥéíŕ áļļíéš.]",
       "mage": "[Ɱáĝéš ƀéñð Ƒíŕé, Ƒŕóšţ, áñð Áŕçáñé þóŵéŕ ţó ðéšţŕóý éñéɱíéš, çóñĵúŕé ŵáţéŕ, áñð ƒŕééžé ţĥŕéáţš íñ þļáçé.]",
       "warlock": "[Ŵáŕļóçķš šúɱɱóñ ðéɱóñš, áþþļý çúŕšéš áñð ðáɱáĝé-óʋéŕ-ţíɱé ɱáĝíç, áñð ðŕáíñ ļíƒé ƒŕóɱ éñéɱíéš ţó éñðúŕé.]",
-      "druid": "[Ðŕúíðš çĥáññéļ ñáţúŕé, ĥéáļíñĝ ŵóúñðš, éñţáñĝļíñĝ ƒóéš, áñð šĥíƒţíñĝ íñţó áñíɱáļ ƒóŕɱš ƒóŕ ðéƒéñšé óŕ ðáɱáĝé.]"
+      "druid": "[Ðŕúíðš çĥáññéļ ñáţúŕé, ĥéáļíñĝ ŵóúñðš, éñţáñĝļíñĝ ƒóéš, áñð šĥíƒţíñĝ íñţó áñíɱáļ ƒóŕɱš ƒóŕ ðéƒéñšé óŕ ðáɱáĝé.]",
+      "brahmarishi": "[Çĥáñáķýá Šçĥóļáŕš áŕé ɱášţéŕ ţáçţíçíáñš óƒ ĥíšţóŕý áñð þóļíţý. Ĝúíðéð ƀý šţŕáţéĝý, ţĥéý ĥéáļ áļļíéš áñð šĥíéļð ţĥéɱ ŵíţĥ þúŕé íñţéļļéçţ.]",
+      "kshatriya": "[Šúƀĥášĥ Ŵáŕŕíóŕš áŕé çóúŕáĝéóúš þŕóţéçţóŕš ŵĥó ƒíĝĥţ óñ ţĥé ƒŕóñţļíñéš óƒ çíʋíçš áñð çúŕŕéñţ áƒƒáíŕš, ƀúíļðíñĝ ŕáĝé ţó ðéƒéñð ţĥéíŕ áļļíéš.]",
+      "vaishya": "[Áŕĵúñá Áŕçĥéŕš áŕé ļéĝéñðáŕý ɱáŕķšɱéñ ŵĥó ɱášţéŕ ɱáţĥéɱáţíçš áñð ðíšţáñçé. Ţĥéý ţáŕĝéţ ƒóéš ƒŕóɱ áƒáŕ ŵíţĥ úñɱáţçĥéð þŕéçíšíóñ áñð šþééð.]",
+      "shilpi": "[Áŕýáƀĥáţţá Ɱáĝéš ƀéñð ţĥé ļáŵš óƒ þĥýšíçš áñð šçíéñçé, çĥáññéļíñĝ éļéɱéñţáļ ƒíŕé, ƒŕóšţ, áñð çóšɱíç ƒóŕçéš ţó ðíšíñţéĝŕáţé ţĥŕéáţš.]",
+      "vaidya": "[Ðĥáñʋáñţáŕí Ĥéáļéŕš ɱášţéŕ ƀíóļóĝý áñð ţĥé ļíƒé šçíéñçéš, ŕéšţóŕíñĝ ŵóúñðš áñð šĥíƒţíñĝ ƒóŕɱš ţó þŕóţéçţ ţĥé ñáţúŕáļ ƀáļáñçé óƒ ļíƒé.]"
     },
     "aria": "[Çļášš ðéţáíļš ƒóŕ {className}: ŕóļé {role}. Šţáŕţíñĝ šţáţš: Šţŕéñĝţĥ {str}, Áĝíļíţý {agi}, Šţáɱíñá {sta}, Íñţéļļéçţ {int}, Šþíŕíţ {spi}.]",
     "statBarAria": "[{stat}: {value} óúţ óƒ 25]"
@@ -68695,28 +69100,28 @@ export const en_XA: EnTranslations = {
     },
     "mobs": {
       "forest_wolf": {
-        "name": "[Ƒóŕéšţ Ŵóļƒ]"
+        "name": "[Ĝýááñ-Ɓĥéðíýá]"
       },
       "old_greyjaw": {
-        "name": "[Óļð Ĝŕéýĵáŵ]"
+        "name": "[Ɱáĥáʋíðýá]"
       },
       "wild_boar": {
-        "name": "[Ŵíļð Ɓóáŕ]"
+        "name": "[Ʋíĝýáñ Ʋáŕáĥ]"
       },
       "webwood_spider": {
-        "name": "[Ŵéƀŵóóð Ļúŕķéŕ]"
+        "name": "[Ĵááļ-Ɱáķðí]"
       },
       "mudfin_murloc": {
-        "name": "[Ɱúðƒíñ Šķúļķéŕ]"
+        "name": "[Ɓĥáŕáţíýá Ɱáķáŕá]"
       },
       "tunnel_rat": {
-        "name": "[Ţúññéļ Ŕáţ Ðíĝĝéŕ]"
+        "name": "[Þáŕíķšĥá Þíšáçĥ]"
       },
       "vale_bandit": {
-        "name": "[Ʋáļé Ɓáñðíţ]"
+        "name": "[Áðĥúŕá Çĥóŕ]"
       },
       "restless_bones": {
-        "name": "[Ŕéšţļéšš Ɓóñéš]"
+        "name": "[Ɓĥóóļ-Ɓĥóóļáíýá]"
       },
       "gorrak": {
         "name": "[Ĝóŕŕáķ ţĥé Ŕúţĥļéšš]"
@@ -68797,7 +69202,7 @@ export const en_XA: EnTranslations = {
         "name": "[Šéẋţóñ Ɱáŕŕóŵ]"
       },
       "morthen": {
-        "name": "[Ɱóŕţĥéñ ţĥé Ĝŕáʋéçáļļéŕ]"
+        "name": "[Áĝýááñ Ášúŕá]"
       },
       "bastion_revenant": {
         "name": "[Ɓášţíóñ Ŕéʋéñáñţ]"
@@ -68830,7 +69235,7 @@ export const en_XA: EnTranslations = {
         "name": "[Ĝŕáñð Ñéçŕóɱáñçéŕ Ʋéļķĥáŕ]"
       },
       "korzul_the_gravewyrm": {
-        "name": "[Ķóŕžúļ ţĥé Ĝŕáʋéŵýŕɱ]"
+        "name": "[Áñðĥķááŕ Ñáĝá]"
       },
       "bog_bloat": {
         "name": "[Ɓóĝ Ɓļóáţ]"
@@ -70061,121 +70466,121 @@ export const en_XA: EnTranslations = {
       }
     },
     "zones": {
-      "eastbrook_vale": {
-        "name": "[Éášţƀŕóóķ Ʋáļé]",
-        "welcome": "[Ƒíñð Ɱáŕšĥáļ Ŕéðƀŕóóķ íñ ţóŵñ - ĥé ĥáš ŵóŕķ ƒóŕ ýóú.]",
+      "gangapur_nagari": {
+        "name": "[Ĝáñĝáþúŕ Ñáĝáŕí]",
+        "welcome": "[Ƒíñð Ĝúŕú Šĥúķŕáçĥáŕýá íñ Ʋíðýá Ñáĝáŕ - ĥé ĥáš ŵíšðóɱ áñð ɋúéšţš ƒóŕ ýóú.]",
         "pois": {
           "0": {
-            "label": "[Éášţƀŕóóķ]"
+            "label": "[Ʋíðýá Ñáĝáŕ]"
           },
           "1": {
-            "label": "[Ŵóļƒ Ŕúñ]"
+            "label": "[Ĝýááñ-Ɓĥéðíýá Ŕúñ]"
           },
           "2": {
-            "label": "[Ɓóáŕ Ɱéáðóŵ]"
+            "label": "[Ʋíĝýáñ Ʋáŕáĥ Ɱéáðóŵ]"
           },
           "3": {
-            "label": "[Ɱíŕŕóŕ Ļáķé]"
+            "label": "[Ĝáñĝá Ļáķé]"
           },
           "4": {
-            "label": "[Ŵéƀŵóóð]"
+            "label": "[Ĵááļ-Ɱáķðí Ƒóŕéšţ]"
           },
           "5": {
             "label": "[Çóþþéŕ Ðíĝ]"
           },
           "6": {
-            "label": "[Ɓáñðíţ Çáɱþ]"
+            "label": "[Áðĥúŕá Çĥóŕ Çáɱþ]"
           },
           "7": {
-            "label": "[Ƒáļļéñ Çĥáþéļ]"
+            "label": "[Ƒáļļéñ Ɱáñðíŕ]"
           },
           "8": {
-            "label": "[Ɓŕíĝĥţŵóóð Ĝļáðé]"
+            "label": "[Þŕáķŕíţí Ĝļáðé]"
           }
         }
       },
-      "mirefen_marsh": {
-        "name": "[Ɱíŕéƒéñ Ɱáŕšĥ]",
-        "welcome": "[Ŕéþóŕţ ţó Ŵáŕðéñ Ƒéñŵíçķ áţ ţĥé Ƒéñƀŕíðĝé ĝáţé.]",
+      "vigyan_vana": {
+        "name": "[Ʋíĝýáñ Ʋáñá]",
+        "welcome": "[Ŕéþóŕţ ţó Ʋíðýáŕţĥí Ŕáķšĥáķ áţ ţĥé Šĥášţŕá Ĝŕáɱ ĝáţé.]",
         "pois": {
           "0": {
-            "label": "[Ƒéñƀŕíðĝé]"
+            "label": "[Šĥášţŕá Ĝŕáɱ]"
           },
           "1": {
-            "label": "[Þŕóŵļéŕ Ŕééðš]"
+            "label": "[Ʋíĝýáñ Ʋáñá Éñţŕý]"
           },
           "2": {
-            "label": "[Ðééþƒéñ Šĥáļļóŵš]"
+            "label": "[Ŕášáýáñ Ķúñð (Çĥéɱíšţŕý Þóóļ)]"
           },
           "3": {
-            "label": "[Ŵíðóŵ Ţĥíçķéţ]"
+            "label": "[Ĵééʋáñ Ʋáţíķá (Ɓíóļóĝý Ĝáŕðéñ)]"
           },
           "4": {
-            "label": "[Ðŕóŵñéð Çĥáþéļ]"
+            "label": "[Ðóóƀá Þŕáķášĥšţĥáļ]"
           },
           "5": {
-            "label": "[Ţŕóļļ Ɱóúñðš]"
+            "label": "[Áĝýááñ Ɱóúñðš]"
           },
           "6": {
-            "label": "[Ĝŕáʋéçáļļéŕ Éñçáɱþɱéñţ]"
+            "label": "[Ɓĥŕáɱ Ášúŕá Çáɱþ]"
           },
           "7": {
-            "label": "[Ţĥé Šúñķéñ Ɓášţíóñ]"
+            "label": "[Ʋíĝýáñ Ĝáŕĥ (Šçíéñçé Ƒóŕţ)]"
           }
         }
       },
-      "thornpeak_heights": {
-        "name": "[Ţĥóŕñþéáķ Ĥéíĝĥţš]",
-        "welcome": "[Çáþţáíñ Ţĥéššáļý ĥóļðš ţĥé ŵáļļ áţ Ĥíĝĥŵáţçĥ - ƀáŕéļý.]",
+      "gyan_shikhar": {
+        "name": "[Ĝýáñ Šĥíķĥáŕ]",
+        "welcome": "[Áçĥáŕýá Çĥáñðŕáĝúþţá ĥóļðš Ţáķšĥášĥíļá - ţĥé ƒíñáļ úñíʋéŕšíţý, ƀáŕéļý šţáñðíñĝ.]",
         "pois": {
           "0": {
-            "label": "[Ĥíĝĥŵáţçĥ]"
+            "label": "[Ţáķšĥášĥíļá]"
           },
           "1": {
-            "label": "[Šţáļķéŕ Ŕíðĝé]"
+            "label": "[Ĝáñíţ Ŕíðĝé (Ɱáţĥ Ŕíðĝé)]"
           },
           "2": {
-            "label": "[Ðééþŕóçķ Ɓúŕŕóŵš]"
+            "label": "[Ɓĥáúţíķ Ɓúŕŕóŵš (Þĥýšíçš Çáʋéš)]"
           },
           "3": {
-            "label": "[Óĝŕé Ƒóóţĥíļļš]"
+            "label": "[Áĝýááñ Ƒóóţĥíļļš]"
           },
           "4": {
-            "label": "[Ðŕóĝɱáŕ'š Ŵáŕ-Çáɱþ]"
+            "label": "[Áĝýááñ Ŵáŕ-Çáɱþ]"
           },
           "5": {
-            "label": "[Šţóŕɱçŕáĝ]"
+            "label": "[Áŕţĥ Šĥíķĥáŕ (Éçóñóɱíçš Þéáķ)]"
           },
           "6": {
-            "label": "[Ţĥé Ĝļíɱɱéŕɱéŕé]"
+            "label": "[Ĝýáñ Šáŕóʋáŕ (Ķñóŵļéðĝé Ļáķé)]"
           },
           "7": {
-            "label": "[Ŵýŕɱçúļţ Ţéñţš]"
+            "label": "[Áñðĥķááŕ Çúļţ Ţéñţš]"
           },
           "8": {
-            "label": "[Ŕéʋéñáñţ Ƒíéļðš]"
+            "label": "[Ʋíţŕááĝýá Ķšĥéţŕá (Þĥíļóšóþĥý Ƒíéļð)]"
           },
           "9": {
-            "label": "[Ĝŕáʋéŵýŕɱ Šáñçţúɱ]"
+            "label": "[Ɓŕáĥɱášţŕá Ɱáñðíŕ]"
           }
         }
       }
     },
     "dungeons": {
       "hollow_crypt": {
-        "name": "[Ţĥé Ĥóļļóŵ Çŕýþţ]",
-        "enterText": "[Ýóú ðéšçéñð íñţó ţĥé Ĥóļļóŵ Çŕýþţ...]",
-        "leaveText": "[Ýóú çļíɱƀ ƀáçķ íñţó ðáýļíĝĥţ.]"
+        "name": "[Íţíĥáš Ķúñð]",
+        "enterText": "[Ýóú ðéšçéñð íñţó ţĥé Íţíĥáš Ķúñð - ŵĥéŕé ţĥé þášţ ŵáíţš ţó ƀé ŕéɱéɱƀéŕéð...]",
+        "leaveText": "[Ýóú çļíɱƀ ƀáçķ íñţó ðáýļíĝĥţ, çáŕŕýíñĝ ţĥé ļéššóñš óƒ ĥíšţóŕý.]"
       },
       "sunken_bastion": {
-        "name": "[Ţĥé Šúñķéñ Ɓášţíóñ]",
-        "enterText": "[Ýóú ŵáðé ðóŵñ íñţó ţĥé Šúñķéñ Ɓášţíóñ...]",
-        "leaveText": "[Ýóú çļíɱƀ óúţ óƒ ţĥé ðŕóŵñíñĝ ðáŕķ.]"
+        "name": "[Ʋíĝýáñ Ĝáŕĥ]",
+        "enterText": "[Ýóú ŵáðé íñţó Ʋíĝýáñ Ĝáŕĥ. Šçíéñçé ţŵíšţéð ƀý íĝñóŕáñçé áŵáíţš...]",
+        "leaveText": "[Ýóú çļíɱƀ óúţ óƒ ţĥé ðŕóŵñíñĝ ðáŕķ - šçíéñçé ļíʋéš áĝáíñ.]"
       },
       "gravewyrm_sanctum": {
-        "name": "[Ĝŕáʋéŵýŕɱ Šáñçţúɱ]",
-        "enterText": "[Ţĥé áíŕ ĝóéš çóļð. Šóɱéţĥíñĝ ʋášţ ƀŕéáţĥéš ƀéļóŵ...]",
-        "leaveText": "[Ýóú šţáĝĝéŕ ƀáçķ íñţó ţĥé ɱóúñţáíñ ŵíñð.]"
+        "name": "[Ɓŕáĥɱášţŕá Ɱáñðíŕ]",
+        "enterText": "[Ţĥé áíŕ ĝŕóŵš ðéñšé ŵíţĥ ƒóŕĝóţţéñ ɱáñţŕáš. Áñðĥķááŕ Ñáĝá ŵáíţš ƀéļóŵ...]",
+        "leaveText": "[Ɓŕáĥɱášţŕá'š ļíĝĥţ ŕéţúŕñš. Ýóú ĥáʋé éáŕñéð ţĥé ţíţļé óƒ Ɱáĥáʋíðýáŕţĥí.]"
       },
       "nythraxis_crypt": {
         "name": "[Áƀáñðóñéð Çŕýþţ]",

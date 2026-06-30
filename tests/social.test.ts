@@ -684,7 +684,7 @@ describe('the Hollow Crypt', () => {
     for (let i = 0; i < 20 * 25 && !pulsed; i++) {
       face(sim, a, boss.id);
       const events = sim.tick();
-      if (events.some((e) => e.type === 'damage' && e.ability === 'Shadow Pulse' && e.targetId === a)) pulsed = true;
+      if (events.some((e) => e.type === 'damage' && (e.ability === 'Shadow Pulse' || e.ability === 'Vigyan Nasha (Knowledge Drain)') && e.targetId === a)) pulsed = true;
       if (ea.dead) break;
     }
     expect(pulsed).toBe(true);

@@ -163,7 +163,61 @@ CREATE TABLE IF NOT EXISTS chat_violations (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS chat_violations_account ON chat_violations(account_id, created_at DESC);
+-- ── BharatVerse: Educational Progress Tables ─────────────────────────────────
+-- Tracks per-subject mastery score and answer streaks for each character.
+-- mastery_score: 0-100 composite score (correct % + speed + combo)
+CREATE TABLE IF NOT EXISTS subject_mastery (
+  id SERIAL PRIMARY KEY,
+  character_id INT REFERENCES characters(id) ON DELETE CASCADE,
+  subject TEXT NOT NULL,
+  mastery_score INT NOT NULL DEFAULT 0,
+  questions_attempted INT NOT NULL DEFAULT 0,
+  questions_correct INT NOT NULL DEFAULT 0,
+  current_combo INT NOT NULL DEFAULT 0,
+  best_combo INT NOT NULL DEFAULT 0,
+  last_practiced TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE(character_id, subject)
+);
+CREATE INDEX IF NOT EXISTS subject_mastery_character ON subject_mastery(character_id);
+-- Records individual question attempts for analytics and spaced-repetition.
+CREATE TABLE IF NOT EXISTS question_history (
+  id BIGSERIAL PRIMARY KEY,
+  character_id INT REFERENCES characters(id) ON DELETE CASCADE,
+  question_id TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  answered_correctly BOOLEAN NOT NULL,
+  time_taken_ms INT NOT NULL,
+  damage_dealt INT NOT NULL DEFAULT 0,
+  context TEXT NOT NULL DEFAULT 'combat',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS question_history_character ON question_history(character_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS question_history_subject ON question_history(character_id, subject, created_at DESC);
+-- ── BharatVerse: Daily Streak Tracking ───────────────────────────────────────
+-- Tracks per-account daily login and play streaks.
+-- streak_freeze_count: number of free streak misses remaining (resets monthly).
+CREATE TABLE IF NOT EXISTS daily_streaks (
+  account_id INT REFERENCES accounts(id) ON DELETE CASCADE PRIMARY KEY,
+  current_streak INT NOT NULL DEFAULT 0,
+  longest_streak INT NOT NULL DEFAULT 0,
+  last_active_date DATE,
+  streak_freeze_count INT NOT NULL DEFAULT 2
+);
+-- ── BharatVerse: Guild Monument Construction ──────────────────────────────────
+-- Tracks collective monument building progress for each guild.
+-- stone_shards: resources accumulated by the guild.
+-- stage: 0 = blueprint, 1-5 = construction stages, 6 = completed.
+CREATE TABLE IF NOT EXISTS guild_monuments (
+  guild_id INT NOT NULL,
+  monument_type TEXT NOT NULL,
+  stage INT NOT NULL DEFAULT 0,
+  stone_shards BIGINT NOT NULL DEFAULT 0,
+  completed_at TIMESTAMPTZ,
+  PRIMARY KEY (guild_id, monument_type)
+);
+CREATE INDEX IF NOT EXISTS guild_monuments_guild ON guild_monuments(guild_id);
 `;
+
 
 export async function ensureSchema(): Promise<void> {
   // In the process-per-realm model several server processes boot against the

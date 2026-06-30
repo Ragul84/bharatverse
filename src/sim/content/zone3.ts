@@ -1,35 +1,36 @@
-// Zone 3 — Thornpeak Heights (levels 13-20). The Gravecallers serve Korzul
-// the Gravewyrm, an ancient dragon sealed beneath the peaks. Highwatch holds
-// the wall against ogres, waking elementals, and the open chanting of the
-// Wyrmcult at the Gravewyrm Sanctum gates.
+// Zone 3 — Gyan Shikhar (levels 13-20). The Agyaan forces serve Andhkaar Naga,
+// a darkness serpent sealed beneath the peaks. Takshashila (ancient university hub)
+// holds the wall against ogres, physics elementals, and the open chanting of the
+// Agyaan cult at the Brahmastra Mandir gates.
+// BharatVerse fork of world-of-claudecraft zone 3 (Thornpeak Heights).
 
 import type {
   CampDef, GroundObjectDef, ItemDef, MobTemplate, NpcDef, QuestDef, ZoneDef, ZonePropsDef,
 } from '../types';
 
 export const ZONE3_ZONE: ZoneDef = {
-  id: 'thornpeak_heights',
-  name: 'Thornpeak Heights',
+  id: 'gyan_shikhar',
+  name: 'Gyan Shikhar',
   zMin: 540,
   zMax: 900,
   levelRange: [13, 20],
   biome: 'peaks',
-  hub: { x: 0, z: 660, radius: 20, name: 'Highwatch' },
+  hub: { x: 0, z: 660, radius: 20, name: 'Takshashila' },
   graveyard: { x: 15, z: 645 },
   lakes: [{ x: -70, z: 760, radius: 18 }],
   pois: [
-    { x: 0, z: 660, label: 'Highwatch' },
-    { x: -50, z: 590, label: 'Stalker Ridge' },
-    { x: 85, z: 615, label: 'Deeprock Burrows' },
-    { x: -90, z: 700, label: 'Ogre Foothills' },
-    { x: -130, z: 740, label: "Drogmar's War-Camp" },
-    { x: 110, z: 760, label: 'Stormcrag' },
-    { x: -70, z: 770, label: 'The Glimmermere' },
-    { x: 55, z: 820, label: 'Wyrmcult Tents' },
-    { x: -40, z: 830, label: 'Revenant Fields' },
-    { x: 0, z: 880, label: 'Gravewyrm Sanctum' },
+    { x: 0, z: 660, label: 'Takshashila' },
+    { x: -50, z: 590, label: 'Ganit Ridge (Math Ridge)' },
+    { x: 85, z: 615, label: 'Bhautik Burrows (Physics Caves)' },
+    { x: -90, z: 700, label: 'Agyaan Foothills' },
+    { x: -130, z: 740, label: 'Agyaan War-Camp' },
+    { x: 110, z: 760, label: 'Arth Shikhar (Economics Peak)' },
+    { x: -70, z: 770, label: 'Gyan Sarovar (Knowledge Lake)' },
+    { x: 55, z: 820, label: 'Andhkaar Cult Tents' },
+    { x: -40, z: 830, label: 'Vitraagya Kshetra (Philosophy Field)' },
+    { x: 0, z: 880, label: 'Brahmastra Mandir' },
   ],
-  welcome: 'Captain Thessaly holds the wall at Highwatch — barely.',
+  welcome: 'Acharya Chandragupta holds Takshashila — the final university, barely standing.',
 };
 
 // Mountain road from Fenbridge up to Highwatch, then spokes.

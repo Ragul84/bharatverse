@@ -42,7 +42,7 @@ function swing(sim: Sim, mob: Entity, target: Entity) {
 describe('mob polymorph hex ("Mudfin Hex")', () => {
   it('seeds the hex mechanic on the Mudfin Skulker', () => {
     expect(MOBS['mudfin_murloc'].polymorphHex).toEqual({
-      chance: 0.12, duration: 4, name: 'Mudfin Hex', school: 'nature',
+      chance: 0.12, duration: 4, name: 'Bhram Jaal', school: 'nature',
     });
   });
 
@@ -56,7 +56,7 @@ describe('mob polymorph hex ("Mudfin Hex")', () => {
     MOBS['mudfin_murloc'].polymorphHex!.chance = 0.12;
     const aura = p.auras.find((a) => a.kind === 'polymorph');
     expect(aura).toBeTruthy();
-    expect(aura!.name).toBe('Mudfin Hex');
+    expect(aura!.name).toBe('Bhram Jaal');
     expect(aura!.remaining).toBe(4);
     expect(aura!.breaksOnDamage).toBe(true);
   });

@@ -31,7 +31,7 @@ function strike(sim: Sim, mob: Entity, proc: boolean) {
 
 describe('frenzyOnHit (Blood Frenzy)', () => {
   it('old_greyjaw carries the frenzyOnHit trait', () => {
-    expect(MOBS.old_greyjaw.frenzyOnHit).toEqual({ chance: 0.25, hasteMult: 1.3, duration: 8, name: 'Blood Frenzy' });
+    expect(MOBS.old_greyjaw.frenzyOnHit).toEqual({ chance: 0.25, hasteMult: 1.3, duration: 8, name: 'Knowledge Surge' });
   });
 
   it('a wounded carrier flies into a blood frenzy', () => {
@@ -42,7 +42,7 @@ describe('frenzyOnHit (Blood Frenzy)', () => {
 
     const aura = frenzy(mob);
     expect(aura).toBeTruthy();
-    expect(aura!.name).toBe('Blood Frenzy');
+    expect(aura!.name).toBe('Knowledge Surge');
     expect(aura!.kind).toBe('buff_haste');
     expect(aura!.value).toBe(1.3);
     expect(aura!.remaining).toBe(8);

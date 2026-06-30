@@ -27,6 +27,8 @@ import { GameServer } from './game';
 import { REALM, REALM_DIRECTORY, REALM_ORIGINS } from './realm';
 import { webLoginEnforced, isWebClientRequest } from './web_login_guard';
 import { cacheControlFor, etagFor, isNotModified } from './static_cache';
+// ── BharatVerse additions ──────────────────────────────────────────────────
+import { getRandomQuestion, getMIGAExplanation } from './questions';
 
 const PORT = Number(process.env.PORT ?? 8787);
 const STATIC_DIR = path.join(__dirname, '..', 'dist');
@@ -380,8 +382,9 @@ async function handleApi(req: http.IncomingMessage, res: http.ServerResponse): P
         const name = normalizeCharName(body.name);
         if (name === null) return json(res, 400, { error: 'invalid character name (2-16 letters)' });
         if (offensiveName(name)) return json(res, 400, { error: 'character name is not allowed' });
-        const validClasses = ['warrior', 'paladin', 'hunter', 'rogue', 'priest', 'shaman', 'mage', 'warlock', 'druid'];
-        if (!validClasses.includes(body.class)) return json(res, 400, { error: 'invalid class' });
+        // BharatVerse: 5 class archetypes (mapped to base mechanics)
+        const validClasses = ['brahmarishi', 'kshatriya', 'vaishya', 'shilpi', 'vaidya'];
+        if (!validClasses.includes(body.class)) return json(res, 400, { error: 'invalid class — choose brahmarishi, kshatriya, vaishya, shilpi, or vaidya' });
         const skin = Math.max(0, Math.min(7, Math.floor(typeof body.skin === 'number' ? body.skin : 0)));
         try {
           const c = await createCharacterCapped(accountId, name, body.class, 10, initialCharacterState(body.class, name, skin));
@@ -489,6 +492,33 @@ async function handleApi(req: http.IncomingMessage, res: http.ServerResponse): P
         realm: REALM,
       });
     }
+    // ── BharatVerse: Knowledge Combat API ─────────────────────────────────────
+    if (req.method === 'POST' && url === '/api/questions/random') {
+      const body = await readBody(req);
+      const subject = typeof body.subject === 'string' ? body.subject : 'general';
+      const difficulty = Math.max(1, Math.min(5, Number(body.difficulty ?? 3)));
+      try {
+        const q = await getRandomQuestion(subject, difficulty);
+        return json(res, 200, q);
+      } catch (err) {
+        console.error('question generation failed:', err);
+        return json(res, 500, { error: 'Question generation failed — check ANTHROPIC_API_KEY' });
+      }
+    }
+    if (req.method === 'POST' && url === '/api/miga/explain') {
+      const body = await readBody(req);
+      const { question = '', chosen = '', correct = '', explanation = '' } = body as Record<string, string>;
+      try {
+        const message = await getMIGAExplanation(question, chosen, correct, explanation);
+        return json(res, 200, { message });
+      } catch (err) {
+        console.error('MIGA explanation failed:', err);
+        // Always return something friendly — MIGA never fails silently
+        return json(res, 200, { message: 'Almost there, warrior! Review this concept and you will master it on your next quest!' });
+      }
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
     if (req.method === 'GET' && url === '/api/status') {
       return json(res, 200, {
         ok: true,
@@ -706,8 +736,11 @@ async function main(): Promise<void> {
 
   game.start();
   server.listen(PORT, () => {
-    console.log(`World of ClaudeCraft server listening on http://localhost:${PORT}`);
+    console.log(`🕉️  BharatVerse — India's First Educational MMO`);
+    console.log(`   by Mindgains Labs Pvt Ltd, Chennai`);
+    console.log(`   Listening on http://localhost:${PORT}`);
     console.log(`  REST: /api/register /api/login /api/characters /api/status`);
+    console.log(`  REST: /api/questions/random /api/miga/explain (BharatVerse)`);
     console.log(`  WS:   /ws, then first message {t:"auth",token,character}`);
   });
 

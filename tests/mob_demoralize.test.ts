@@ -9,7 +9,7 @@ import { MOBS } from '../src/sim/data';
 describe('mob demoralize-on-hit', () => {
   it('the Restless Bones template carries a Withering Wail proc', () => {
     expect(MOBS.restless_bones.demoralize).toMatchObject({
-      ap: 20, duration: 8, name: 'Withering Wail',
+      ap: 20, duration: 8, name: 'Gyan Nasha',
     });
   });
 
@@ -40,7 +40,7 @@ describe('mob demoralize-on-hit', () => {
       rng.next = realNext;
     }
 
-    const aura = victim.auras.find((a) => a.name === 'Withering Wail');
+    const aura = victim.auras.find((a) => a.name === 'Gyan Nasha');
     expect(aura).toBeTruthy();
     expect(aura!.kind).toBe('buff_ap');
     expect(aura!.value).toBe(-20);
@@ -65,7 +65,7 @@ describe('mob demoralize-on-hit', () => {
 
     for (let i = 0; i < 10; i++) (sim as any).mobSwing(bones, victim);
 
-    const wails = victim.auras.filter((a) => a.name === 'Withering Wail');
+    const wails = victim.auras.filter((a) => a.name === 'Gyan Nasha');
     expect(wails.length).toBe(1);
     expect(wails[0].value).toBe(-20);
   });

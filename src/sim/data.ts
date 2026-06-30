@@ -108,6 +108,12 @@ export const REWARD_ARCHETYPE: Record<PlayerClass, PlayerClass> = {
   warrior: 'warrior', paladin: 'warrior', shaman: 'warrior',
   rogue: 'rogue', hunter: 'rogue',
   mage: 'mage', priest: 'mage', warlock: 'mage', druid: 'mage',
+  // BharatVerse archetypes — map to mechanical base
+  brahmarishi: 'mage',    // Chanakya Scholar → mage-tier rewards (int/spi gear)
+  kshatriya:   'warrior', // Subhash Warrior → warrior rewards
+  vaishya:     'rogue',   // Arjuna Archer → rogue/hunter rewards
+  shilpi:      'mage',    // Aryabhatta Mage → mage rewards
+  vaidya:      'mage',    // Dhanvantari Healer → druid/mage rewards
 };
 
 // Resolve the item a quest awards a given class: a class-specific reward if the

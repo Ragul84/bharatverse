@@ -78,7 +78,7 @@ describe("B1: server log-type messages localize through the log path", () => {
       "Bob has left the world. (disconnected)",
       "Who: 3 players online on Stormforge.",
       "Who: 1 player online on Stormforge.",
-      "Carl - level 12 warrior - Eastbrook Vale",
+      "Carl - level 12 warrior - Gangapur Nagari",
     ];
     for (const lang of supportedLanguages) {
       setLanguage(lang);
@@ -107,7 +107,7 @@ describe("L3/L4: additional server-message coverage", () => {
 
   it("localizes the (combat) /who status flag", () => {
     setLanguage("es");
-    const out = localizeServerText("Carl - level 12 warrior - Eastbrook Vale (combat)")!;
+    const out = localizeServerText("Carl - level 12 warrior - Gangapur Nagari (combat)")!;
     expect(out).toContain("Carl");
     expect(out.toLowerCase()).not.toContain("(combat)");
     setLanguage("en");
@@ -276,7 +276,7 @@ describe("M1b: /who status flags localize within the row", () => {
     for (const lang of supportedLanguages) {
       setLanguage(lang);
       for (const [flag, key] of statuses) {
-        const out = localizeServerText(`Carl - level 12 warrior - Eastbrook Vale (${flag})`);
+        const out = localizeServerText(`Carl - level 12 warrior - Gangapur Nagari (${flag})`);
         expect(out, `${lang}: "(${flag})" row not recognized`).not.toBeNull();
         const localized = tServer(key);
         expect(out!.includes(`(${localized})`), `${lang}: ${flag} -> expected "(${localized})" in "${out}"`).toBe(true);
@@ -401,7 +401,7 @@ describe("S1: sim event-text pipeline is localized in every locale", () => {
   it("localizes embedded item and mob names inside sim text", () => {
     setLanguage("de_DE");
     expect(localizeSimText("Equipped Worn Shortsword.")).not.toContain("Worn Shortsword");
-    expect(localizeSimText("Forest Wolf dies.")).not.toContain("Forest Wolf");
+    expect(localizeSimText("Gyaan-Bhediya dies.")).not.toContain("Gyaan-Bhediya");
     setLanguage("en");
   });
 

@@ -1,10 +1,10 @@
 {
-  "name": "world-of-claudecraft",
+  "name": "bharatverse",
   "version": "0.10.0",
   "private": true,
   "license": "MIT",
   "type": "module",
-  "description": "World of Claudecraft — a WoW-Classic-style micro-MMO + headless RL training environment",
+  "description": "BharatVerse — India's First Educational MMO by Mindgains Labs Pvt Ltd, Chennai",
   "scripts": {
     "dev": "vite",
     "build": "npm run i18n:build && npm run i18n:admin && npm run i18n:scan && node scripts/build_media_manifest.mjs generate && vite build && node scripts/build_media_manifest.mjs emit",
@@ -34,9 +34,13 @@
     "wiki:seed": "node scripts/mediawiki/build_seed.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.36.3",
+    "@capacitor/cli": "^8.4.1",
+    "@capacitor/core": "^8.4.1",
     "n8ao": "^1.10.1",
     "obscenity": "^0.4.6",
     "pg": "^8.21.0",
+    "phaser": "^4.2.0",
     "postprocessing": "^6.36.0",
     "three": "^0.165.0",
     "ws": "^8.21.0"

@@ -792,7 +792,7 @@ describe("i18n Localization Key Coverage", () => {
     setLanguage("de_DE");
     expect(tEntity({ kind: "mob", id: "forest_wolf", field: "name" })).toBe("Waldwolf");
     expect(tEntity({ kind: "quest", id: "q_wolves", field: "title" })).toBe("Wölfe vor der Tür");
-    expect(tEntity({ kind: "zone", id: "eastbrook_vale", field: "name" })).toBe("Eastbrook-Tal");
+    expect(tEntity({ kind: "zone", id: "gangapur_nagari", field: "name" })).toBe("Eastbrook-Tal");
 
     setLanguage("zh_CN");
     expect(tEntity({ kind: "quest", id: "q_gravewyrm", field: "title" })).toContain("科祖尔");
@@ -802,7 +802,7 @@ describe("i18n Localization Key Coverage", () => {
 
     setLanguage("ko_KR");
     expect(tEntity({ kind: "mob", id: "forest_wolf", field: "name" })).toBe("숲늑대");
-    expect(tEntity({ kind: "zone", id: "eastbrook_vale", field: "name" })).toBe("이스트브룩 골짜기");
+    expect(tEntity({ kind: "zone", id: "gangapur_nagari", field: "name" })).toBe("이스트브룩 골짜기");
 
     setLanguage("it_IT");
     expect(tEntity({ kind: "mob", id: "forest_wolf", field: "name" })).toBe("Lupo della foresta");
@@ -1203,7 +1203,7 @@ describe("i18n Localization Key Coverage", () => {
     // via t() rather than static markup, so #chatlog-tabs is an empty tablist
     // here. Its labels are localized in hud.ts (initChatTabs), not in index.html.
     expect(html).toContain('id="chatlog-tabs"');
-    expect(html).toContain('data-i18n="entities.zones.eastbrook_vale.name"');
+    expect(html).toContain('data-i18n="entities.zones.gangapur_nagari.name"');
     expect(html).toContain('data-i18n-title="itemUi.bags.title"');
     expect(html).toContain('data-i18n-aria="hud.core.mobileControls"');
     expect(html).toContain('data-i18n="hud.core.mobileMove"');

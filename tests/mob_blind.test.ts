@@ -41,7 +41,7 @@ function swing(sim: Sim, mob: Entity, target: Entity) {
 describe('mob blind ("Blinding Powder")', () => {
   it('seeds the blind mechanic on the Vale Bandit', () => {
     expect(MOBS['vale_bandit'].blind).toEqual({
-      chance: 0.25, miss: 0.3, duration: 5, name: 'Blinding Powder', school: 'physical',
+      chance: 0.25, miss: 0.3, duration: 5, name: 'Dhool Prahaar', school: 'physical',
     });
   });
 
@@ -55,7 +55,7 @@ describe('mob blind ("Blinding Powder")', () => {
     MOBS['vale_bandit'].blind!.chance = 0.25;
     const aura = p.auras.find((a) => a.kind === 'blind');
     expect(aura).toBeTruthy();
-    expect(aura!.name).toBe('Blinding Powder');
+    expect(aura!.name).toBe('Dhool Prahaar');
     expect(aura!.remaining).toBe(5);
     expect(aura!.value).toBe(0.3); // the miss chance carried into combat math
   });

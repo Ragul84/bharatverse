@@ -54,6 +54,12 @@ const CLASS_NAME_KEYS: Record<PlayerClass, string> = {
   mage: 'classes.mage',
   warlock: 'classes.warlock',
   druid: 'classes.druid',
+  // BharatVerse archetypes (class names are resolved from CLASSES[id].name directly)
+  brahmarishi: 'classes.brahmarishi',
+  kshatriya:   'classes.kshatriya',
+  vaishya:     'classes.vaishya',
+  shilpi:      'classes.shilpi',
+  vaidya:      'classes.vaidya',
 };
 
 const CLASS_DESCRIPTION_KEYS: Record<PlayerClass, string> = {
@@ -66,6 +72,11 @@ const CLASS_DESCRIPTION_KEYS: Record<PlayerClass, string> = {
   mage: 'classDetails.lore.mage',
   warlock: 'classDetails.lore.warlock',
   druid: 'classDetails.lore.druid',
+  brahmarishi: 'classDetails.lore.brahmarishi',
+  kshatriya:   'classDetails.lore.kshatriya',
+  vaishya:     'classDetails.lore.vaishya',
+  shilpi:      'classDetails.lore.shilpi',
+  vaidya:      'classDetails.lore.vaidya',
 };
 
 const fallbackLog = new Map<string, EntityTranslationFallback>();
@@ -103,7 +114,15 @@ function interpolateSource(source: string, values?: InterpolationValues): string
 }
 
 function classDescriptionSource(id: PlayerClass): string {
-  return en.classDetails.lore[id];
+  const mechanicalMap: Record<string, string> = {
+    brahmarishi: 'priest',
+    kshatriya:   'warrior',
+    vaishya:     'hunter',
+    shilpi:      'mage',
+    vaidya:      'druid',
+  };
+  const baseClass = mechanicalMap[id] ?? id;
+  return en.classDetails.lore[baseClass as keyof typeof en.classDetails.lore];
 }
 
 function canonicalEntityText(request: EntityTranslationRequest): string {

@@ -39,7 +39,7 @@ describe('quest lifecycle', () => {
     const starterZone = zoneAt(sim.player.pos.z);
 
     expect(zoneWelcomeText(starterZone, (questId) => sim.questState(questId)))
-      .toBe('Find Marshal Redbrook in town — he has work for you.');
+      .toBe('Find Guru Shukracharya in Vidya Nagar — he has wisdom and quests for you.');
 
     const redbrook = [...sim.entities.values()].find((e) => e.templateId === 'marshal_redbrook')!;
     teleportTo(sim, redbrook.pos.x + 2, redbrook.pos.z + 2);

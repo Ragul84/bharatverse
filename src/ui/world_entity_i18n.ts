@@ -65,7 +65,7 @@ const QUEST_IDS = [
   'q_ledger_great_boar', 'q_ledger_outlaw_captain',
 ] as const;
 
-const ZONE_IDS = ['eastbrook_vale', 'mirefen_marsh', 'thornpeak_heights'] as const;
+const ZONE_IDS = ['gangapur_nagari', 'vigyan_vana', 'gyan_shikhar'] as const;
 const DUNGEON_IDS = ['hollow_crypt', 'sunken_bastion', 'gravewyrm_sanctum', 'nythraxis_crypt'] as const;
 
 type MobId = typeof MOB_IDS[number];

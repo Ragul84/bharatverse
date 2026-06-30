@@ -50,7 +50,7 @@ describe("server-sent message localization", () => {
       expect(localizeServerText("You have been removed from <Knights>.")).toContain("Knights");
       expect(localizeServerText("...and 5 more.")).toContain("5");
       // /who row localizes class + zone but keeps the player name and level number
-      const who = localizeServerText("Carl - level 12 warrior - Eastbrook Vale")!;
+      const who = localizeServerText("Carl - level 12 warrior - Gangapur Nagari")!;
       expect(who).toContain("Carl");
       expect(who).toContain("12");
     }
