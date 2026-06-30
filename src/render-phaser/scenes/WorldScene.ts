@@ -635,18 +635,20 @@ export class WorldScene extends Scene {
     const p = this.world.player;
     let facing: number | null = null;
 
-    const dsx = (right ? 1 : 0) - (left ? 1 : 0);
-    const dsy = (down  ? 1 : 0) - (up   ? 1 : 0);
+    const dsx = (right ? 1 : 0) - (left ? 1 : 0); // +1 = screen-right
+    const dsy = (down  ? 1 : 0) - (up   ? 1 : 0); // +1 = screen-down
     if (dsx !== 0 || dsy !== 0) {
       this.moveTarget = null;
-      facing = Math.atan2(dsx, -dsy); // screen x = world x, screen y = world z
+      // Screen maps directly to world: +x = right, +z = down. Sim forward is
+      // (sin facing, cos facing) = (worldX, worldZ), so facing = atan2(dx, dz).
+      facing = Math.atan2(dsx, dsy);
     } else if (this.moveTarget) {
       const dx = this.moveTarget.x - p.pos.x;
       const dz = this.moveTarget.z - p.pos.z;
       if (dx * dx + dz * dz <= (ARRIVE_PX / TILE_SZ * TILE_WORLD_X) ** 2)
         this.moveTarget = null;
       else
-        facing = Math.atan2(dx, -dz);
+        facing = Math.atan2(dx, dz);
     }
 
     if (facing !== null) {

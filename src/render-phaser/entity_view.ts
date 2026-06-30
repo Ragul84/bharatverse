@@ -86,8 +86,12 @@ export class EntityView {
 
     this.body = scene.add.sprite(0, 0, texKey);
     const texH = this.body.height || CHAR_H;
+    // Tiny Swords frames have empty space below the feet (feet sit ~0.82 down the
+    // 192px frame); procedural/_v3 art has feet at the very bottom. Anchor at the
+    // real feet so the body stands on its shadow instead of floating above it.
+    const feetOrigin = useSprite ? 0.82 : (texH - 2) / texH;
     this.body
-      .setOrigin(0.5, (texH - 2) / texH)
+      .setOrigin(0.5, feetOrigin)
       .setScale((TARGET_BODY_H / texH) * (isPlayer ? 1.2 : 1) * Math.max(0.6, e.scale || 1));
 
     // Play idle animation immediately if using spritesheet
@@ -149,8 +153,7 @@ export class EntityView {
       // Switch texture if changed
       if (this.body.texture.key !== tsInfo.tex) {
         this.body.setTexture(tsInfo.tex);
-        const texH = this.body.height || CHAR_H;
-        this.body.setOrigin(0.5, (texH - 2) / texH);
+        this.body.setOrigin(0.5, 0.82); // Tiny Swords feet line
       }
       // Play animation if changed
       if (this.currentAnim !== tsInfo.anim) {
