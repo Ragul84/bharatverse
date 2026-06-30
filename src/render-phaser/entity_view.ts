@@ -12,7 +12,12 @@ import { GameObjects, Scene } from 'phaser';
 import type { Entity } from '../sim/types';
 import * as L from './entity_view_logic';
 import { archetypeFor } from './character_archetype';
-import { characterTextureKey, CHAR_H } from './character_sprites';
+import { CHAR_H } from './character_sprites';
+import { resolveCharacterTexture } from './bv_assets';
+
+// On-screen target height (px) every body is normalized to, so real-art sprites
+// of any source size sit at the same scale as the procedural ones.
+const TARGET_BODY_H = CHAR_H;
 
 const BAR_W = 30;
 const BAR_X = -BAR_W / 2; // left edge, so left-origin fills grow rightward
@@ -28,11 +33,15 @@ export class EntityView {
   private readonly name: GameObjects.Text;
 
   constructor(scene: Scene, e: Entity, isPlayer: boolean) {
-    // Procedural per-archetype sprite, anchored at the feet so depth sorting and
-    // the ground point line up. Players render a touch larger.
-    this.body = scene.add.image(0, 0, characterTextureKey(archetypeFor(e)))
-      .setOrigin(0.5, (CHAR_H - 1.5) / CHAR_H)
-      .setScale((isPlayer ? 1.15 : 1) * Math.max(0.6, e.scale || 1));
+    // Per-archetype sprite (real Kenney art if loaded, else procedural). Anchored
+    // at the feet so depth sorting and the ground point line up, and normalized
+    // to a common on-screen height. Players render a touch larger.
+    const texKey = resolveCharacterTexture((k) => scene.textures.exists(k), archetypeFor(e));
+    this.body = scene.add.image(0, 0, texKey);
+    const texH = this.body.height || CHAR_H;
+    this.body
+      .setOrigin(0.5, (texH - 1.5) / texH)
+      .setScale((TARGET_BODY_H / texH) * (isPlayer ? 1.15 : 1) * Math.max(0.6, e.scale || 1));
 
     // Overlays sit above the ~36px-tall sprite (feet at y=0, head near y=-35).
     this.name = scene.add.text(0, -50, '', {

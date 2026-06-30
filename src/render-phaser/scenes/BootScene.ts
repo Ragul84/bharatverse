@@ -9,6 +9,7 @@
 
 import { Scene } from 'phaser';
 import { Events } from '../index';
+import { optionalAssets } from '../bv_assets';
 
 export class BootScene extends Scene {
   private progressBar!: Phaser.GameObjects.Graphics;
@@ -84,6 +85,14 @@ export class BootScene extends Scene {
 
     // Question bank (first batch loaded at boot)
     this.load.json('questions_sample', 'data/questions_sample.json');
+
+    // Optional real-art assets (Kenney CC0). Any that 404 are simply skipped and
+    // the procedural fallback texture is used instead, so the game runs with
+    // zero, some, or all assets present. See public/assets/README.md.
+    this.load.on('loaderror', () => { /* missing optional asset -> procedural fallback */ });
+    for (const a of optionalAssets()) {
+      this.load.image(a.key, a.url);
+    }
 
     // Audio
     // this.load.audio('bgm_indraprastha', ['assets/audio/bgm_indraprastha.ogg', 'assets/audio/bgm_indraprastha.mp3']);

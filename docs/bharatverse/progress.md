@@ -81,3 +81,13 @@ Archive actions (one-time):
   (feet-anchored, scaled by entity.scale, dead-tinted), overlays repositioned
   above the taller sprite. tsc + vite build green; 14 char/entity tests pass.
   NEXT: directional facing frames, real tileset ground, building interiors.
+- WP2 real-art pipeline scaffold: new pure `bv_assets.ts` (tested,
+  `tests/phaser_bv_assets.test.ts` 7/7) defines the optional Kenney-CC0 asset
+  keys/urls (`assets/characters/<archetype>.png`, `assets/props/<name>.png`) and
+  the resolve-real-else-procedural rule (`resolveCharacterTexture`/
+  `resolveDecoTexture`, `isRealArtKey`). `BootScene` preloads every
+  `optionalAssets()` entry with a `loaderror` no-op so missing files silently fall
+  back to procedural; `EntityView` + `WorldScene.drawDecorations` now resolve real
+  art when present (tint only applied to procedural). Renderer switched to HD
+  (`pixelArt:false`, `antialias:true`). Drop-in guide: `public/assets/README.md`.
+  Zero art files needed to run; add PNGs incrementally. tsc + vite build green.

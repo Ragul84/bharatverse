@@ -14,7 +14,8 @@ import { SimBridge, interpPos } from '../sim_bridge';
 import { worldToIso, isoDepth, isoWorldBoundsRect } from '../iso';
 import { EntityView } from '../entity_view';
 import { generateCharacterTextures } from '../character_sprites';
-import { decoTexture, decoTint } from '../decoration_style';
+import { decoTint } from '../decoration_style';
+import { resolveDecoTexture, isRealArtKey } from '../bv_assets';
 import { WORLD_MIN_X, WORLD_MAX_X, WORLD_MIN_Z, WORLD_MAX_Z, ZONES } from '../../sim/data';
 import { terrainHeight, zoneBiomeAt, roadDistance, WATER_LEVEL, generateDecorations } from '../../sim/world';
 import type { IWorld } from '../../world_api';
@@ -223,14 +224,17 @@ export class WorldScene extends Scene {
    * sim, so placement matches everywhere.
    */
   private drawDecorations(seed: number): void {
+    const has = (k: string) => this.textures.exists(k);
     for (const d of generateDecorations(seed)) {
       const pos = worldToScreen(d.x, d.z, terrainHeight(d.x, d.z, seed));
-      const img = this.add.image(pos.x, pos.y, decoTexture(d.kind))
+      const tex = resolveDecoTexture(has, d.kind);
+      const img = this.add.image(pos.x, pos.y, tex)
         .setOrigin(0.5, 1)
         .setScale(d.scale)
         .setDepth(isoDepth(d.x, d.z));
+      // Biome tint only on the procedural texture; real art keeps its own colors.
       const tint = decoTint(d.kind, d.biome);
-      if (tint !== 0xffffff) img.setTint(tint);
+      if (!isRealArtKey(tex) && tint !== 0xffffff) img.setTint(tint);
     }
   }
 

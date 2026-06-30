@@ -96,10 +96,10 @@ export function createPhaserGame(parentElement: HTMLElement): Phaser.Game {
       QuizScene,
       HUDScene,
     ],
-    // Crisp pixel rendering for sprite art
-    pixelArt: true,
-    antialias: false,
-    roundPixels: true,
+    // Smooth (HD) rendering to suit Kenney CC0 vector-style art.
+    pixelArt: false,
+    antialias: true,
+    roundPixels: false,
   };
 
   return new Phaser.Game(config);
