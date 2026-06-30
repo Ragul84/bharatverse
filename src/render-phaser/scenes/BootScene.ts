@@ -91,13 +91,19 @@ export class BootScene extends Scene {
     this.load.spritesheet('ts-tilemap-grass', 'assets/tiny-swords/terrain/tilemap_grass.png', { frameWidth: 64, frameHeight: 64 });
     this.load.spritesheet('ts-tilemap-dirt',  'assets/tiny-swords/terrain/tilemap_dirt.png',  { frameWidth: 64, frameHeight: 64 });
 
-    // Tiny Swords decorations
-    this.load.image('ts-bush1', 'assets/tiny-swords/decorations/bush1.png');
-    this.load.image('ts-bush3', 'assets/tiny-swords/decorations/bush3.png');
-    this.load.image('ts-bush4', 'assets/tiny-swords/decorations/bush4.png');
+    // Tiny Swords water tile (64x64) + sand tilemap for shores
+    this.load.image('ts-water', 'assets/tiny-swords/terrain/water_bg.png');
+    this.load.spritesheet('ts-tilemap-sand', 'assets/tiny-swords/terrain/tilemap_sand.png', { frameWidth: 64, frameHeight: 64 });
+
+    // Tiny Swords decorations: bushes are 8-frame 128x128 sheets; rocks are 64x64
+    this.load.spritesheet('ts-bush1', 'assets/tiny-swords/decorations/bush1.png', { frameWidth: 128, frameHeight: 128 });
+    this.load.spritesheet('ts-bush2', 'assets/tiny-swords/decorations/bush2.png', { frameWidth: 128, frameHeight: 128 });
+    this.load.spritesheet('ts-bush3', 'assets/tiny-swords/decorations/bush3.png', { frameWidth: 128, frameHeight: 128 });
+    this.load.spritesheet('ts-bush4', 'assets/tiny-swords/decorations/bush4.png', { frameWidth: 128, frameHeight: 128 });
     this.load.image('ts-rock1', 'assets/tiny-swords/decorations/rock1.png');
     this.load.image('ts-rock2', 'assets/tiny-swords/decorations/rock2.png');
     this.load.image('ts-rock3', 'assets/tiny-swords/decorations/rock3.png');
+    this.load.image('ts-rock4', 'assets/tiny-swords/decorations/rock4.png');
 
     // Tiny Swords buildings
     this.load.image('ts-castle',    'assets/tiny-swords/buildings/castle.png');

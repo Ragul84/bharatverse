@@ -519,58 +519,99 @@ export class WorldScene extends Scene {
     this.scene.launch('HUDScene');
   }
 
+  // Classify a GROUND_MAP cell (still stored as Kenney frame ids) into terrain.
+  private terrainOf(frame: number): 'water' | 'dirt' | 'grass' {
+    if (frame === T_WATER_C || frame === W_NW || frame === W_N || frame === W_NE ||
+        frame === W_W || frame === W_C || frame === W_E ||
+        frame === W_SW || frame === W_S || frame === W_SE) return 'water';
+    if (frame === T_DIRT || frame === T_DIRT2) return 'dirt';
+    return 'grass';
+  }
+
+  /** Tiny Swords ground: painterly grass / dirt path / water, to match the units. */
   private buildGroundLayer(): void {
-    const hasSheet = this.textures.exists('roguelike_sheet');
+    const hasTS = this.textures.exists('ts-tilemap-grass');
+    const GRASS = [10]; // pure-grass centre tile of the 9x6 tilemap (no foam edge)
     for (let r = 0; r < MAP_H; r++) {
       for (let c = 0; c < MAP_W; c++) {
-        const frame = GROUND_MAP[r][c];
-        const x = c * TILE_SZ;
-        const y = r * TILE_SZ;
-        if (hasSheet) {
-          this.add.image(x + TILE_SZ / 2, y + TILE_SZ / 2, 'roguelike_sheet', frame)
-            // 1px bleed on each side so adjacent ground tiles overlap and the
-            // antialiased seams between them disappear in HD (non-pixel) mode.
-            .setDisplaySize(TILE_SZ + 2, TILE_SZ + 2)
-            .setDepth(D_GROUND);
+        const t = this.terrainOf(GROUND_MAP[r][c]);
+        const cx = c * TILE_SZ + TILE_SZ / 2;
+        const cy = r * TILE_SZ + TILE_SZ / 2;
+        if (hasTS) {
+          if (t === 'water') {
+            this.add.image(cx, cy, 'ts-water').setDisplaySize(TILE_SZ + 2, TILE_SZ + 2).setDepth(D_GROUND);
+          } else if (t === 'dirt') {
+            this.add.image(cx, cy, 'ts-tilemap-dirt', 10).setDisplaySize(TILE_SZ + 2, TILE_SZ + 2).setDepth(D_GROUND + 1);
+          } else {
+            const f = GRASS[Math.floor(hash2(c, r, 5) * GRASS.length)];
+            this.add.image(cx, cy, 'ts-tilemap-grass', f).setDisplaySize(TILE_SZ + 2, TILE_SZ + 2).setDepth(D_GROUND);
+          }
         } else {
-          // Color fallback
-          const g = this.add.graphics().setDepth(D_GROUND);
-          const col = frame === T_WATER_C || frame === T_WATER_N || frame === T_WATER_S
-            ? 0x4a9fd4
-            : frame === T_DIRT || frame === T_DIRT2
-            ? 0xb89b6a
-            : frame === T_STONE
-            ? 0x9a9080
-            : frame === T_GRASS_DARK
-            ? 0x4f6032
-            : 0x5a8c3a;
-          g.fillStyle(col, 1);
-          g.fillRect(x, y, TILE_SZ, TILE_SZ);
+          const col = t === 'water' ? 0x3f6f8f : t === 'dirt' ? 0x9a6f43 : 0x6aa84f;
+          this.add.graphics().setDepth(D_GROUND).fillStyle(col, 1)
+            .fillRect(c * TILE_SZ, r * TILE_SZ, TILE_SZ, TILE_SZ);
         }
       }
     }
   }
 
+  /**
+   * Tiny Swords decorations + buildings. The hand-map's object frames are mapped
+   * to TS art: trees/bushes -> lush bushes, rocks -> boulders, flowers -> small
+   * bushes; the tiled house/roof/tent frames are skipped and replaced by whole
+   * TS building sprites placed at the village/town anchors.
+   */
   private buildObjectLayer(): void {
-    const hasSheet = this.textures.exists('roguelike_sheet');
+    if (!this.textures.exists('ts-bush1')) return;
+    const TREE = new Set<number>([T_PINE_TOP, T_PINE_BOT, T_ROUND_TOP, T_ROUND2_TOP]);
+    const SMALL = new Set<number>([T_ROCK1, T_ROCK2, T_ROCK3, T_FLOWER_R, T_FLOWER_Y, T_MUSHROOM, T_PLANT]);
+    const BUSHES = ['ts-bush1', 'ts-bush2', 'ts-bush3', 'ts-bush4'];
+    const ROCKS = ['ts-rock1', 'ts-rock2', 'ts-rock3', 'ts-rock4'];
+
     for (let r = 0; r < MAP_H; r++) {
       for (let c = 0; c < MAP_W; c++) {
         const frame = OBJECT_MAP[r][c];
         if (frame === null) continue;
-        const x = c * TILE_SZ + TILE_SZ / 2;
-        const y = r * TILE_SZ + TILE_SZ / 2;
-        if (hasSheet) {
-          this.add.image(x, y, 'roguelike_sheet', frame)
-            .setScale(TILE_SCL)
-            // Share the entity depth band, keyed by the object's base (bottom of
-            // its tile), so a tree to the south occludes an entity to the north
-            // and the player can walk behind trees/houses.
-            .setDepth(D_ENTITY + (r * TILE_SZ + TILE_SZ));
-        } else {
-          // No fallback for objects; they're decorative only
+        const baseY = r * TILE_SZ + TILE_SZ;          // bottom of the tile
+        const cx = c * TILE_SZ + TILE_SZ / 2;
+        const depth = D_ENTITY + baseY;
+        if (TREE.has(frame)) {
+          const key = BUSHES[Math.floor(hash2(c, r, 3) * BUSHES.length)];
+          this.add.image(cx, baseY, key, 0).setOrigin(0.5, 0.85)
+            .setDisplaySize(TILE_SZ * 1.4, TILE_SZ * 1.4).setDepth(depth);
+        } else if (SMALL.has(frame)) {
+          if (hash2(c, r, 9) < 0.5) {
+            const key = BUSHES[Math.floor(hash2(c, r, 4) * BUSHES.length)];
+            this.add.image(cx, baseY, key, 0).setOrigin(0.5, 0.85)
+              .setDisplaySize(TILE_SZ * 0.8, TILE_SZ * 0.8).setDepth(depth);
+          } else {
+            const key = ROCKS[Math.floor(hash2(c, r, 6) * ROCKS.length)];
+            this.add.image(cx, baseY, key).setOrigin(0.5, 0.9)
+              .setDisplaySize(TILE_SZ * 0.7, TILE_SZ * 0.7).setDepth(depth);
+          }
         }
+        // house/roof/tent/fire/sign frames are intentionally skipped here.
       }
     }
+    this.buildBuildings();
+  }
+
+  /** Place whole Tiny Swords building sprites at the village + town anchors. */
+  private buildBuildings(): void {
+    const place = (key: string, col: number, row: number, w: number, h: number) => {
+      if (!this.textures.exists(key)) return;
+      const x = col * TILE_SZ + TILE_SZ / 2;
+      const baseY = row * TILE_SZ + TILE_SZ;
+      this.add.image(x, baseY, key).setOrigin(0.5, 1)
+        .setDisplaySize(w, h).setDepth(D_ENTITY + baseY);
+    };
+    // Village houses (south-west + south-centre)
+    place('ts-house1', 18, 37, TILE_SZ * 2, TILE_SZ * 3);
+    place('ts-house2', 40, 45, TILE_SZ * 2, TILE_SZ * 3);
+    // Town (east): a tower, the big castle and a monastery around the plaza
+    place('ts-tower', 66, 23, TILE_SZ * 2, TILE_SZ * 4);
+    place('ts-castle', 70, 32, TILE_SZ * 5, TILE_SZ * 4);
+    place('ts-monastery', 73, 26, TILE_SZ * 3, TILE_SZ * 3);
   }
 
   update(): void {
