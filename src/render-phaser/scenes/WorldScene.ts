@@ -18,6 +18,7 @@ import { decoTint } from '../decoration_style';
 import { resolveDecoTexture, isRealArtKey } from '../bv_assets';
 import { WORLD_MIN_X, WORLD_MAX_X, WORLD_MIN_Z, WORLD_MAX_Z, ZONES } from '../../sim/data';
 import { terrainHeight, zoneBiomeAt, roadDistance, WATER_LEVEL, generateDecorations } from '../../sim/world';
+import { noise2 } from '../../sim/rng';
 import type { IWorld } from '../../world_api';
 import type { Entity } from '../../sim/types';
 
@@ -180,7 +181,7 @@ export class WorldScene extends Scene {
    */
   private drawTerrain(seed: number): void {
     const g = this.add.graphics().setDepth(DEPTH_GROUND);
-    const step = 8;
+    const step = 6; // finer cells than before => smoother-reading ground
     const s2 = step / 2;
 
     interface Cell { x: number; z: number; h: number; color: number }
@@ -191,15 +192,22 @@ export class WorldScene extends Scene {
         let color: number;
         let h: number;
         if (th < WATER_LEVEL) {
-          color = COLOR_WATER;
-          h = WATER_LEVEL; // flat water surface over the basin
+          // Flat water surface with a gentle deterministic ripple in brightness.
+          const ripple = 0.9 + noise2(x * 0.25, z * 0.25, seed + 71) * 0.2;
+          color = shadeColor(COLOR_WATER, ripple);
+          h = WATER_LEVEL;
         } else if (roadDistance(x, z) < 3.5) {
           color = COLOR_ROAD;
           h = th;
         } else {
           const base = BIOME_BASE[zoneBiomeAt(z)] ?? BIOME_BASE.vale;
           // brighter with elevation; clamped so peaks do not blow out
-          const shade = 0.7 + Math.min(1, Math.max(0, (th - WATER_LEVEL) / 40)) * 0.6;
+          let shade = 0.7 + Math.min(1, Math.max(0, (th - WATER_LEVEL) / 40)) * 0.6;
+          // Organic grass mottling: two octaves of deterministic value noise so
+          // the ground breaks up into soft patches instead of flat color blocks.
+          const mottle = noise2(x * 0.12, z * 0.12, seed) * 0.7
+                       + noise2(x * 0.4, z * 0.4, seed + 19) * 0.3;
+          shade *= 0.86 + mottle * 0.28; // ~+/-14% brightness variation
           color = shadeColor(base, shade);
           h = th;
         }
@@ -208,12 +216,15 @@ export class WorldScene extends Scene {
     }
 
     // Painter's order: back (small x+z) to front, so raised tiles overlap right.
+    // A hair of overlap (e) past the half-cell hides antialiased seams between
+    // adjacent diamonds now that the renderer runs in smooth (non-pixel) mode.
     cells.sort((a, b) => (a.x + a.z) - (b.x + b.z));
+    const e = s2 + 0.25;
     for (const c of cells) {
-      const p1 = worldToScreen(c.x + s2, c.z + s2, c.h);
-      const p2 = worldToScreen(c.x + s2, c.z - s2, c.h);
-      const p3 = worldToScreen(c.x - s2, c.z - s2, c.h);
-      const p4 = worldToScreen(c.x - s2, c.z + s2, c.h);
+      const p1 = worldToScreen(c.x + e, c.z + e, c.h);
+      const p2 = worldToScreen(c.x + e, c.z - e, c.h);
+      const p3 = worldToScreen(c.x - e, c.z - e, c.h);
+      const p4 = worldToScreen(c.x - e, c.z + e, c.h);
       g.fillStyle(c.color, 1);
       g.beginPath();
       g.moveTo(p1.x, p1.y);

@@ -101,3 +101,9 @@ Archive actions (one-time):
   facing-relative WASD mapping. Other players are hidden offline for a solo feel
   (`syncEntities` skips `kind==='player'`). tsc + vite build green; iso 10/10,
   45 phaser tests pass.
+- WP2 terrain polish: grass now reads as soft organic patches instead of flat
+  color blocks -- two octaves of the sim's own deterministic `noise2` mottle each
+  tile's brightness (~+/-14%), water gets a gentle ripple, the tile step is finer
+  (8->6yd), and diamonds overlap a hair to hide antialiased seams (smooth/HD mode).
+  All still seed-stable (sim noise). Smoother trees/stones/characters are the
+  real-art drop-in (`public/assets/`, pipeline already wired). tsc + build green.
