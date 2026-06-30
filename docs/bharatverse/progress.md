@@ -127,3 +127,11 @@ Archive actions (one-time):
   exactly as designed. Two polish fixes from the screenshots: bumped on-screen
   character height (TARGET_BODY_H 36->58) so the detailed art reads at world zoom,
   and widened terrain-tile overlap to close the dark seams between height steps.
+- WP2 universal entity art: added the 3 shared-fallback sprites that upgrade the
+  whole world at once -- `npc` (friendly Indian villager), `mob` (rakshasa demon
+  minion), `object` (ornate brass treasure urn), all AI-generated (Recraft V4.1,
+  bg-removed) into `public/assets/characters/`. These resolve for every NPC,
+  monster, and interactive object respectively (archetype = entity kind), replacing
+  the procedural placeholders seen in the live screenshots. Held the 9 classic
+  player-class sprites (warrior/mage/...) since those templateIds may be retired in
+  the WP3 re-theme -- generating them now risks throwaway art. CREDITS.md updated.
