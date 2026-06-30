@@ -117,3 +117,13 @@ Archive actions (one-time):
   scale was tuned for the tiny procedural textures). CREDITS.md row added. tsc +
   vite build green (sprites copy into `dist/assets/`); 45 phaser tests pass.
   NEXT: remaining 9 class sprites + npc/mob/object, then directional/anim frames.
+- WP1/2 live-browser verification: new `scripts/bv_shot.mjs` (Phaser-era offline
+  screenshot/movement probe; the old `smoke_browser.mjs` targets the dead Three.js
+  UI) boots offline, enters the world, drives ArrowUp + click-to-move, and saves
+  frames to `tmp/`. Confirmed in headless Edge: real banyan/ashoka trees + grass
+  mottling + the Statue-of-Unity obelisk render, the kshatriya player shows real
+  art, only NPCs/mobs are present (no other players), HUD shows, and movement
+  scrolls the camera. The 13 not-yet-added archetypes 404 -> procedural fallback
+  exactly as designed. Two polish fixes from the screenshots: bumped on-screen
+  character height (TARGET_BODY_H 36->58) so the detailed art reads at world zoom,
+  and widened terrain-tile overlap to close the dark seams between height steps.

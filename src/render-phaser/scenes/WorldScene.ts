@@ -216,10 +216,13 @@ export class WorldScene extends Scene {
     }
 
     // Painter's order: back (small x+z) to front, so raised tiles overlap right.
-    // A hair of overlap (e) past the half-cell hides antialiased seams between
-    // adjacent diamonds now that the renderer runs in smooth (non-pixel) mode.
+    // Overlap (e) past the half-cell hides seams between adjacent diamonds: the
+    // antialiased edges in smooth mode, and the vertical gaps that open between
+    // tiles at different sampled heights (a larger diamond's front corner reaches
+    // down over the lower tile in front of it). Drawn back-to-front so the nearer,
+    // lower tile always paints over the overlap.
     cells.sort((a, b) => (a.x + a.z) - (b.x + b.z));
-    const e = s2 + 0.25;
+    const e = s2 + 1.0;
     for (const c of cells) {
       const p1 = worldToScreen(c.x + e, c.z + e, c.h);
       const p2 = worldToScreen(c.x + e, c.z - e, c.h);

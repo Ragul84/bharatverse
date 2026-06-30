@@ -16,8 +16,10 @@ import { CHAR_H } from './character_sprites';
 import { resolveCharacterTexture } from './bv_assets';
 
 // On-screen target height (px) every body is normalized to, so real-art sprites
-// of any source size sit at the same scale as the procedural ones.
-const TARGET_BODY_H = CHAR_H;
+// of any source size sit at the same scale as the procedural ones. Larger than
+// the procedural texture's own CHAR_H so the detailed real art reads clearly at
+// the world zoom (props are ~72px, so a ~58px figure sits well against them).
+const TARGET_BODY_H = 58;
 
 const BAR_W = 30;
 const BAR_X = -BAR_W / 2; // left edge, so left-origin fills grow rightward
