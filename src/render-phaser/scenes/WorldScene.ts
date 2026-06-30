@@ -266,13 +266,22 @@ export class WorldScene extends Scene {
     for (const d of generateDecorations(seed)) {
       const pos = worldToScreen(d.x, d.z, terrainHeight(d.x, d.z, seed));
       const tex = resolveDecoTexture(has, d.kind);
+      const real = isRealArtKey(tex);
       const img = this.add.image(pos.x, pos.y, tex)
         .setOrigin(0.5, 1)
-        .setScale(d.scale)
         .setDepth(isoDepth(d.x, d.z));
-      // Biome tint only on the procedural texture; real art keeps its own colors.
-      const tint = decoTint(d.kind, d.biome);
-      if (!isRealArtKey(tex) && tint !== 0xffffff) img.setTint(tint);
+      if (real) {
+        // Real art comes at ~1k px; normalize to a target on-screen height (px)
+        // per kind, then apply the placement scale. The procedural path already
+        // uses textures authored at the right size, so it keeps d.scale as-is.
+        const targetH = d.kind === 'rock' ? 34 : 72;
+        img.setScale((targetH / (img.height || targetH)) * d.scale);
+      } else {
+        img.setScale(d.scale);
+        // Biome tint only on the procedural texture; real art keeps its own colors.
+        const tint = decoTint(d.kind, d.biome);
+        if (tint !== 0xffffff) img.setTint(tint);
+      }
     }
   }
 

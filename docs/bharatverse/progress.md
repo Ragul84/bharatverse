@@ -107,3 +107,13 @@ Archive actions (one-time):
   (8->6yd), and diamonds overlap a hair to hide antialiased seams (smooth/HD mode).
   All still seed-stable (sim noise). Smoother trees/stones/characters are the
   real-art drop-in (`public/assets/`, pipeline already wired). tsc + build green.
+- WP2 first real sprites (AI-generated): wired 8 real PNGs into the pipeline --
+  5 BharatVerse class characters (kshatriya, brahmarishi, vaishya, shilpi, vaidya)
+  + 3 props (banyan tree, ashoka tree, mossy boulder), all on-theme cel-shaded art
+  generated via Higgsfield Recraft V4.1 (utility, flat green bg) and background-
+  removed, dropped into `public/assets/{characters,props}/`. They override the
+  procedural sprites automatically (the other 9 classes + npc/mob/object still use
+  procedural). Fixed `drawDecorations` to height-normalize real props (the placement
+  scale was tuned for the tiny procedural textures). CREDITS.md row added. tsc +
+  vite build green (sprites copy into `dist/assets/`); 45 phaser tests pass.
+  NEXT: remaining 9 class sprites + npc/mob/object, then directional/anim frames.
