@@ -3141,7 +3141,7 @@ export const en: EnTranslations = {
         "name": "Sexton Marrow"
       },
       "morthen": {
-        "name": "Agyaan Asura"
+        "name": "Ignorance Fiend"
       },
       "bastion_revenant": {
         "name": "Bastion Revenant"
@@ -4507,13 +4507,13 @@ export const en: EnTranslations = {
     },
     "dungeons": {
       "hollow_crypt": {
-        "name": "Itihas Kund",
-        "enterText": "You descend into the Itihas Kund - where the past waits to be remembered...",
+        "name": "History Well",
+        "enterText": "You descend into the History Well - where the past waits to be remembered...",
         "leaveText": "You climb back into daylight, carrying the lessons of history."
       },
       "sunken_bastion": {
-        "name": "Vigyan Garh",
-        "enterText": "You wade into Vigyan Garh. Science twisted by ignorance awaits...",
+        "name": "Science Fort",
+        "enterText": "You wade into Science Fort. Science twisted by ignorance awaits...",
         "leaveText": "You climb out of the drowning dark - science lives again."
       },
       "gravewyrm_sanctum": {
@@ -25801,7 +25801,7 @@ export const en_CA: EnTranslations = {
         "name": "Sexton Marrow"
       },
       "morthen": {
-        "name": "Agyaan Asura"
+        "name": "Ignorance Fiend"
       },
       "bastion_revenant": {
         "name": "Bastion Revenant"
@@ -27167,13 +27167,13 @@ export const en_CA: EnTranslations = {
     },
     "dungeons": {
       "hollow_crypt": {
-        "name": "Itihas Kund",
-        "enterText": "You descend into the Itihas Kund - where the past waits to be remembered...",
+        "name": "History Well",
+        "enterText": "You descend into the History Well - where the past waits to be remembered...",
         "leaveText": "You climb back into daylight, carrying the lessons of history."
       },
       "sunken_bastion": {
-        "name": "Vigyan Garh",
-        "enterText": "You wade into Vigyan Garh. Science twisted by ignorance awaits...",
+        "name": "Science Fort",
+        "enterText": "You wade into Science Fort. Science twisted by ignorance awaits...",
         "leaveText": "You climb out of the drowning dark - science lives again."
       },
       "gravewyrm_sanctum": {
@@ -69202,7 +69202,7 @@ export const en_XA: EnTranslations = {
         "name": "[Šéẋţóñ Ɱáŕŕóŵ]"
       },
       "morthen": {
-        "name": "[Áĝýááñ Ášúŕá]"
+        "name": "[Íĝñóŕáñçé Ƒíéñð]"
       },
       "bastion_revenant": {
         "name": "[Ɓášţíóñ Ŕéʋéñáñţ]"
@@ -70568,13 +70568,13 @@ export const en_XA: EnTranslations = {
     },
     "dungeons": {
       "hollow_crypt": {
-        "name": "[Íţíĥáš Ķúñð]",
-        "enterText": "[Ýóú ðéšçéñð íñţó ţĥé Íţíĥáš Ķúñð - ŵĥéŕé ţĥé þášţ ŵáíţš ţó ƀé ŕéɱéɱƀéŕéð...]",
+        "name": "[Ĥíšţóŕý Ŵéļļ]",
+        "enterText": "[Ýóú ðéšçéñð íñţó ţĥé Ĥíšţóŕý Ŵéļļ - ŵĥéŕé ţĥé þášţ ŵáíţš ţó ƀé ŕéɱéɱƀéŕéð...]",
         "leaveText": "[Ýóú çļíɱƀ ƀáçķ íñţó ðáýļíĝĥţ, çáŕŕýíñĝ ţĥé ļéššóñš óƒ ĥíšţóŕý.]"
       },
       "sunken_bastion": {
-        "name": "[Ʋíĝýáñ Ĝáŕĥ]",
-        "enterText": "[Ýóú ŵáðé íñţó Ʋíĝýáñ Ĝáŕĥ. Šçíéñçé ţŵíšţéð ƀý íĝñóŕáñçé áŵáíţš...]",
+        "name": "[Šçíéñçé Ƒóŕţ]",
+        "enterText": "[Ýóú ŵáðé íñţó Šçíéñçé Ƒóŕţ. Šçíéñçé ţŵíšţéð ƀý íĝñóŕáñçé áŵáíţš...]",
         "leaveText": "[Ýóú çļíɱƀ óúţ óƒ ţĥé ðŕóŵñíñĝ ðáŕķ - šçíéñçé ļíʋéš áĝáíñ.]"
       },
       "gravewyrm_sanctum": {

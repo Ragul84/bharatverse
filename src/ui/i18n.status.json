@@ -37305,72 +37305,72 @@
     },
     "main:entities.dungeons.hollow_crypt.enterText": {
       "scope": "main",
-      "enHash": "9e8bcb736f4db71d",
+      "enHash": "b9e9c1fc63e2bec7",
       "placeholders": [],
       "locales": {
         "es": {
           "state": "translated",
-          "srcHash": "9e8bcb736f4db71d",
+          "srcHash": "b9e9c1fc63e2bec7",
           "by": "human"
         },
         "es_ES": {
           "state": "translated",
-          "srcHash": "9e8bcb736f4db71d",
+          "srcHash": "b9e9c1fc63e2bec7",
           "by": "human"
         },
         "fr_FR": {
           "state": "translated",
-          "srcHash": "9e8bcb736f4db71d",
+          "srcHash": "b9e9c1fc63e2bec7",
           "by": "human"
         },
         "fr_CA": {
           "state": "translated",
-          "srcHash": "9e8bcb736f4db71d",
+          "srcHash": "b9e9c1fc63e2bec7",
           "by": "human"
         },
         "en_CA": {
           "state": "translated",
-          "srcHash": "9e8bcb736f4db71d",
+          "srcHash": "b9e9c1fc63e2bec7",
           "by": "human"
         },
         "it_IT": {
           "state": "translated",
-          "srcHash": "9e8bcb736f4db71d",
+          "srcHash": "b9e9c1fc63e2bec7",
           "by": "human"
         },
         "de_DE": {
           "state": "translated",
-          "srcHash": "9e8bcb736f4db71d",
+          "srcHash": "b9e9c1fc63e2bec7",
           "by": "human"
         },
         "zh_CN": {
           "state": "translated",
-          "srcHash": "9e8bcb736f4db71d",
+          "srcHash": "b9e9c1fc63e2bec7",
           "by": "human"
         },
         "zh_TW": {
           "state": "translated",
-          "srcHash": "9e8bcb736f4db71d",
+          "srcHash": "b9e9c1fc63e2bec7",
           "by": "human"
         },
         "ko_KR": {
           "state": "translated",
-          "srcHash": "9e8bcb736f4db71d",
+          "srcHash": "b9e9c1fc63e2bec7",
           "by": "human"
         },
         "ja_JP": {
           "state": "translated",
-          "srcHash": "9e8bcb736f4db71d",
+          "srcHash": "b9e9c1fc63e2bec7",
           "by": "human"
         },
         "pt_BR": {
           "state": "translated",
-          "srcHash": "9e8bcb736f4db71d",
+          "srcHash": "b9e9c1fc63e2bec7",
           "by": "human"
         },
         "ru_RU": {
           "state": "translated",
-          "srcHash": "9e8bcb736f4db71d",
+          "srcHash": "b9e9c1fc63e2bec7",
           "by": "human"
         }
       }
@@ -37449,72 +37449,72 @@
     },
     "main:entities.dungeons.hollow_crypt.name": {
       "scope": "main",
-      "enHash": "10820dff22f0f38d",
+      "enHash": "2933444aeb24b910",
       "placeholders": [],
       "locales": {
         "es": {
           "state": "translated",
-          "srcHash": "10820dff22f0f38d",
+          "srcHash": "2933444aeb24b910",
           "by": "human"
         },
         "es_ES": {
           "state": "translated",
-          "srcHash": "10820dff22f0f38d",
+          "srcHash": "2933444aeb24b910",
           "by": "human"
         },
         "fr_FR": {
           "state": "translated",
-          "srcHash": "10820dff22f0f38d",
+          "srcHash": "2933444aeb24b910",
           "by": "human"
         },
         "fr_CA": {
           "state": "translated",
-          "srcHash": "10820dff22f0f38d",
+          "srcHash": "2933444aeb24b910",
           "by": "human"
         },
         "en_CA": {
           "state": "translated",
-          "srcHash": "10820dff22f0f38d",
+          "srcHash": "2933444aeb24b910",
           "by": "human"
         },
         "it_IT": {
           "state": "translated",
-          "srcHash": "10820dff22f0f38d",
+          "srcHash": "2933444aeb24b910",
           "by": "human"
         },
         "de_DE": {
           "state": "translated",
-          "srcHash": "10820dff22f0f38d",
+          "srcHash": "2933444aeb24b910",
           "by": "human"
         },
         "zh_CN": {
           "state": "translated",
-          "srcHash": "10820dff22f0f38d",
+          "srcHash": "2933444aeb24b910",
           "by": "human"
         },
         "zh_TW": {
           "state": "translated",
-          "srcHash": "10820dff22f0f38d",
+          "srcHash": "2933444aeb24b910",
           "by": "human"
         },
         "ko_KR": {
           "state": "translated",
-          "srcHash": "10820dff22f0f38d",
+          "srcHash": "2933444aeb24b910",
           "by": "human"
         },
         "ja_JP": {
           "state": "translated",
-          "srcHash": "10820dff22f0f38d",
+          "srcHash": "2933444aeb24b910",
           "by": "human"
         },
         "pt_BR": {
           "state": "translated",
-          "srcHash": "10820dff22f0f38d",
+          "srcHash": "2933444aeb24b910",
           "by": "human"
         },
         "ru_RU": {
           "state": "translated",
-          "srcHash": "10820dff22f0f38d",
+          "srcHash": "2933444aeb24b910",
           "by": "human"
         }
       }
@@ -37737,72 +37737,72 @@
     },
     "main:entities.dungeons.sunken_bastion.enterText": {
       "scope": "main",
-      "enHash": "e26a1d7e2ac5cc34",
+      "enHash": "33941db28d26e1b6",
       "placeholders": [],
       "locales": {
         "es": {
           "state": "translated",
-          "srcHash": "e26a1d7e2ac5cc34",
+          "srcHash": "33941db28d26e1b6",
           "by": "human"
         },
         "es_ES": {
           "state": "translated",
-          "srcHash": "e26a1d7e2ac5cc34",
+          "srcHash": "33941db28d26e1b6",
           "by": "human"
         },
         "fr_FR": {
           "state": "translated",
-          "srcHash": "e26a1d7e2ac5cc34",
+          "srcHash": "33941db28d26e1b6",
           "by": "human"
         },
         "fr_CA": {
           "state": "translated",
-          "srcHash": "e26a1d7e2ac5cc34",
+          "srcHash": "33941db28d26e1b6",
           "by": "human"
         },
         "en_CA": {
           "state": "translated",
-          "srcHash": "e26a1d7e2ac5cc34",
+          "srcHash": "33941db28d26e1b6",
           "by": "human"
         },
         "it_IT": {
           "state": "translated",
-          "srcHash": "e26a1d7e2ac5cc34",
+          "srcHash": "33941db28d26e1b6",
           "by": "human"
         },
         "de_DE": {
           "state": "translated",
-          "srcHash": "e26a1d7e2ac5cc34",
+          "srcHash": "33941db28d26e1b6",
           "by": "human"
         },
         "zh_CN": {
           "state": "translated",
-          "srcHash": "e26a1d7e2ac5cc34",
+          "srcHash": "33941db28d26e1b6",
           "by": "human"
         },
         "zh_TW": {
           "state": "translated",
-          "srcHash": "e26a1d7e2ac5cc34",
+          "srcHash": "33941db28d26e1b6",
           "by": "human"
         },
         "ko_KR": {
           "state": "translated",
-          "srcHash": "e26a1d7e2ac5cc34",
+          "srcHash": "33941db28d26e1b6",
           "by": "human"
         },
         "ja_JP": {
           "state": "translated",
-          "srcHash": "e26a1d7e2ac5cc34",
+          "srcHash": "33941db28d26e1b6",
           "by": "human"
         },
         "pt_BR": {
           "state": "translated",
-          "srcHash": "e26a1d7e2ac5cc34",
+          "srcHash": "33941db28d26e1b6",
           "by": "human"
         },
         "ru_RU": {
           "state": "translated",
-          "srcHash": "e26a1d7e2ac5cc34",
+          "srcHash": "33941db28d26e1b6",
           "by": "human"
         }
       }
@@ -37881,72 +37881,72 @@
     },
     "main:entities.dungeons.sunken_bastion.name": {
       "scope": "main",
-      "enHash": "e084ccdcd81835b0",
+      "enHash": "23b6c1a966ce892b",
       "placeholders": [],
       "locales": {
         "es": {
           "state": "translated",
-          "srcHash": "e084ccdcd81835b0",
+          "srcHash": "23b6c1a966ce892b",
           "by": "human"
         },
         "es_ES": {
           "state": "translated",
-          "srcHash": "e084ccdcd81835b0",
+          "srcHash": "23b6c1a966ce892b",
           "by": "human"
         },
         "fr_FR": {
           "state": "translated",
-          "srcHash": "e084ccdcd81835b0",
+          "srcHash": "23b6c1a966ce892b",
           "by": "human"
         },
         "fr_CA": {
           "state": "translated",
-          "srcHash": "e084ccdcd81835b0",
+          "srcHash": "23b6c1a966ce892b",
           "by": "human"
         },
         "en_CA": {
           "state": "translated",
-          "srcHash": "e084ccdcd81835b0",
+          "srcHash": "23b6c1a966ce892b",
           "by": "human"
         },
         "it_IT": {
           "state": "translated",
-          "srcHash": "e084ccdcd81835b0",
+          "srcHash": "23b6c1a966ce892b",
           "by": "human"
         },
         "de_DE": {
           "state": "translated",
-          "srcHash": "e084ccdcd81835b0",
+          "srcHash": "23b6c1a966ce892b",
           "by": "human"
         },
         "zh_CN": {
           "state": "translated",
-          "srcHash": "e084ccdcd81835b0",
+          "srcHash": "23b6c1a966ce892b",
           "by": "human"
         },
         "zh_TW": {
           "state": "translated",
-          "srcHash": "e084ccdcd81835b0",
+          "srcHash": "23b6c1a966ce892b",
           "by": "human"
         },
         "ko_KR": {
           "state": "translated",
-          "srcHash": "e084ccdcd81835b0",
+          "srcHash": "23b6c1a966ce892b",
           "by": "human"
         },
         "ja_JP": {
           "state": "translated",
-          "srcHash": "e084ccdcd81835b0",
+          "srcHash": "23b6c1a966ce892b",
           "by": "human"
         },
         "pt_BR": {
           "state": "translated",
-          "srcHash": "e084ccdcd81835b0",
+          "srcHash": "23b6c1a966ce892b",
           "by": "human"
         },
         "ru_RU": {
           "state": "translated",
-          "srcHash": "e084ccdcd81835b0",
+          "srcHash": "23b6c1a966ce892b",
           "by": "human"
         }
       }
@@ -63969,72 +63969,72 @@
     },
     "main:entities.mobs.morthen.name": {
       "scope": "main",
-      "enHash": "ef7e0377202652c2",
+      "enHash": "3daa7949d91e302e",
       "placeholders": [],
       "locales": {
         "es": {
           "state": "translated",
-          "srcHash": "ef7e0377202652c2",
+          "srcHash": "3daa7949d91e302e",
           "by": "human"
         },
         "es_ES": {
           "state": "translated",
-          "srcHash": "ef7e0377202652c2",
+          "srcHash": "3daa7949d91e302e",
           "by": "human"
         },
         "fr_FR": {
           "state": "translated",
-          "srcHash": "ef7e0377202652c2",
+          "srcHash": "3daa7949d91e302e",
           "by": "human"
         },
         "fr_CA": {
           "state": "translated",
-          "srcHash": "ef7e0377202652c2",
+          "srcHash": "3daa7949d91e302e",
           "by": "human"
         },
         "en_CA": {
           "state": "translated",
-          "srcHash": "ef7e0377202652c2",
+          "srcHash": "3daa7949d91e302e",
           "by": "human"
         },
         "it_IT": {
           "state": "translated",
-          "srcHash": "ef7e0377202652c2",
+          "srcHash": "3daa7949d91e302e",
           "by": "human"
         },
         "de_DE": {
           "state": "translated",
-          "srcHash": "ef7e0377202652c2",
+          "srcHash": "3daa7949d91e302e",
           "by": "human"
         },
         "zh_CN": {
           "state": "translated",
-          "srcHash": "ef7e0377202652c2",
+          "srcHash": "3daa7949d91e302e",
           "by": "human"
         },
         "zh_TW": {
           "state": "translated",
-          "srcHash": "ef7e0377202652c2",
+          "srcHash": "3daa7949d91e302e",
           "by": "human"
         },
         "ko_KR": {
           "state": "translated",
-          "srcHash": "ef7e0377202652c2",
+          "srcHash": "3daa7949d91e302e",
           "by": "human"
         },
         "ja_JP": {
           "state": "translated",
-          "srcHash": "ef7e0377202652c2",
+          "srcHash": "3daa7949d91e302e",
           "by": "human"
         },
         "pt_BR": {
           "state": "translated",
-          "srcHash": "ef7e0377202652c2",
+          "srcHash": "3daa7949d91e302e",
           "by": "human"
         },
         "ru_RU": {
           "state": "translated",
-          "srcHash": "ef7e0377202652c2",
+          "srcHash": "3daa7949d91e302e",
           "by": "human"
         }
       }
