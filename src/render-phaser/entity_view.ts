@@ -77,14 +77,20 @@ export class EntityView {
 
   // Track current anim to avoid re-playing same animation every frame
   private currentAnim = '';
+  // When the composited LPC sheet is available, the body is an LPC character
+  // driven by 4-directional frames (rows 8-11) instead of Tiny Swords anims.
+  private useLpc = false;
 
   constructor(scene: Scene, e: Entity, isPlayer: boolean) {
-    // Try to use a Tiny Swords animated sprite first
-    const tsInfo = tsSpriteKey(e, false);
-    let texKey: string;
+    // Prefer the composited LPC character (top-down, 4-directional walk); fall
+    // back to Tiny Swords animated units, then procedural/_v3 art.
+    this.useLpc = scene.textures.exists('lpc-hero');
+    const tsInfo = this.useLpc ? null : tsSpriteKey(e, false);
     let useSprite = false;
-
-    if (tsInfo && scene.textures.exists(tsInfo.tex)) {
+    let texKey: string;
+    if (this.useLpc) {
+      texKey = 'lpc-hero';
+    } else if (tsInfo && scene.textures.exists(tsInfo.tex)) {
       texKey = tsInfo.tex;
       useSprite = true;
     } else {
@@ -92,19 +98,24 @@ export class EntityView {
     }
 
     this.body = scene.add.sprite(0, 0, texKey);
-    const texH = this.body.height || CHAR_H;
-    // Tiny Swords frames have empty space below the feet (feet sit ~0.82 down the
-    // 192px frame); procedural/_v3 art has feet at the very bottom. Anchor at the
-    // real feet so the body stands on its shadow instead of floating above it.
-    const feetOrigin = useSprite ? 0.82 : (texH - 2) / texH;
-    this.body
-      .setOrigin(0.5, feetOrigin)
-      .setScale((TARGET_BODY_H / texH) * (isPlayer ? 1.2 : 1) * Math.max(0.6, e.scale || 1));
 
-    // Play idle animation immediately if using spritesheet
-    if (useSprite && tsInfo) {
-      this.body.play(tsInfo.anim, true);
-      this.currentAnim = tsInfo.anim;
+    if (this.useLpc) {
+      this.body.setFrame(this.lpcFrame(e, false));
+      this.body.setOrigin(0.5, 0.92)
+        .setScale((isPlayer ? 1.5 : 1.35) * Math.max(0.7, e.scale || 1));
+    } else {
+      const texH = this.body.height || CHAR_H;
+      // Tiny Swords frames have empty space below the feet; procedural/_v3 art has
+      // feet at the very bottom. Anchor at the real feet so the body stands on its
+      // shadow instead of floating above it.
+      const feetOrigin = useSprite ? 0.82 : (texH - 2) / texH;
+      this.body
+        .setOrigin(0.5, feetOrigin)
+        .setScale((TARGET_BODY_H / texH) * (isPlayer ? 1.2 : 1) * Math.max(0.6, e.scale || 1));
+      if (useSprite && tsInfo) {
+        this.body.play(tsInfo.anim, true);
+        this.currentAnim = tsInfo.anim;
+      }
     }
 
     // Drop shadow
@@ -140,42 +151,37 @@ export class EntityView {
   }
 
   update(e: Entity): void {
-    if (e.dead) {
-      this.body.setTint(0x4b5563);
-      this.shadow.setVisible(false);
-    } else {
-      this.body.clearTint();
-      this.shadow.setVisible(true);
-    }
-
     const speed = Math.hypot(e.vx, e.vz);
     const moving = speed > 0.15 && !e.dead;
 
-    // Facing: in flat top-down, facing angle 0 = north (-Z), PI/2 = east (+X)
-    // flipX when entity is heading left (negative X component)
-    const flipX = Math.sin(e.facing) < -0.1; // sin(facing) gives X component
-
-    const tsInfo = tsSpriteKey(e, moving);
-    if (tsInfo && this.body.scene.textures.exists(tsInfo.tex)) {
-      // Switch texture if changed
-      if (this.body.texture.key !== tsInfo.tex) {
-        this.body.setTexture(tsInfo.tex);
-        this.body.setOrigin(0.5, 0.82); // Tiny Swords feet line
-      }
-      // Play animation if changed
-      if (this.currentAnim !== tsInfo.anim) {
-        this.body.play(tsInfo.anim, true);
-        this.currentAnim = tsInfo.anim;
-      }
+    if (this.useLpc) {
+      // LPC: pick the frame for the current 4-direction facing + walk cycle.
+      this.body.setFrame(this.lpcFrame(e, moving));
+      if (e.dead) { this.body.setTint(0x4b5563); this.shadow.setVisible(false); }
+      else if (e.kind === 'mob') { this.body.setTint(0xff9a9a); this.shadow.setVisible(true); }
+      else { this.body.clearTint(); this.shadow.setVisible(true); }
     } else {
-      // Fallback: static image from Kenney / procedural
-      const fallbackKey = resolveCharacterTexture((k) => this.body.scene.textures.exists(k), archetypeFor(e));
-      if (this.body.texture.key !== fallbackKey) {
-        this.body.setTexture(fallbackKey);
-      }
-    }
+      if (e.dead) { this.body.setTint(0x4b5563); this.shadow.setVisible(false); }
+      else { this.body.clearTint(); this.shadow.setVisible(true); }
 
-    this.body.setFlipX(flipX);
+      // flipX when heading left (Tiny Swords sprites face right by default)
+      const flipX = Math.sin(e.facing) < -0.1;
+      const tsInfo = tsSpriteKey(e, moving);
+      if (tsInfo && this.body.scene.textures.exists(tsInfo.tex)) {
+        if (this.body.texture.key !== tsInfo.tex) {
+          this.body.setTexture(tsInfo.tex);
+          this.body.setOrigin(0.5, 0.82); // Tiny Swords feet line
+        }
+        if (this.currentAnim !== tsInfo.anim) {
+          this.body.play(tsInfo.anim, true);
+          this.currentAnim = tsInfo.anim;
+        }
+      } else {
+        const fallbackKey = resolveCharacterTexture((k) => this.body.scene.textures.exists(k), archetypeFor(e));
+        if (this.body.texture.key !== fallbackKey) this.body.setTexture(fallbackKey);
+      }
+      this.body.setFlipX(flipX);
+    }
 
     const hpF = L.hpFraction(e);
     this.hpFill.setSize(BAR_W * hpF, 4).setFillStyle(L.hpColor(hpF));
@@ -195,6 +201,16 @@ export class EntityView {
 
     this.name.setText(L.nameplateText(e));
     this.container.setAlpha(e.dead ? 0.55 : 1);
+  }
+
+  /** LPC frame for the entity's 4-direction facing + walk cycle (rows 8-11). */
+  private lpcFrame(e: Entity, moving: boolean): number {
+    const vx = Math.sin(e.facing), vz = Math.cos(e.facing);
+    let row: number;
+    if (Math.abs(vx) > Math.abs(vz)) row = vx > 0 ? 11 : 9; // right : left
+    else row = vz >= 0 ? 10 : 8;                            // down : up
+    const col = moving ? 1 + (Math.floor(this.body.scene.time.now / 110) % 8) : 0; // 0 = idle
+    return row * 13 + col;
   }
 
   setInteractiveTarget(onClick: () => void): this {

@@ -91,6 +91,13 @@ export class BootScene extends Scene {
     this.load.spritesheet('ts-tilemap-grass', 'assets/tiny-swords/terrain/tilemap_grass.png', { frameWidth: 64, frameHeight: 64 });
     this.load.spritesheet('ts-tilemap-dirt',  'assets/tiny-swords/terrain/tilemap_dirt.png',  { frameWidth: 64, frameHeight: 64 });
 
+    // LPC character layers (64x64, standard Universal LPC layout: 13 cols x 21
+    // rows). Composited into one 'lpc-hero' sheet in create() so a single sprite
+    // can play 4-directional walk cycles (rows 8-11).
+    for (const layer of ['body', 'legs', 'feet', 'torso', 'hair']) {
+      this.load.spritesheet(`lpc-${layer}`, `assets/lpc/${layer}_male.png`, { frameWidth: 64, frameHeight: 64 });
+    }
+
     // Tiny Swords water tile (64x64) + sand tilemap for shores
     this.load.image('ts-water', 'assets/tiny-swords/terrain/water_bg.png');
     this.load.spritesheet('ts-tilemap-sand', 'assets/tiny-swords/terrain/tilemap_sand.png', { frameWidth: 64, frameHeight: 64 });
@@ -162,6 +169,23 @@ export class BootScene extends Scene {
           frameRate: def.fps,
           repeat: -1,
         });
+      }
+    }
+
+    // Composite the LPC layers (body + clothes + hair) into one 'lpc-hero'
+    // spritesheet so a single sprite renders a fully-dressed character with the
+    // standard 13x21 frame layout (4-direction walk on rows 8-11).
+    if (this.textures.exists('lpc-body') && !this.textures.exists('lpc-hero')) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 832; canvas.height = 1344;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        for (const layer of ['lpc-body', 'lpc-legs', 'lpc-feet', 'lpc-torso', 'lpc-hair']) {
+          if (this.textures.exists(layer)) {
+            ctx.drawImage(this.textures.get(layer).getSourceImage() as CanvasImageSource, 0, 0);
+          }
+        }
+        this.textures.addSpriteSheet('lpc-hero', canvas as unknown as HTMLImageElement, { frameWidth: 64, frameHeight: 64 });
       }
     }
 
