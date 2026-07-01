@@ -22,6 +22,8 @@ const TIMER_SECONDS = 8;
 interface QuizData {
   question: Question;
   abilityId: string;
+  /** Scene key to emit the result back to (default CombatScene). */
+  returnTo?: string;
 }
 
 export class QuizScene extends Scene {
@@ -206,12 +208,8 @@ export class QuizScene extends Scene {
     }
 
     this.time.delayedCall(1200, () => {
-      const combat = this.scene.get('CombatScene');
-      if (correct) {
-        combat.events.emit(Events.QUIZ_CORRECT);
-      } else {
-        combat.events.emit(Events.QUIZ_WRONG);
-      }
+      const target = this.scene.get(this.data_.returnTo ?? 'CombatScene');
+      target.events.emit(correct ? Events.QUIZ_CORRECT : Events.QUIZ_WRONG);
     });
   }
 
@@ -234,8 +232,7 @@ export class QuizScene extends Scene {
     }).setOrigin(0.5).setDepth(25);
 
     this.time.delayedCall(900, () => {
-      const combat = this.scene.get('CombatScene');
-      combat.events.emit(Events.QUIZ_TIMEOUT);
+      this.scene.get(this.data_.returnTo ?? 'CombatScene').events.emit(Events.QUIZ_TIMEOUT);
     });
   }
 }

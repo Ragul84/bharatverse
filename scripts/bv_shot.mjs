@@ -47,6 +47,22 @@ await page.evaluate(() => {
 await sleep(2500);
 
 await page.screenshot({ path: 'tmp/bv_spawn.png' });
+
+// Gathering: chop a tree -> quiz -> answer -> reward.
+await page.evaluate(() => {
+  const ws = window.__game.scene.getScene('WorldScene');
+  const tree = ws.children.list.find((o) => o.type === 'Image' && o.input && o.input.enabled && o.displayWidth > 70);
+  if (tree && ws.startGather) ws.startGather(tree);
+});
+await sleep(800);
+await page.screenshot({ path: 'tmp/bv_gather_quiz.png' });
+await page.evaluate(() => {
+  const q = window.__game.scene.getScene('QuizScene');
+  if (q && q.scene.isActive() && q.data_) q.selectOption(q.data_.question.correct);
+});
+await sleep(1700);
+await page.screenshot({ path: 'tmp/bv_gather_reward.png' });
+
 const globals = await page.evaluate(() => Object.keys(window).filter((k) => k.startsWith('__') || k === 'game'));
 console.log('globals:', JSON.stringify(globals));
 const p0 = await playerPos();

@@ -25,6 +25,7 @@ import { ZONES } from '../../sim/data';
 import { hash2 } from '../../sim/rng';
 import type { IWorld } from '../../world_api';
 import type { Entity } from '../../sim/types';
+import type { Question } from '../../sim/content/questions';
 
 // ---- Tile constants (roguelikeSheet_transparent.png layout) ----
 // Sheet: 57 cols x 31 rows, each tile 16x16 with 1px margin.
@@ -455,6 +456,12 @@ export class WorldScene extends Scene {
   // Radial-ish action menu shown when an entity is clicked (Chat / Fight / …).
   private entityMenu?: GameObjects.Container;
 
+  // Gathering (recall-gated woodcutting) + a unified Gold total for the HUD.
+  private gathering = false;
+  private gatherTree?: GameObjects.Image;
+  private gold = 0;
+  private woodcuttingXp = 0;
+
   constructor() {
     super({ key: 'WorldScene', active: false });
   }
@@ -534,6 +541,15 @@ export class WorldScene extends Scene {
 
     // HUD scene (owns the minimap, using the exported map data)
     this.scene.launch('HUDScene');
+
+    // Gold total for the HUD (offline: seed from the sim; combat + gathering add).
+    this.gold = this.world.copper || 0;
+    this.events.emit(Events.HUD_UPDATE_MINDCOINS, this.gold);
+
+    // Recall-gated gathering results — QuizScene emits back here via returnTo.
+    this.events.on(Events.QUIZ_CORRECT, () => this.finishGather(true), this);
+    this.events.on(Events.QUIZ_WRONG, () => this.finishGather(false), this);
+    this.events.on(Events.QUIZ_TIMEOUT, () => this.finishGather(false), this);
   }
 
   // Classify a GROUND_MAP cell into terrain (shared with the HUD minimap).
@@ -590,8 +606,10 @@ export class WorldScene extends Scene {
         const depth = D_ENTITY + baseY;
         if (TREE.has(frame)) {
           const key = BUSHES[Math.floor(hash2(c, r, 3) * BUSHES.length)];
-          this.add.image(cx, baseY, key, 0).setOrigin(0.5, 0.85)
-            .setDisplaySize(TILE_SZ * 1.4, TILE_SZ * 1.4).setDepth(depth);
+          const tree = this.add.image(cx, baseY, key, 0).setOrigin(0.5, 0.85)
+            .setDisplaySize(TILE_SZ * 1.4, TILE_SZ * 1.4).setDepth(depth)
+            .setInteractive({ useHandCursor: true });
+          tree.on('pointerdown', () => this.startGather(tree)); // recall-gated woodcutting
         } else if (SMALL.has(frame)) {
           if (hash2(c, r, 9) < 0.5) {
             const key = BUSHES[Math.floor(hash2(c, r, 4) * BUSHES.length)];
@@ -807,6 +825,63 @@ export class WorldScene extends Scene {
     this.events.emit(Events.HUD_SHOW_MESSAGE, text);
   }
 
+  /** Recall-gated woodcutting: chop a tree by answering a question correctly. */
+  private startGather(tree: GameObjects.Image): void {
+    if (this.gathering || this.inCombat) return;
+    this.closeEntityMenu();
+    const q = this.pickGatherQuestion();
+    if (!q) { this.emitMsg('No questions available.'); return; }
+    const p = this.world.player;
+    const tw = pixelToWorld(tree.x, tree.y);
+    if (this.offline) p.facing = Math.atan2(tw.x - p.pos.x, tw.z - p.pos.z); // face the tree
+    this.gathering = true;
+    this.gatherTree = tree;
+    this.emitMsg('Chopping — answer to fell it!');
+    this.scene.launch('QuizScene', { question: q, abilityId: 'chop', returnTo: 'WorldScene' });
+  }
+
+  private finishGather(correct: boolean): void {
+    if (!this.gathering) return;
+    this.gathering = false;
+    this.scene.stop('QuizScene');
+    const tree = this.gatherTree;
+    this.gatherTree = undefined;
+    if (correct) {
+      const gold = 5, xp = 10;
+      this.woodcuttingXp += xp;
+      this.addGold(gold);
+      this.floatWorldText(tree, `+${gold} Gold   +1 Wood`, '#fde047');
+      this.emitMsg(`Woodcutting +${xp} XP`);
+      if (tree) {
+        this.tweens.add({ targets: tree, angle: { from: -7, to: 7 }, duration: 70, yoyo: true, repeat: 3, onComplete: () => tree.setAngle(0) });
+      }
+    } else {
+      this.floatWorldText(tree, 'The tree resists!', '#fca5a5');
+    }
+  }
+
+  private pickGatherQuestion(): Question | null {
+    const raw = this.registry.get('questions') as Question[] | { questions: Question[] } | undefined;
+    const arr = Array.isArray(raw) ? raw : raw?.questions ?? [];
+    return arr.length ? arr[Math.floor(Math.random() * arr.length)] : null;
+  }
+
+  private addGold(n: number): void {
+    this.gold += n;
+    this.events.emit(Events.HUD_UPDATE_MINDCOINS, this.gold);
+  }
+
+  private floatWorldText(obj: GameObjects.Image | undefined, text: string, color: string): void {
+    const pref = worldToPixel(this.world.player.pos.x, this.world.player.pos.z);
+    const px = obj?.x ?? pref.px;
+    const py = (obj?.y ?? pref.py) - 50;
+    const t = this.add.text(px, py, text, {
+      fontSize: '16px', fontFamily: '"Noto Sans", sans-serif', color, fontStyle: 'bold',
+      stroke: '#0b160b', strokeThickness: 4,
+    }).setOrigin(0.5).setDepth(D_UI - 1);
+    this.tweens.add({ targets: t, y: py - 44, alpha: { from: 1, to: 0 }, duration: 1000, ease: 'Quad.out', onComplete: () => t.destroy() });
+  }
+
   private checkAggroEncounters(): void {
     if (!this.world.player.inCombat) return;
     let closestHostile: Entity | null = null;
@@ -847,15 +922,16 @@ export class WorldScene extends Scene {
     });
   }
 
-  private onCombatEnd(_result: { won: boolean; remainingHp: number; xpGained: number; mindcoins: number; enemyId: number }): void {
+  private onCombatEnd(result: { won: boolean; remainingHp: number; xpGained: number; mindcoins: number; enemyId: number }): void {
     this.inCombat = false;
+    if (result.mindcoins) this.gold += result.mindcoins; // combat gold folds into the total
     this.pushHUDUpdate();
     this.scene.resume('WorldScene');
   }
 
   private pushHUDUpdate(): void {
     this.events.emit(Events.HUD_UPDATE_HP, { hp: this.world.player.hp, maxHp: this.world.player.maxHp });
-    this.events.emit(Events.HUD_UPDATE_MINDCOINS, this.world.copper);
+    this.events.emit(Events.HUD_UPDATE_MINDCOINS, this.gold);
     this.events.emit(Events.HUD_UPDATE_XP, this.world.xp);
   }
 }
