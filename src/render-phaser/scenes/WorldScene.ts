@@ -103,8 +103,8 @@ const TILE_SCL = 4;    // display scale
 const TILE_SZ  = TILE_PX * TILE_SCL; // 64 pixels on screen
 
 // World map dimensions in tiles
-const MAP_W = 80;  // columns
-const MAP_H = 60;  // rows
+export const MAP_W = 80;  // columns
+export const MAP_H = 60;  // rows
 
 // Depth layers
 const D_GROUND   = 0;
@@ -113,6 +113,18 @@ const D_UI       = 100000;
 
 // Click-to-move arrival radius
 const ARRIVE_PX = 8;
+
+// Important buildings to highlight on the minimap, as [col, row] map anchors.
+export const MM_LANDMARKS: [number, number][] = [[18, 37], [40, 45], [66, 23], [70, 32], [73, 26]];
+
+/** Classify a GROUND_MAP cell (Kenney frame ids) into terrain, for the minimap. */
+export function classifyGround(frame: number): 'water' | 'dirt' | 'grass' {
+  if (frame === T_WATER_C || frame === W_NW || frame === W_N || frame === W_NE ||
+      frame === W_W || frame === W_C || frame === W_E ||
+      frame === W_SW || frame === W_S || frame === W_SE) return 'water';
+  if (frame === T_DIRT || frame === T_DIRT2) return 'dirt';
+  return 'grass';
+}
 
 // ---- Tile map definition ----
 // We define a handcrafted map inspired exactly by Sample1.png:
@@ -388,6 +400,7 @@ function buildTileMap(): { ground: number[][]; objects: (number | null)[][] } {
 
 // Pre-build the map once
 const { ground: GROUND_MAP, objects: OBJECT_MAP } = buildTileMap();
+export { GROUND_MAP };
 
 // Sim world bounds (from sim/data.ts — hardcoded here to avoid circular import)
 const SIM_X_MIN = -180;
@@ -397,7 +410,7 @@ const SIM_Z_MAX =  900;
 const TILE_WORLD_X = (SIM_X_MAX - SIM_X_MIN) / MAP_W;
 const TILE_WORLD_Z = (SIM_Z_MAX - SIM_Z_MIN) / MAP_H;
 
-function worldToTile(x: number, z: number): { col: number; row: number } {
+export function worldToTile(x: number, z: number): { col: number; row: number } {
   return {
     col: (x - SIM_X_MIN) / TILE_WORLD_X,
     row: (z - SIM_Z_MIN) / TILE_WORLD_Z,
@@ -515,17 +528,13 @@ export class WorldScene extends Scene {
     // Combat end listener
     this.events.on(Events.COMBAT_END, this.onCombatEnd, this);
 
-    // HUD scene
+    // HUD scene (owns the minimap, using the exported map data)
     this.scene.launch('HUDScene');
   }
 
-  // Classify a GROUND_MAP cell (still stored as Kenney frame ids) into terrain.
+  // Classify a GROUND_MAP cell into terrain (shared with the HUD minimap).
   private terrainOf(frame: number): 'water' | 'dirt' | 'grass' {
-    if (frame === T_WATER_C || frame === W_NW || frame === W_N || frame === W_NE ||
-        frame === W_W || frame === W_C || frame === W_E ||
-        frame === W_SW || frame === W_S || frame === W_SE) return 'water';
-    if (frame === T_DIRT || frame === T_DIRT2) return 'dirt';
-    return 'grass';
+    return classifyGround(frame);
   }
 
   /** Tiny Swords ground: painterly grass / dirt path / water, to match the units. */

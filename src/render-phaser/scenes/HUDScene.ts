@@ -14,6 +14,11 @@
 
 import { Scene } from 'phaser';
 import { Events } from '../index';
+import { MAP_W, MAP_H, GROUND_MAP, worldToTile, classifyGround, MM_LANDMARKS } from './WorldScene';
+
+// Circular minimap (top-right): radius + margin from the screen corner.
+const MM_R = 74;
+const MM_MARGIN = 14;
 
 export class HUDScene extends Scene {
   private hpBar!: Phaser.GameObjects.Graphics;
@@ -23,6 +28,10 @@ export class HUDScene extends Scene {
   private messageQueue: string[] = [];
   private messageText!: Phaser.GameObjects.Text;
   private messageVisible = false;
+
+  // Minimap (dynamic dots layer + fitted map->pixel transform)
+  private mmDyn?: Phaser.GameObjects.Graphics;
+  private mmOx = 0; private mmOy = 0; private mmSc = 1; private mmCx = 0; private mmCy = 0;
 
   constructor() {
     super({ key: 'HUDScene', active: false });
@@ -81,6 +90,84 @@ export class HUDScene extends Scene {
     // Initial render
     this.onHPUpdate({ hp: 100, maxHp: 100 });
     this.xpBar.clear();
+
+    // Minimap (top-right)
+    this.buildMinimap();
+  }
+
+  /** Circular world-map minimap: fit the whole tile map into a disc, paint
+   *  terrain once, highlight key buildings; player + units drawn each frame. */
+  private buildMinimap(): void {
+    const w = this.scale.width;
+    const cx = w - MM_R - MM_MARGIN;
+    const cy = MM_R + MM_MARGIN;
+    const sc = (2 * MM_R - 10) / MAP_W;
+    this.mmSc = sc; this.mmCx = cx; this.mmCy = cy;
+    this.mmOx = cx - (MAP_W * sc) / 2;
+    this.mmOy = cy - (MAP_H * sc) / 2;
+
+    const bg = this.add.graphics().setScrollFactor(0).setDepth(150);
+    bg.fillStyle(0x0b160b, 1).fillCircle(cx, cy, MM_R);
+    const rr = (MM_R - 2) * (MM_R - 2);
+    for (let r = 0; r < MAP_H; r++) {
+      for (let c = 0; c < MAP_W; c++) {
+        const px = this.mmOx + c * sc, py = this.mmOy + r * sc;
+        const dx = px - cx, dy = py - cy;
+        if (dx * dx + dy * dy > rr) continue;
+        const t = classifyGround(GROUND_MAP[r][c]);
+        bg.fillStyle(t === 'water' ? 0x2f6f8f : t === 'dirt' ? 0x9a6f43 : 0x4e8f3e, 1);
+        bg.fillRect(px, py, Math.ceil(sc) + 1, Math.ceil(sc) + 1);
+      }
+    }
+    for (const [c, r] of MM_LANDMARKS) {
+      const px = this.mmOx + c * sc, py = this.mmOy + r * sc;
+      bg.fillStyle(0x000000, 0.6).fillRect(px - 3, py - 3, 7, 7);
+      bg.fillStyle(0xffd23f, 1).fillRect(px - 2, py - 2, 5, 5);
+    }
+    this.mmDyn = this.add.graphics().setScrollFactor(0).setDepth(151);
+    const ring = this.add.graphics().setScrollFactor(0).setDepth(152);
+    ring.lineStyle(4, 0x000000, 0.5).strokeCircle(cx, cy, MM_R + 1);
+    ring.lineStyle(3, 0xffd23f, 0.95).strokeCircle(cx, cy, MM_R);
+    this.add.text(cx, cy - MM_R - 2, 'Bharat', {
+      fontSize: '10px', fontFamily: '"Noto Sans", sans-serif',
+      color: '#fde68a', stroke: '#000000', strokeThickness: 3,
+    }).setOrigin(0.5, 1).setScrollFactor(0).setDepth(152);
+  }
+
+  update(): void {
+    const g = this.mmDyn;
+    if (!g) return;
+    const world = this.registry.get('world') as
+      | { entities: Map<number, { id: number; kind: string; dead?: boolean; pos: { x: number; z: number }; facing: number }>;
+          player: { pos: { x: number; z: number }; facing: number }; playerId: number; realm: string }
+      | undefined;
+    if (!world || !world.player) return;
+    const offline = world.realm === '';
+    g.clear();
+    const rr = (MM_R - 3) * (MM_R - 3);
+    const inside = (x: number, y: number) => {
+      const dx = x - this.mmCx, dy = y - this.mmCy; return dx * dx + dy * dy <= rr;
+    };
+    const plot = (x: number, z: number) => {
+      const t = worldToTile(x, z);
+      return { x: this.mmOx + t.col * this.mmSc, y: this.mmOy + t.row * this.mmSc };
+    };
+    for (const e of world.entities.values()) {
+      if (e.id === world.playerId || e.dead) continue;
+      if (offline && e.kind === 'player') continue;
+      const p = plot(e.pos.x, e.pos.z);
+      if (!inside(p.x, p.y)) continue;
+      g.fillStyle(e.kind === 'mob' ? 0xef4444 : e.kind === 'npc' ? 0x60a5fa : 0x9ca3af, 0.9);
+      g.fillCircle(p.x, p.y, 1.7);
+    }
+    const pl = world.player;
+    const pp = plot(pl.pos.x, pl.pos.z);
+    if (inside(pp.x, pp.y)) {
+      const f = pl.facing;
+      g.lineStyle(2, 0xffffff, 0.95).lineBetween(pp.x, pp.y, pp.x + Math.sin(f) * 7, pp.y + Math.cos(f) * 7);
+      g.fillStyle(0xffffff, 1).fillCircle(pp.x, pp.y, 2.8);
+      g.lineStyle(1.5, 0x1f2937, 0.9).strokeCircle(pp.x, pp.y, 2.8);
+    }
   }
 
   private onHPUpdate({ hp, maxHp }: { hp: number; maxHp: number }): void {
