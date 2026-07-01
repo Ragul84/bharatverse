@@ -1,8 +1,14 @@
 /**
  * Per-family monster art. Mobs render as real creature sheets (skeleton, spider,
- * …) instead of red-tinted humans. Each family maps to a MobSheet describing its
- * frame grid + direction rows; unmapped families fall back to the tinted LPC
- * human in entity_view. Texture keys are loaded in BootScene.
+ * wolf, …) instead of red-tinted humans. Each mob maps to a MobSheet describing
+ * its frame layout; unmapped mobs fall back to the tinted LPC human.
+ *
+ * Sheet kinds:
+ *  - 'lpc'  : the 13-wide humanoid layout (walk rows 8-11), same as characters.
+ *  - 'grid' : a top-down sheet with one direction per row (0=up..3=right).
+ *  - 'quad' : a side-view quadruped — an explicit walk-frame list, mirrored for
+ *             left; the same side view is used for vertical movement (a common
+ *             top-down convention). Facing handled via mobFlipX in entity_view.
  */
 
 import { MOBS } from '../sim/data';
@@ -10,30 +16,47 @@ import type { Entity } from '../sim/types';
 
 export interface MobSheet {
   key: string;
-  /** 'lpc' = 13-wide humanoid layout (walk rows 8-11); 'grid' = dir rows 0-3. */
-  kind: 'lpc' | 'grid';
-  cols: number;        // columns in the sheet
-  walkFrames: number;  // animation frames used per direction
+  kind: 'lpc' | 'grid' | 'quad';
+  cols: number;         // columns in the sheet (grid/lpc)
+  walkFrames: number;   // frames per direction (grid/lpc)
   scale: number;
-  frameStep: number;   // ms per frame
+  frameStep: number;    // ms per frame
+  sideFrames?: number[]; // 'quad': the side-view walk cycle (faces right)
 }
 
-// A mob family → its sheet. Only families with real art are listed; the rest
-// keep the tinted-LPC fallback.
+// Whole mob families that map to one sheet.
 const FAMILY_SHEETS: Partial<Record<string, MobSheet>> = {
   undead: { key: 'mob-skeleton', kind: 'lpc',  cols: 13, walkFrames: 8, scale: 1.5, frameStep: 110 },
   spider: { key: 'mob-spider',   kind: 'grid', cols: 10, walkFrames: 8, scale: 1.3, frameStep: 100 },
 };
 
-/** The monster sheet for this entity's family, or null to use the fallback. */
+// Specific creatures (by templateId keyword) that override the family sheet.
+const WOLF: MobSheet = {
+  key: 'mob-wolf', kind: 'quad', cols: 10, walkFrames: 4, scale: 1.35,
+  frameStep: 120, sideFrames: [15, 16, 17, 18], // row-1 side-view walk (faces right)
+};
+
+/** The monster sheet for this entity, or null to use the fallback. */
 export function mobSheetFor(e: Entity): MobSheet | null {
   if (e.kind !== 'mob') return null;
-  const fam = MOBS[e.templateId]?.family;
+  const tid = e.templateId;
+  if (tid.includes('wolf') || tid === 'old_greyjaw') return WOLF;
+  const fam = MOBS[tid]?.family;
   return (fam && FAMILY_SHEETS[fam]) ?? null;
 }
 
-/** Frame index for the entity's 4-direction facing + walk cycle. */
+/** True when a side-view ('quad') mob should be mirrored (heading left). */
+export function mobFlipX(sheet: MobSheet, e: Entity): boolean {
+  return sheet.kind === 'quad' && Math.sin(e.facing) < -0.1;
+}
+
+/** Frame index for the entity's facing + walk cycle. */
 export function mobFrame(sheet: MobSheet, e: Entity, moving: boolean, nowMs: number): number {
+  if (sheet.kind === 'quad') {
+    const fr = sheet.sideFrames!;
+    return moving ? fr[Math.floor(nowMs / sheet.frameStep) % fr.length] : fr[0];
+  }
+
   const vx = Math.sin(e.facing), vz = Math.cos(e.facing);
   // dir: 0 up, 1 left, 2 down, 3 right
   let dir: number;

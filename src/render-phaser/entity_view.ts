@@ -11,7 +11,7 @@ import { archetypeFor } from './character_archetype';
 import { CHAR_H } from './character_sprites';
 import { resolveCharacterTexture } from './bv_assets';
 import { compositeLpc, randomConfig, lpcReady, type LpcConfig } from './lpc_composite';
-import { mobSheetFor, mobFrame, type MobSheet } from './mob_sprites';
+import { mobSheetFor, mobFrame, mobFlipX, type MobSheet } from './mob_sprites';
 
 const BAR_W = 32;
 const BAR_X = -BAR_W / 2;
@@ -182,6 +182,7 @@ export class EntityView {
     if (this.mobSheet) {
       // Real creature art — animate the walk cycle; no red tint needed.
       this.body.setFrame(mobFrame(this.mobSheet, e, moving, this.body.scene.time.now));
+      this.body.setFlipX(mobFlipX(this.mobSheet, e)); // side-view mobs face their heading
       if (e.dead) { this.body.setTint(0x888888); this.shadow.setVisible(false); }
       else { this.body.clearTint(); this.shadow.setVisible(true); }
     } else if (this.useLpc) {
