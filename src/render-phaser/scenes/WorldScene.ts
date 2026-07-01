@@ -535,7 +535,9 @@ export class WorldScene extends Scene {
     const mapPxH = MAP_H * TILE_SZ;
     this.cameras.main.setBounds(0, 0, mapPxW, mapPxH);
     this.cameras.main.startFollow(this.playerView.container, true, 0.1, 0.1);
-    this.cameras.main.setZoom(1.5);
+    // Integer zoom keeps pixel art on whole-pixel multiples (crisp, no shimmer);
+    // 2x on the 1280-wide canvas frames the same world area the old 1.5x did on 960.
+    this.cameras.main.setZoom(2);
 
     // Click empty ground to move; clicking an entity (or a menu button) is handled
     // by that object and must NOT also move or dismiss via this handler.

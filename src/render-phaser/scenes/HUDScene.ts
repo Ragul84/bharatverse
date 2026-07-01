@@ -156,6 +156,19 @@ export class HUDScene extends Scene {
       fontSize: '10px', fontFamily: '"Noto Sans", sans-serif',
       color: '#fde68a', stroke: '#000000', strokeThickness: 3,
     }).setOrigin(0.5, 1).setScrollFactor(0).setDepth(152);
+
+    // Compass: N is up (world -z), E right (+x), S down (+z), W left (-x).
+    const compass: [string, number, number][] = [
+      ['N', cx, cy - MM_R + 9], ['S', cx, cy + MM_R - 9],
+      ['E', cx + MM_R - 9, cy], ['W', cx - MM_R + 9, cy],
+    ];
+    for (const [ch, tx, ty] of compass) {
+      this.add.text(tx, ty, ch, {
+        fontSize: '10px', fontFamily: '"Noto Sans", sans-serif',
+        color: ch === 'N' ? '#fca5a5' : '#e5e7eb', fontStyle: 'bold',
+        stroke: '#000000', strokeThickness: 3,
+      }).setOrigin(0.5).setScrollFactor(0).setDepth(153);
+    }
   }
 
   update(): void {
@@ -166,7 +179,6 @@ export class HUDScene extends Scene {
           player: { pos: { x: number; z: number }; facing: number }; playerId: number; realm: string }
       | undefined;
     if (!world || !world.player) return;
-    const offline = world.realm === '';
     g.clear();
     const rr = (MM_R - 3) * (MM_R - 3);
     const inside = (x: number, y: number) => {
@@ -176,14 +188,8 @@ export class HUDScene extends Scene {
       const t = worldToTile(x, z);
       return { x: this.mmOx + t.col * this.mmSc, y: this.mmOy + t.row * this.mmSc };
     };
-    for (const e of world.entities.values()) {
-      if (e.id === world.playerId || e.dead) continue;
-      if (offline && e.kind === 'player') continue;
-      const p = plot(e.pos.x, e.pos.z);
-      if (!inside(p.x, p.y)) continue;
-      g.fillStyle(e.kind === 'mob' ? 0xef4444 : e.kind === 'npc' ? 0x60a5fa : 0x9ca3af, 0.9);
-      g.fillCircle(p.x, p.y, 1.7);
-    }
+    // The minimap shows only *where you are* + key buildings (painted once in
+    // buildMinimap) — no other-entity clutter.
     const pl = world.player;
     const pp = plot(pl.pos.x, pl.pos.z);
     if (inside(pp.x, pp.y)) {

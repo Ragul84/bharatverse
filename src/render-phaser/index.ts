@@ -18,9 +18,11 @@ import { CombatScene } from './scenes/CombatScene';
 import { QuizScene } from './scenes/QuizScene';
 import { HUDScene } from './scenes/HUDScene';
 
-/** Base logical resolution - scales to fill device screen. */
-export const GAME_WIDTH = 960;
-export const GAME_HEIGHT = 540; // Landscape ratio
+/** Base logical resolution - scales to fill device screen. Higher than the
+ *  display of most laptops so the FIT scaler downscales (crisp) rather than
+ *  bilinear-upscaling a low-res canvas (which blurs sprites AND text). */
+export const GAME_WIDTH = 1280;
+export const GAME_HEIGHT = 720; // 16:9
 
 /**
  * Shared event bus keys used across scenes.

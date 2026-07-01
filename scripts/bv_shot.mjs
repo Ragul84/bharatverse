@@ -202,7 +202,7 @@ await page.evaluate(() => {
   const hud = g.scene.getScene('HUDScene');
   if (hud && hud.closeDuelPrompt) hud.closeDuelPrompt(); // clear the leftover modal
   g.scene.start('CombatScene', {
-    enemy: { id: 'vigyan1', label: 'Vigyan Varah', subject: 'maths', tier: 1, hp: 66, maxHp: 66 },
+    enemy: { id: 'vigyan1', label: 'Tuskgore Boar', subject: 'maths', tier: 1, hp: 66, maxHp: 66 },
     playerHp: 90, playerMaxHp: 100, playerClass: 'kshatriya',
     questions: g.registry.get('questions') || [],
   });
