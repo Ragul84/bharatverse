@@ -71,6 +71,7 @@ export class EntityView {
   readonly container: GameObjects.Container;
   private body: GameObjects.Sprite;
   private readonly shadow: GameObjects.Graphics;
+  private readonly hpBg: GameObjects.Rectangle;
   private readonly hpFill: GameObjects.Rectangle;
   private readonly resBg: GameObjects.Rectangle;
   private readonly resFill: GameObjects.Rectangle;
@@ -160,14 +161,15 @@ export class EntityView {
 
     // Name + bars
     this.name = scene.add.text(0, -56, '', {
-      fontSize: '10px',
+      fontSize: '9px',
       fontFamily: '"Noto Sans", sans-serif',
-      color: '#ffffff',
+      color: '#f1f5f9',
       stroke: '#000000',
       strokeThickness: 2,
     }).setOrigin(0.5, 1);
 
     const hpBg = scene.add.rectangle(BAR_X, -49, BAR_W, 4, 0x111827).setOrigin(0, 0.5);
+    this.hpBg = hpBg;
     this.hpFill = scene.add.rectangle(BAR_X, -49, BAR_W, 4, 0x22c55e).setOrigin(0, 0.5);
     this.resBg  = scene.add.rectangle(BAR_X, -44, BAR_W, 3, 0x111827).setOrigin(0, 0.5);
     this.resFill = scene.add.rectangle(BAR_X, -44, BAR_W, 3, 0x3b82f6).setOrigin(0, 0.5);
@@ -232,8 +234,12 @@ export class EntityView {
     }
 
     const hpF = L.hpFraction(e);
+    // Declutter: NPCs are non-combat, so only show their HP bar when hurt. Mobs
+    // and the player always show it.
+    const showHp = !e.dead && (e.kind !== 'npc' || hpF < 0.999);
     this.hpFill.setSize(BAR_W * hpF, 4).setFillStyle(L.hpColor(hpF));
-    this.hpFill.setVisible(!e.dead);
+    this.hpFill.setVisible(showHp);
+    this.hpBg.setVisible(showHp);
 
     const hasRes = L.hasResourceBar(e) && !e.dead;
     this.resBg.setVisible(hasRes);

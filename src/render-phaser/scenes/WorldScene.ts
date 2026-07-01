@@ -541,9 +541,11 @@ export class WorldScene extends Scene {
     const mapPxH = MAP_H * TILE_SZ;
     this.cameras.main.setBounds(0, 0, mapPxW, mapPxH);
     this.cameras.main.startFollow(this.playerView.container, true, 0.1, 0.1);
-    // Integer zoom keeps pixel art on whole-pixel multiples (crisp, no shimmer);
-    // 2x on the 1280-wide canvas frames the same world area the old 1.5x did on 960.
-    this.cameras.main.setZoom(2);
+    // Zoom framed for a spacious isometric-MMO feel (kintara/RuneScape show a lot
+    // of the world at once): ~14 tiles across the 1280 canvas, so characters read
+    // ~1 tile and don't crowd the view. (Canvas is native-res so this stays sharp;
+    // only the previous low-res upscale caused blur.)
+    this.cameras.main.setZoom(1.4);
 
     // Click empty ground to move; clicking an entity (or a menu button) is handled
     // by that object and must NOT also move or dismiss via this handler.
