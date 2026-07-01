@@ -59,6 +59,14 @@ export const Events = {
   // DAILY_CLAIM ({ gold, xp }) back to WorldScene to award.
   DAILY_CHANGED: 'daily:changed',
   DAILY_CLAIM: 'daily:claim',
+
+  // Cosmetic shop: world building/HUD button -> OPEN_SHOP (HUD opens panel);
+  // HUD -> SHOP_BUY / SHOP_EQUIP ({ kind, ref, price }) to WorldScene, which owns
+  // Gold + appearance; WorldScene -> SHOP_CHANGED so the HUD panel refreshes.
+  OPEN_SHOP: 'shop:open',
+  SHOP_BUY: 'shop:buy',
+  SHOP_EQUIP: 'shop:equip',
+  SHOP_CHANGED: 'shop:changed',
 } as const;
 
 /**

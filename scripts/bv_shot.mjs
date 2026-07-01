@@ -76,6 +76,35 @@ await page.evaluate(() => {
   if (hud && hud.dailyPanel) { hud.dailyPanel.destroy(); hud.dailyPanel = undefined; }
 });
 
+// Cosmetic shop: give Gold, open the shop, buy+equip a hat and a pet.
+await page.evaluate(() => {
+  const ws = window.__game.scene.getScene('WorldScene');
+  ws.gold = 5000; ws.pushHUDUpdate && ws.pushHUDUpdate();
+  const hud = window.__game.scene.getScene('HUDScene');
+  hud.toggleShopPanel(true);
+});
+await sleep(500);
+await page.screenshot({ path: 'tmp/bv_shop.png' });
+// Buy + equip the Royal Crown (hat index 1) and the Marmalade Cat pet.
+await page.evaluate(() => {
+  const ws = window.__game.scene.getScene('WorldScene');
+  ws.events.emit('shop:buy', { kind: 'hat', ref: 1, price: 800 });
+  ws.events.emit('shop:equip', { kind: 'hat', ref: 1 });
+  ws.events.emit('shop:buy', { kind: 'pet', ref: 'cat_orange', price: 450 });
+  ws.events.emit('shop:equip', { kind: 'pet', ref: 'cat_orange' });
+  const hud = window.__game.scene.getScene('HUDScene');
+  if (hud.shopPanel) { hud.shopPanel.destroy(); hud.shopPanel = undefined; }
+});
+await sleep(400);
+await page.screenshot({ path: 'tmp/bv_cosmetic_equipped.png' });
+// Walk so the crown + pet animate/trail; capture from a couple angles.
+await page.keyboard.down('ArrowDown'); await sleep(1400); await page.keyboard.up('ArrowDown');
+await sleep(200);
+await page.screenshot({ path: 'tmp/bv_hat_walk.png' });
+await page.keyboard.down('ArrowLeft'); await sleep(1200); await page.keyboard.up('ArrowLeft');
+await sleep(200);
+await page.screenshot({ path: 'tmp/bv_hat_walk2.png' });
+
 const globals = await page.evaluate(() => Object.keys(window).filter((k) => k.startsWith('__') || k === 'game'));
 console.log('globals:', JSON.stringify(globals));
 const p0 = await playerPos();

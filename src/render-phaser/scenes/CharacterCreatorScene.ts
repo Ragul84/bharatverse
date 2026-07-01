@@ -12,7 +12,7 @@ import {
 } from '../lpc_composite';
 
 export class CharacterCreatorScene extends Scene {
-  private cfg: LpcConfig = { skin: 0, hair: 0, shirt: 0, pants: 0 };
+  private cfg: LpcConfig = { skin: 0, hair: 0, shirt: 0, pants: 0, hat: 0 };
   private preview!: GameObjects.Sprite;
   private valueTexts: Partial<Record<keyof LpcConfig, GameObjects.Text>> = {};
 

@@ -107,6 +107,20 @@ export class BootScene extends Scene {
       this.load.spritesheet(key, `assets/lpc/${file}.png`, { frameWidth: 64, frameHeight: 64 });
     }
 
+    // LPC hat cosmetics — the modern Universal-LPC expanded layout (832x2944);
+    // its first 21 rows match the classic layout our bodies use, so overlaying
+    // onto the 64px composite lines the hat up on the walk frames (rows 8-11).
+    for (const hat of ['crown', 'tiara', 'tophat', 'wizard', 'feather_cap', 'bandana']) {
+      this.load.spritesheet(`lpc-hat-${hat}`, `assets/lpc/cosmetics/${hat}.png`, { frameWidth: 64, frameHeight: 64 });
+    }
+    // Pet follower sprites (standalone LPC-style animal sheets, own frame sizes).
+    for (const bird of ['bird_blue', 'bird_red', 'bird_white']) {
+      this.load.spritesheet(`pet-${bird}`, `assets/lpc/pets/${bird}.png`, { frameWidth: 32, frameHeight: 32 });
+    }
+    for (const cat of ['cat_orange', 'cat_black']) {
+      this.load.spritesheet(`pet-${cat}`, `assets/lpc/pets/${cat}.png`, { frameWidth: 32, frameHeight: 48 });
+    }
+
     // Tiny Swords water tile (64x64) + sand tilemap for shores
     this.load.image('ts-water', 'assets/tiny-swords/terrain/water_bg.png');
     this.load.spritesheet('ts-tilemap-sand', 'assets/tiny-swords/terrain/tilemap_sand.png', { frameWidth: 64, frameHeight: 64 });

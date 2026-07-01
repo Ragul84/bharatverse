@@ -27,6 +27,10 @@ import type { IWorld } from '../../world_api';
 import type { Entity } from '../../sim/types';
 import type { Question } from '../../sim/content/questions';
 import { loadDaily, saveDaily, bumpDaily as bumpDailyState, type DailyState } from '../daily';
+import {
+  loadCosmetics, saveCosmetics, petDef,
+  type CosmeticState, type PetDef,
+} from '../cosmetics';
 
 // ---- Tile constants (roguelikeSheet_transparent.png layout) ----
 // Sheet: 57 cols x 31 rows, each tile 16x16 with 1px margin.
@@ -438,6 +442,11 @@ export class WorldScene extends Scene {
 
   private playerView!: EntityView;
 
+  // Equipped cosmetic pet: a follower sprite that trails the player.
+  private petSprite?: GameObjects.Sprite;
+  private petMeta?: PetDef;
+  private petPx = 0; private petPy = 0;
+
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private wasd!: {
     up: Input.Keyboard.Key;
@@ -558,6 +567,82 @@ export class WorldScene extends Scene {
       this.addGold(r.gold);
       this.emitMsg(`Daily complete!  +${r.gold} Gold`);
     }, this);
+
+    // Cosmetic shop: shared state in the registry; WorldScene owns Gold + look.
+    const cos = loadCosmetics();
+    this.registry.set('cosmetics', cos);
+    this.registry.set('equippedHat', cos.equippedHat);
+    if (cos.equippedPet) this.spawnPet(cos.equippedPet);
+    this.events.on(Events.SHOP_BUY, this.onShopBuy, this);
+    this.events.on(Events.SHOP_EQUIP, this.onShopEquip, this);
+  }
+
+  // ---- Cosmetic shop (Gold spend + appearance) ----------------------------
+
+  private onShopBuy(o: { kind: 'hat' | 'pet'; ref: number | string; price: number }): void {
+    const cos = this.registry.get('cosmetics') as CosmeticState | undefined;
+    if (!cos) return;
+    if (this.gold < o.price) { this.emitMsg('Not enough Gold.'); return; }
+    this.gold -= o.price;
+    if (o.kind === 'hat') cos.ownedHats[o.ref as number] = true;
+    else cos.ownedPets[o.ref as string] = true;
+    saveCosmetics(cos);
+    this.pushHUDUpdate();
+    this.emitMsg(`Purchased!  -${o.price} Gold`);
+    this.events.emit(Events.SHOP_CHANGED);
+  }
+
+  private onShopEquip(o: { kind: 'hat' | 'pet'; ref: number | string }): void {
+    const cos = this.registry.get('cosmetics') as CosmeticState | undefined;
+    if (!cos) return;
+    if (o.kind === 'hat') {
+      const idx = o.ref as number;
+      cos.equippedHat = cos.equippedHat === idx ? 0 : idx; // toggle off if re-equipping
+      this.registry.set('equippedHat', cos.equippedHat);
+      this.playerView.refreshLpcAppearance();
+    } else {
+      const id = o.ref as string;
+      cos.equippedPet = cos.equippedPet === id ? '' : id;
+      if (cos.equippedPet) this.spawnPet(cos.equippedPet); else this.clearPet();
+    }
+    saveCosmetics(cos);
+    this.events.emit(Events.SHOP_CHANGED);
+  }
+
+  private spawnPet(id: string): void {
+    const def = petDef(id);
+    if (!def || !this.textures.exists(def.key)) { this.clearPet(); return; }
+    this.clearPet();
+    this.petMeta = def;
+    const pp = worldToPixel(this.world.player.pos.x, this.world.player.pos.z);
+    this.petPx = pp.px - 22; this.petPy = pp.py + 6;
+    this.petSprite = this.add.sprite(this.petPx, this.petPy, def.key, 1)
+      .setOrigin(0.5, 0.9).setScale(1.6).setDepth(D_ENTITY);
+  }
+
+  private clearPet(): void {
+    this.petSprite?.destroy();
+    this.petSprite = undefined;
+    this.petMeta = undefined;
+  }
+
+  /** Trail the player; face + animate a 3-frame walk toward the target point. */
+  private updatePet(targetX: number, targetY: number): void {
+    const s = this.petSprite, def = this.petMeta;
+    if (!s || !def) return;
+    // A point just behind/beside the player, so the pet doesn't overlap the body.
+    const tx = targetX - 22, ty = targetY + 6;
+    const dx = tx - this.petPx, dy = ty - this.petPy;
+    const dist = Math.hypot(dx, dy);
+    const moving = dist > 1.5;
+    if (moving) { const k = Math.min(1, 0.15); this.petPx += dx * k; this.petPy += dy * k; }
+    s.setPosition(this.petPx, this.petPy).setDepth(D_ENTITY + this.petPy);
+    // Direction row: 0 down, 1 left, 2 right, 3 up (standard 4-row walk sheets).
+    let dir = 0;
+    if (Math.abs(dx) > Math.abs(dy)) dir = dx > 0 ? 2 : 1;
+    else dir = dy >= 0 ? 0 : 3;
+    const col = moving ? Math.floor(this.time.now / 150) % def.cols : 1;
+    s.setFrame(dir * def.cols + col);
   }
 
   /** Advance daily-quest progress for a gameplay event + notify the HUD. */
@@ -659,7 +744,23 @@ export class WorldScene extends Scene {
     // Town (east): a tower, the big castle and a monastery around the plaza
     place('ts-tower', 66, 23, TILE_SZ * 2, TILE_SZ * 4);
     place('ts-castle', 70, 32, TILE_SZ * 5, TILE_SZ * 4);
-    place('ts-monastery', 73, 26, TILE_SZ * 3, TILE_SZ * 3);
+    // Monastery doubles as the Cosmetics Emporium — click it to open the shop.
+    this.placeShop('ts-monastery', 73, 26, TILE_SZ * 3, TILE_SZ * 3);
+  }
+
+  /** The cosmetic-shop building: a labelled, clickable Tiny Swords sprite. */
+  private placeShop(key: string, col: number, row: number, w: number, h: number): void {
+    if (!this.textures.exists(key)) return;
+    const x = col * TILE_SZ + TILE_SZ / 2;
+    const baseY = row * TILE_SZ + TILE_SZ;
+    const b = this.add.image(x, baseY, key).setOrigin(0.5, 1)
+      .setDisplaySize(w, h).setDepth(D_ENTITY + baseY)
+      .setInteractive({ useHandCursor: true });
+    b.on('pointerdown', () => this.events.emit(Events.OPEN_SHOP));
+    this.add.text(x, baseY - h - 4, 'Cosmetics Emporium', {
+      fontSize: '12px', fontFamily: '"Noto Sans", sans-serif',
+      color: '#fde68a', stroke: '#000000', strokeThickness: 3,
+    }).setOrigin(0.5, 1).setDepth(D_ENTITY + baseY + 1);
   }
 
   update(): void {
@@ -690,6 +791,9 @@ export class WorldScene extends Scene {
       .setPosition(pp.px, pp.py)
       .setDepth(D_ENTITY + pp.py);
     this.playerView.update(this.world.player);
+
+    // Cosmetic pet trails the player.
+    if (this.petSprite) this.updatePet(pp.px, pp.py);
 
     // Sync entities
     this.syncEntities(alpha);

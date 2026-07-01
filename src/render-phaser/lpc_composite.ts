@@ -15,6 +15,7 @@ export interface LpcConfig {
   hair: number;
   shirt: number;
   pants: number;
+  hat: number; // 0 = none; indexes LPC_HATS (equipped cosmetic, not creator-chosen)
 }
 
 export interface LpcOption {
@@ -47,6 +48,17 @@ export const LPC_PANTS: LpcOption[] = [
   { key: 'lpc-legs-red', label: 'Red' },
   { key: 'lpc-legs-white', label: 'Sand' },
 ];
+// Equippable hat cosmetics (index 0 is "none"). Texture keys loaded in
+// BootScene; the shop (cosmetics.ts) attaches prices/names by index.
+export const LPC_HATS: LpcOption[] = [
+  { key: '',                 label: 'None' },
+  { key: 'lpc-hat-crown',    label: 'Royal Crown' },
+  { key: 'lpc-hat-tiara',    label: 'Jeweled Tiara' },
+  { key: 'lpc-hat-tophat',   label: 'Top Hat' },
+  { key: 'lpc-hat-wizard',   label: "Scholar's Hat" },
+  { key: 'lpc-hat-feather_cap', label: 'Feather Cap' },
+  { key: 'lpc-hat-bandana',  label: 'Bandana' },
+];
 const FEET_KEY = 'lpc-feet-brown';
 
 const wrap = (i: number, n: number) => ((i % n) + n) % n;
@@ -57,6 +69,7 @@ export function normalizeConfig(c: Partial<LpcConfig> | null | undefined): LpcCo
     hair: wrap(c?.hair ?? 0, LPC_HAIRS.length),
     shirt: wrap(c?.shirt ?? 0, LPC_SHIRTS.length),
     pants: wrap(c?.pants ?? 0, LPC_PANTS.length),
+    hat: wrap(c?.hat ?? 0, LPC_HATS.length),
   };
 }
 
@@ -68,11 +81,12 @@ export function randomConfig(seed: number): LpcConfig {
     hair: (s >> 2) % LPC_HAIRS.length,
     shirt: (s >> 5) % LPC_SHIRTS.length,
     pants: (s >> 7) % LPC_PANTS.length,
+    hat: 0, // NPCs/mobs never wear cosmetic hats
   });
 }
 
 export function configKey(c: LpcConfig): string {
-  return `lpc-c-${c.skin}-${c.hair}-${c.shirt}-${c.pants}`;
+  return `lpc-c-${c.skin}-${c.hair}-${c.shirt}-${c.pants}-${c.hat}`;
 }
 
 /** True once the base LPC layers are available to composite from. */
@@ -96,6 +110,7 @@ export function compositeLpc(scene: Scene, cfg: Partial<LpcConfig>): string {
     LPC_PANTS[c.pants].key,
     LPC_SHIRTS[c.shirt].key,
     LPC_HAIRS[c.hair].key,
+    LPC_HATS[c.hat].key, // hat sits on top of hair ('' when none)
   ];
   const canvas = document.createElement('canvas');
   canvas.width = 832; canvas.height = 1344;

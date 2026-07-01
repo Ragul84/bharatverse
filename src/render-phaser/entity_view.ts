@@ -82,8 +82,10 @@ export class EntityView {
   // When the composited LPC sheet is available, the body is an LPC character
   // driven by 4-directional frames (rows 8-11) instead of Tiny Swords anims.
   private useLpc = false;
+  private isPlayer = false;
 
   constructor(scene: Scene, e: Entity, isPlayer: boolean) {
+    this.isPlayer = isPlayer;
     // Prefer the composited LPC character (top-down, 4-directional walk); fall
     // back to Tiny Swords animated units, then procedural/_v3 art.
     this.useLpc = lpcReady(scene);
@@ -91,10 +93,11 @@ export class EntityView {
     let useSprite = false;
     let texKey: string;
     if (this.useLpc) {
-      // Player: the appearance chosen in the character creator. Others: a stable
-      // random config by id, so the crowd varies.
+      // Player: creator appearance + the currently equipped cosmetic hat. Others:
+      // a stable random config by id (no hat), so the crowd varies.
       const cfg = isPlayer
-        ? (scene.registry.get('customization') as Partial<LpcConfig> | undefined)
+        ? { ...(scene.registry.get('customization') as Partial<LpcConfig> | undefined ?? {}),
+            hat: (scene.registry.get('equippedHat') as number | undefined) ?? 0 }
         : randomConfig(e.id);
       texKey = compositeLpc(scene, cfg ?? {});
     } else if (tsInfo && scene.textures.exists(tsInfo.tex)) {
@@ -218,6 +221,18 @@ export class EntityView {
     else row = vz >= 0 ? 10 : 8;                            // down : up
     const col = moving ? 1 + (Math.floor(this.body.scene.time.now / 110) % 8) : 0; // 0 = idle
     return row * 13 + col;
+  }
+
+  /** Re-bake the player's LPC sheet after a cosmetic hat change (equip/unequip). */
+  refreshLpcAppearance(): void {
+    if (!this.useLpc || !this.isPlayer) return;
+    const scene = this.body.scene;
+    const cfg = {
+      ...(scene.registry.get('customization') as Partial<LpcConfig> | undefined ?? {}),
+      hat: (scene.registry.get('equippedHat') as number | undefined) ?? 0,
+    };
+    const key = compositeLpc(scene, cfg);
+    if (this.body.texture.key !== key) this.body.setTexture(key);
   }
 
   setInteractiveTarget(onClick: () => void): this {

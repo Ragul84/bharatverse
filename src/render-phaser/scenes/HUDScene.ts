@@ -16,6 +16,10 @@ import { Scene } from 'phaser';
 import { Events } from '../index';
 import { MAP_W, MAP_H, GROUND_MAP, worldToTile, classifyGround, MM_LANDMARKS } from './WorldScene';
 import { DAILY_DEFS, saveDaily, isComplete, isClaimable, type DailyState } from '../daily';
+import {
+  HAT_SHOP, PET_SHOP, hatLabel, ownsHat, ownsPet, type CosmeticState,
+} from '../cosmetics';
+import { compositeLpc, lpcReady } from '../lpc_composite';
 
 // Circular minimap (top-right): radius + margin from the screen corner.
 const MM_R = 74;
@@ -40,6 +44,11 @@ export class HUDScene extends Scene {
   // Daily-quest board (toggled from the button under the minimap)
   private dailyPanel?: Phaser.GameObjects.Container;
   private dailyBadge?: Phaser.GameObjects.Arc;
+
+  // Cosmetic shop
+  private shopPanel?: Phaser.GameObjects.Container;
+  private shopTab: 'hat' | 'pet' = 'hat';
+  private gold = 0;
 
   constructor() {
     super({ key: 'HUDScene', active: false });
@@ -96,6 +105,8 @@ export class HUDScene extends Scene {
     world.events.on(Events.HUD_SHOW_MESSAGE, this.showMessage, this);
     world.events.on(Events.SIM_EVENTS, this.onSimEvents, this);
     world.events.on(Events.DAILY_CHANGED, this.onDailyChanged, this);
+    world.events.on(Events.OPEN_SHOP, () => this.toggleShopPanel(true), this);
+    world.events.on(Events.SHOP_CHANGED, () => { if (this.shopPanel) this.buildShopPanel(); }, this);
 
     // Initial render
     this.onHPUpdate({ hp: 100, maxHp: 100 });
@@ -195,6 +206,8 @@ export class HUDScene extends Scene {
   }
 
   private onMindCoinsUpdate(coins: number): void {
+    this.gold = coins;
+    if (this.shopPanel) this.buildShopPanel(); // keep the shop's Gold label live
     this.mindcoinsText.setText(`Gold: ${coins.toLocaleString()}`);
 
     // Small bounce animation
@@ -291,6 +304,16 @@ export class HUDScene extends Scene {
       .setStrokeStyle(1.5, 0x052e16, 1).setDepth(152).setScrollFactor(0).setVisible(false);
     void bg;
     this.refreshDailyBadge();
+
+    // Shop button (just below the daily button)
+    const sy = by + 34;
+    this.add.rectangle(cx, sy, 118, 30, 0x1a1206, 0.92)
+      .setStrokeStyle(2, 0xf59e0b, 1).setDepth(150).setScrollFactor(0)
+      .setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => this.toggleShopPanel());
+    this.add.text(cx, sy, 'Cosmetics', {
+      fontSize: '13px', fontFamily: '"Noto Sans", sans-serif', color: '#fde68a', fontStyle: 'bold',
+    }).setOrigin(0.5).setDepth(151).setScrollFactor(0);
   }
 
   /** Show the green "reward ready" dot if any daily is claimable. */
@@ -385,5 +408,141 @@ export class HUDScene extends Scene {
     this.scene.get('WorldScene').events.emit(Events.DAILY_CLAIM, { gold: d.gold, xp: d.xp });
     this.refreshDailyBadge();
     this.buildDailyPanel(); // reflect the "Claimed" state immediately
+  }
+
+  // ---- Cosmetic shop -------------------------------------------------------
+
+  private toggleShopPanel(forceOpen = false): void {
+    if (this.shopPanel && !forceOpen) { this.shopPanel.destroy(); this.shopPanel = undefined; return; }
+    this.buildShopPanel();
+  }
+
+  private buildShopPanel(): void {
+    this.shopPanel?.destroy();
+    const cos = this.registry.get('cosmetics') as CosmeticState | undefined;
+    const cx = this.scale.width / 2, cy = this.scale.height / 2;
+    const W = 540, H = 380;
+    const panel = this.add.container(cx, cy).setDepth(320).setScrollFactor(0);
+
+    const bg = this.add.rectangle(0, 0, W, H, 0x140d04, 0.98).setStrokeStyle(3, 0xf59e0b, 1);
+    const title = this.add.text(-W / 2 + 18, -H / 2 + 16, 'Cosmetics Emporium', {
+      fontSize: '18px', fontFamily: '"Noto Sans", sans-serif', color: '#fde68a', fontStyle: 'bold',
+    }).setOrigin(0, 0.5);
+    const goldT = this.add.text(W / 2 - 40, -H / 2 + 16, `Gold: ${this.gold.toLocaleString()}`, {
+      fontSize: '14px', fontFamily: '"Noto Sans", sans-serif', color: '#fbbf24', fontStyle: 'bold',
+    }).setOrigin(1, 0.5);
+    const close = this.add.text(W / 2 - 14, -H / 2 + 16, '✕', {
+      fontSize: '16px', fontFamily: '"Noto Sans", sans-serif', color: '#f8fafc',
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => { this.shopPanel?.destroy(); this.shopPanel = undefined; });
+    panel.add([bg, title, goldT, close]);
+
+    // Tabs
+    const mkTab = (x: number, key: 'hat' | 'pet', label: string) => {
+      const on = this.shopTab === key;
+      const r = this.add.rectangle(x, -H / 2 + 46, 92, 26, on ? 0x7c3f12 : 0x2a1c0a, 1)
+        .setStrokeStyle(2, on ? 0xfde68a : 0x6b4a24, 1)
+        .setInteractive({ useHandCursor: true })
+        .on('pointerdown', () => { this.shopTab = key; this.buildShopPanel(); });
+      const t = this.add.text(x, -H / 2 + 46, label, {
+        fontSize: '13px', fontFamily: '"Noto Sans", sans-serif',
+        color: on ? '#fde68a' : '#cbd5e1', fontStyle: 'bold',
+      }).setOrigin(0.5);
+      panel.add([r, t]);
+    };
+    mkTab(-W / 2 + 66, 'hat', 'Hats');
+    mkTab(-W / 2 + 164, 'pet', 'Pets');
+
+    // Item grid (3 columns)
+    const cardW = 156, cardH = 128, cols = 3;
+    const gx = -W / 2 + 20 + cardW / 2, gy = -H / 2 + 78 + cardH / 2, sx = cardW + 10, sy = cardH + 8;
+    const items = this.shopTab === 'hat'
+      ? HAT_SHOP.map((h) => ({ kind: 'hat' as const, ref: h.hatIndex as number | string, price: h.price, label: hatLabel(h.hatIndex) }))
+      : PET_SHOP.map((p) => ({ kind: 'pet' as const, ref: p.id as number | string, price: p.price, label: p.label }));
+
+    items.forEach((it, i) => {
+      const col = i % cols, row = Math.floor(i / cols);
+      this.buildShopCard(panel, gx + col * sx, gy + row * sy, cardW, cardH, it, cos);
+    });
+
+    panel.setScale(0.7);
+    this.tweens.add({ targets: panel, scale: 1, duration: 200, ease: 'Back.out' });
+    this.shopPanel = panel;
+  }
+
+  private buildShopCard(
+    panel: Phaser.GameObjects.Container, x: number, y: number, w: number, h: number,
+    it: { kind: 'hat' | 'pet'; ref: number | string; price: number; label: string },
+    cos: CosmeticState | undefined,
+  ): void {
+    const owned = it.kind === 'hat'
+      ? (cos ? ownsHat(cos, it.ref as number) : false)
+      : (cos ? ownsPet(cos, it.ref as string) : false);
+    const equipped = it.kind === 'hat'
+      ? cos?.equippedHat === it.ref
+      : cos?.equippedPet === it.ref;
+
+    const card = this.add.rectangle(x, y, w, h, 0x21160a, 1).setStrokeStyle(2, equipped ? 0x22c55e : 0x6b4a24, 1);
+    panel.add(card);
+
+    // Preview sprite
+    const prev = this.buildPreviewSprite(it);
+    if (prev) { prev.setPosition(x, y - 22); panel.add(prev); }
+
+    const name = this.add.text(x, y + 22, it.label, {
+      fontSize: '12px', fontFamily: '"Noto Sans", sans-serif', color: '#f8fafc', fontStyle: 'bold',
+    }).setOrigin(0.5);
+    panel.add(name);
+
+    // Action button
+    const by = y + h / 2 - 18;
+    if (equipped) {
+      const btn = this.add.rectangle(x, by, w - 24, 26, 0x166534, 1).setStrokeStyle(2, 0x22c55e, 1)
+        .setInteractive({ useHandCursor: true })
+        .on('pointerdown', () => this.shopEquip(it.kind, it.ref));
+      const t = this.add.text(x, by, 'Equipped ✓', {
+        fontSize: '12px', fontFamily: '"Noto Sans", sans-serif', color: '#dcfce7', fontStyle: 'bold',
+      }).setOrigin(0.5);
+      panel.add([btn, t]);
+    } else if (owned) {
+      const btn = this.add.rectangle(x, by, w - 24, 26, 0x1d4ed8, 1).setStrokeStyle(2, 0x93c5fd, 1)
+        .setInteractive({ useHandCursor: true })
+        .on('pointerdown', () => this.shopEquip(it.kind, it.ref));
+      const t = this.add.text(x, by, 'Equip', {
+        fontSize: '12px', fontFamily: '"Noto Sans", sans-serif', color: '#ffffff', fontStyle: 'bold',
+      }).setOrigin(0.5);
+      panel.add([btn, t]);
+    } else {
+      const afford = this.gold >= it.price;
+      const btn = this.add.rectangle(x, by, w - 24, 26, afford ? 0x854d0e : 0x3a2a12, 1)
+        .setStrokeStyle(2, afford ? 0xfde68a : 0x6b4a24, 1)
+        .setInteractive({ useHandCursor: true })
+        .on('pointerdown', () => { if (afford) this.shopBuy(it.kind, it.ref, it.price); });
+      const t = this.add.text(x, by, `Buy · ${it.price} Gold`, {
+        fontSize: '12px', fontFamily: '"Noto Sans", sans-serif',
+        color: afford ? '#fef9c3' : '#8a7a5a', fontStyle: 'bold',
+      }).setOrigin(0.5);
+      panel.add([btn, t]);
+    }
+  }
+
+  /** A small preview of a hat (on a base LPC head) or a pet, for a shop card. */
+  private buildPreviewSprite(it: { kind: 'hat' | 'pet'; ref: number | string }): Phaser.GameObjects.Sprite | null {
+    if (it.kind === 'hat') {
+      if (!lpcReady(this)) return null;
+      const key = compositeLpc(this, { hat: it.ref as number });
+      // Row 10 (facing down), col 0 = idle → frame 130 of the 13-wide sheet.
+      return this.add.sprite(0, 0, key, 130).setScale(1.4);
+    }
+    const def = PET_SHOP.find((p) => p.id === it.ref);
+    if (!def || !this.textures.exists(def.key)) return null;
+    return this.add.sprite(0, 0, def.key, 1).setScale(1.7); // frame 1 = down idle
+  }
+
+  private shopBuy(kind: 'hat' | 'pet', ref: number | string, price: number): void {
+    this.scene.get('WorldScene').events.emit(Events.SHOP_BUY, { kind, ref, price });
+  }
+  private shopEquip(kind: 'hat' | 'pet', ref: number | string): void {
+    this.scene.get('WorldScene').events.emit(Events.SHOP_EQUIP, { kind, ref });
   }
 }
