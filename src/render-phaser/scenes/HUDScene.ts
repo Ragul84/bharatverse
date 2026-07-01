@@ -33,6 +33,9 @@ export class HUDScene extends Scene {
   private mmDyn?: Phaser.GameObjects.Graphics;
   private mmOx = 0; private mmOy = 0; private mmSc = 1; private mmCx = 0; private mmCy = 0;
 
+  // Incoming duel-challenge prompt (Accept / Decline)
+  private duelPrompt?: Phaser.GameObjects.Container;
+
   constructor() {
     super({ key: 'HUDScene', active: false });
   }
@@ -86,6 +89,7 @@ export class HUDScene extends Scene {
     world.events.on(Events.HUD_UPDATE_MINDCOINS, this.onMindCoinsUpdate, this);
     world.events.on(Events.HUD_UPDATE_XP, this.onXPUpdate, this);
     world.events.on(Events.HUD_SHOW_MESSAGE, this.showMessage, this);
+    world.events.on(Events.SIM_EVENTS, this.onSimEvents, this);
 
     // Initial render
     this.onHPUpdate({ hp: 100, maxHp: 100 });
@@ -214,5 +218,50 @@ export class HUDScene extends Scene {
       duration: 600,
       ease: 'Sine.in',
     });
+  }
+
+  /** Watch the sim event stream for an incoming duel challenge. */
+  private onSimEvents(events: Array<{ type?: string; fromName?: string }>): void {
+    for (const e of events) {
+      if (e && e.type === 'duelRequest') { this.showDuelPrompt(e.fromName || 'A rival'); return; }
+    }
+  }
+
+  /** Modal Accept / Decline prompt when another player challenges you to a duel. */
+  showDuelPrompt(name: string): void {
+    this.closeDuelPrompt();
+    const cx = this.scale.width / 2;
+    const cy = this.scale.height / 2;
+    const panel = this.add.container(cx, cy).setDepth(300).setScrollFactor(0);
+    const bg = this.add.rectangle(0, 0, 320, 150, 0x1a1206, 0.97).setStrokeStyle(3, 0xf59e0b, 1);
+    const title = this.add.text(0, -46, 'Duel Challenge', {
+      fontSize: '18px', fontFamily: '"Noto Sans", sans-serif', color: '#fde68a', fontStyle: 'bold',
+    }).setOrigin(0.5);
+    const msg = this.add.text(0, -14, `${name} challenges you!`, {
+      fontSize: '14px', fontFamily: '"Noto Sans", sans-serif', color: '#f8fafc',
+    }).setOrigin(0.5);
+
+    const world = this.registry.get('world') as { duelAccept?: () => void; duelDecline?: () => void } | undefined;
+    const mkBtn = (x: number, label: string, color: number, fn?: () => void): Phaser.GameObjects.GameObject[] => {
+      const r = this.add.rectangle(x, 36, 132, 40, color, 1).setStrokeStyle(2, 0xfde68a, 1)
+        .setInteractive({ useHandCursor: true })
+        .on('pointerdown', () => { fn?.(); this.closeDuelPrompt(); });
+      const t = this.add.text(x, 36, label, {
+        fontSize: '15px', fontFamily: '"Noto Sans", sans-serif', color: '#ffffff', fontStyle: 'bold',
+      }).setOrigin(0.5);
+      return [r, t];
+    };
+    panel.add([bg, title, msg,
+      ...mkBtn(-74, 'Accept', 0x15803d, () => world?.duelAccept?.()),
+      ...mkBtn(74, 'Decline', 0xb91c1c, () => world?.duelDecline?.())]);
+    panel.setScale(0.5);
+    this.tweens.add({ targets: panel, scale: 1, duration: 250, ease: 'Back.out' });
+    this.duelPrompt = panel;
+    this.time.delayedCall(30000, () => this.closeDuelPrompt()); // invite window
+  }
+
+  private closeDuelPrompt(): void {
+    this.duelPrompt?.destroy();
+    this.duelPrompt = undefined;
   }
 }

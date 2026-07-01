@@ -81,6 +81,14 @@ await page.evaluate(() => {
 await sleep(500);
 await page.screenshot({ path: 'tmp/bv_menu.png' });
 
+// Incoming duel-challenge prompt (Accept / Decline).
+await page.evaluate(() => {
+  const hud = window.__game.scene.getScene('HUDScene');
+  if (hud && hud.showDuelPrompt) hud.showDuelPrompt('Arjuna the Bold');
+});
+await sleep(600);
+await page.screenshot({ path: 'tmp/bv_duel.png' });
+
 // Drive to find the lake (south) and the town (east) to verify water + buildings.
 const drive = async (key, ms, name) => {
   await page.keyboard.down(key);
