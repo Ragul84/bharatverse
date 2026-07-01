@@ -15,6 +15,19 @@
 import { Scene } from 'phaser';
 import { Events } from '../index';
 import type { Question } from '../../sim/content/questions';
+import { compositeLpc, randomConfig, lpcReady, type LpcConfig } from '../lpc_composite';
+
+// LPC 13-wide sheet: idle frame (col 0) of the up / down walk rows.
+const LPC_UP_IDLE = 8 * 13;    // 104 — facing away (player, lower, faces the enemy)
+const LPC_DOWN_IDLE = 10 * 13; // 130 — facing us (enemy, upper)
+
+/** Stable numeric seed from an enemy id (string or number). */
+function idSeed(id: string | number): number {
+  const s = String(id);
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return h;
+}
 
 interface CombatData {
   enemy: {
@@ -73,6 +86,7 @@ export class CombatScene extends Scene {
   private enemySprite!: Phaser.GameObjects.Sprite;
   private enemyLabel!: Phaser.GameObjects.Text;
   private playerSprite!: Phaser.GameObjects.Sprite;
+  private enemyBaseTint = 0xffffff; // restored after a hit-flash (keeps the mob's red)
 
   constructor() {
     super({ key: 'CombatScene', active: false });
@@ -110,9 +124,12 @@ export class CombatScene extends Scene {
     }
 
     const enemyY = Math.round(height * 0.34);
-    const playerY = Math.round(height * 0.62);
-    this.add.ellipse(cx, enemyY + 36, 96, 26, 0x000000, 0.30).setDepth(2);
-    this.add.ellipse(cx, playerY + 36, 96, 26, 0x000000, 0.30).setDepth(2);
+    const playerY = Math.round(height * 0.55); // sits above the player HP bar
+    // Shadows sit at the feet: LPC sprites are feet-anchored (origin y≈0.92),
+    // so the disc goes just under `enemyY`/`playerY` (not the old TS +36).
+    const shadowDy = lpcReady(this) ? 4 : 36;
+    this.add.ellipse(cx, enemyY + shadowDy, 96, 26, 0x000000, 0.30).setDepth(2);
+    this.add.ellipse(cx, playerY + shadowDy, 96, 26, 0x000000, 0.30).setDepth(2);
 
     // ---- Enemy header (name + HP + subject) at the top ----
     this.enemyLabel = this.add.text(cx, 34, this.data_.enemy.label, {
@@ -128,9 +145,18 @@ export class CombatScene extends Scene {
       fontSize: '11px', fontFamily: '"Noto Sans", sans-serif', color: '#c4b5fd',
     }).setOrigin(0.5).setDepth(11);
 
-    // ---- Combatant sprites (Tiny Swords units) ----
-    this.enemySprite = this.makeCombatant(cx, enemyY, this.enemyTexKey(), true, 1.2).setDepth(3);
-    this.playerSprite = this.makeCombatant(cx, playerY, this.playerTexKey(), false, 1.45).setDepth(4);
+    // ---- Combatant sprites: LPC characters (match the overworld art), with a
+    // Tiny Swords fallback if the composited sheets aren't available. ----
+    if (lpcReady(this)) {
+      // Enemy faces us (down); player faces away toward the enemy (up). A red
+      // tint marks the hostile mob until dedicated monster art lands.
+      this.enemySprite = this.makeLpcCombatant(cx, enemyY, this.enemyLpcKey(), LPC_DOWN_IDLE, 1.7, 0xff9a9a).setDepth(3);
+      this.enemyBaseTint = 0xff9a9a;
+      this.playerSprite = this.makeLpcCombatant(cx, playerY, this.playerLpcKey(), LPC_UP_IDLE, 1.8).setDepth(4);
+    } else {
+      this.enemySprite = this.makeCombatant(cx, enemyY, this.enemyTexKey(), true, 1.2).setDepth(3);
+      this.playerSprite = this.makeCombatant(cx, playerY, this.playerTexKey(), false, 1.45).setDepth(4);
+    }
 
     // ---- Player HP bar (above the ability tray) ----
     this.add.rectangle(cx, height - 245, 224, 16, 0x14231a).setStrokeStyle(2, 0x000000, 0.5).setDepth(10);
@@ -327,7 +353,7 @@ export class CombatScene extends Scene {
     // Hit feedback on the enemy
     if (damage > 0) {
       this.enemySprite.setTint(0xff8888);
-      this.time.delayedCall(90, () => this.enemySprite.clearTint());
+      this.time.delayedCall(90, () => this.enemySprite.setTint(this.enemyBaseTint));
       this.tweens.add({ targets: this.enemySprite, x: this.enemySprite.x + 10, duration: 55, yoyo: true, repeat: 2 });
       this.floatText(this.enemySprite.x, this.enemySprite.y - 56, `-${damage}`, result === 'correct' && this.correctStreak >= 3 ? '#fde047' : '#fca5a5');
       this.cameras.main.shake(120, 0.006);
@@ -402,6 +428,28 @@ export class CombatScene extends Scene {
     this.playerHpBar.fillStyle(playerColor, 1);
     this.playerHpBar.fillRect(cx - barW / 2, height - 253, barW * playerPct, 16);
     this.playerHpText.setText(`${this.playerHp} / ${this.playerMaxHp}`);
+  }
+
+  /** Create an LPC combatant: a static facing frame with a gentle idle bob. */
+  private makeLpcCombatant(x: number, y: number, texKey: string, frame: number, scale: number, tint?: number): Phaser.GameObjects.Sprite {
+    const s = this.add.sprite(x, y, texKey, frame).setOrigin(0.5, 0.92).setScale(scale);
+    if (tint !== undefined) s.setTint(tint);
+    this.tweens.add({ targets: s, y: y - 4, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+    return s;
+  }
+
+  /** The player's own composited look (creator choices + equipped cosmetic hat). */
+  private playerLpcKey(): string {
+    const cfg = {
+      ...(this.registry.get('customization') as Partial<LpcConfig> | undefined ?? {}),
+      hat: (this.registry.get('equippedHat') as number | undefined) ?? 0,
+    };
+    return compositeLpc(this, cfg);
+  }
+
+  /** A stable-random LPC look for the enemy (red-tinted until monster art lands). */
+  private enemyLpcKey(): string {
+    return compositeLpc(this, randomConfig(idSeed(this.data_.enemy.id)));
   }
 
   /** Create a combatant as a Tiny Swords unit sprite (idle anim), feet-anchored. */
