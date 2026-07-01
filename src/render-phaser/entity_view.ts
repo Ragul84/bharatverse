@@ -11,7 +11,7 @@ import { archetypeFor } from './character_archetype';
 import { CHAR_H } from './character_sprites';
 import { resolveCharacterTexture } from './bv_assets';
 import { compositeLpc, randomConfig, lpcReady, type LpcConfig } from './lpc_composite';
-import { mobSheetFor, mobFrame, mobFlipX, type MobSheet } from './mob_sprites';
+import { mobSheetFor, mobFrame, mobFlipX, humanoidMobConfig, type MobSheet } from './mob_sprites';
 
 const BAR_W = 32;
 const BAR_X = -BAR_W / 2;
@@ -87,6 +87,8 @@ export class EntityView {
   // When set, this mob renders from a dedicated creature sheet (skeleton/spider)
   // instead of the tinted LPC human.
   private mobSheet?: MobSheet;
+  // Humanoid mob rendered as a rugged bandit (LPC human, no hostile red tint).
+  private isBandit = false;
 
   constructor(scene: Scene, e: Entity, isPlayer: boolean) {
     this.isPlayer = isPlayer;
@@ -101,15 +103,17 @@ export class EntityView {
     const tsInfo = this.useLpc ? null : tsSpriteKey(e, false);
     let useSprite = false;
     let texKey: string;
+    const banditCfg = this.useLpc && !this.mobSheet ? humanoidMobConfig(e) : null;
+    this.isBandit = !!banditCfg;
     if (this.mobSheet) {
       texKey = this.mobSheet.key;
     } else if (this.useLpc) {
-      // Player: creator appearance + the currently equipped cosmetic hat. Others:
-      // a stable random config by id (no hat), so the crowd varies.
+      // Player: creator appearance + the currently equipped cosmetic hat. Bandits:
+      // a rugged look. Other NPCs/mobs: a stable random config by id (crowd variety).
       const cfg = isPlayer
         ? { ...(scene.registry.get('customization') as Partial<LpcConfig> | undefined ?? {}),
             hat: (scene.registry.get('equippedHat') as number | undefined) ?? 0 }
-        : randomConfig(e.id);
+        : (banditCfg ?? randomConfig(e.id));
       texKey = compositeLpc(scene, cfg ?? {});
     } else if (tsInfo && scene.textures.exists(tsInfo.tex)) {
       texKey = tsInfo.tex;
@@ -189,7 +193,7 @@ export class EntityView {
       // LPC: pick the frame for the current 4-direction facing + walk cycle.
       this.body.setFrame(this.lpcFrame(e, moving));
       if (e.dead) { this.body.setTint(0x4b5563); this.shadow.setVisible(false); }
-      else if (e.kind === 'mob') { this.body.setTint(0xff9a9a); this.shadow.setVisible(true); }
+      else if (e.kind === 'mob' && !this.isBandit) { this.body.setTint(0xff9a9a); this.shadow.setVisible(true); }
       else { this.body.clearTint(); this.shadow.setVisible(true); }
     } else {
       if (e.dead) { this.body.setTint(0x4b5563); this.shadow.setVisible(false); }

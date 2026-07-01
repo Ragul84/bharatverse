@@ -175,6 +175,7 @@ for (const [tag, ids] of [
   ['undead', ['restless_bones', 'captain_verlan']],
   ['demon', ['warlock_imp', 'warlock_voidwalker']],
   ['kobold', ['tunnel_rat', 'grix_the_tunnelking']],
+  ['bandit', ['vale_bandit', 'mogger', 'mogger_lackey']],
 ]) {
   const found = await page.evaluate((ids) => {
     const ws = window.__game.scene.getScene('WorldScene');

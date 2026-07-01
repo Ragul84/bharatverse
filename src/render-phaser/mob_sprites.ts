@@ -14,6 +14,7 @@
 
 import { MOBS } from '../sim/data';
 import type { Entity } from '../sim/types';
+import type { LpcConfig } from './lpc_composite';
 
 export interface MobSheet {
   key: string;
@@ -49,6 +50,23 @@ export function mobSheetFor(e: Entity): MobSheet | null {
   if (tid.includes('wolf') || tid === 'old_greyjaw') return WOLF;
   const fam = MOBS[tid]?.family;
   return (fam && FAMILY_SHEETS[fam]) ?? null;
+}
+
+/**
+ * Humanoid-family mobs (bandits, moggers) are people, not monsters — render them
+ * as a rugged LPC human (dark clothes + a bandana) instead of a red-tinted one.
+ * Returns a deterministic bandit look by id, or null for non-humanoid mobs.
+ */
+export function humanoidMobConfig(e: Entity): LpcConfig | null {
+  if (e.kind !== 'mob' || MOBS[e.templateId]?.family !== 'humanoid') return null;
+  const s = Math.abs(e.id);
+  return {
+    skin: 1 + (s % 2),            // Tan / Deep
+    hair: [1, 4, 5][s % 3],       // Black / Messy / Mohawk
+    shirt: 1 + ((s >> 2) % 2),    // Brown / Maroon
+    pants: 1 + ((s >> 3) % 2),    // Red / Sand
+    hat: 6,                       // Bandana (marks them as rough, not friendly NPCs)
+  };
 }
 
 /** True when a side-view ('quad') mob should be mirrored (heading left). */
