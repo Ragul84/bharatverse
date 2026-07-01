@@ -5,7 +5,8 @@
  *
  * Sheet kinds:
  *  - 'lpc'  : the 13-wide humanoid layout (walk rows 8-11), same as characters.
- *  - 'grid' : a top-down sheet with one direction per row (0=up..3=right).
+ *  - 'grid' : a top-down sheet with one direction per row; row order is given by
+ *             `dirRows` (indexed by dir 0=up,1=left,2=down,3=right).
  *  - 'quad' : a side-view quadruped — an explicit walk-frame list, mirrored for
  *             left; the same side view is used for vertical movement (a common
  *             top-down convention). Facing handled via mobFlipX in entity_view.
@@ -22,12 +23,17 @@ export interface MobSheet {
   scale: number;
   frameStep: number;    // ms per frame
   sideFrames?: number[]; // 'quad': the side-view walk cycle (faces right)
+  dirRows?: [number, number, number, number]; // 'grid': rows for up,left,down,right
 }
 
 // Whole mob families that map to one sheet.
 const FAMILY_SHEETS: Partial<Record<string, MobSheet>> = {
   undead: { key: 'mob-skeleton', kind: 'lpc',  cols: 13, walkFrames: 8, scale: 1.5, frameStep: 110 },
   spider: { key: 'mob-spider',   kind: 'grid', cols: 10, walkFrames: 8, scale: 1.3, frameStep: 100 },
+  // 4x4 imp walk (up/left/down/right rows).
+  demon:  { key: 'mob-imp',    kind: 'grid', cols: 4,  walkFrames: 4, scale: 1.4, frameStep: 150, dirRows: [0, 1, 2, 3] },
+  // 11-wide goblin; row order verified empirically (down/left/up/right).
+  kobold: { key: 'mob-goblin', kind: 'grid', cols: 11, walkFrames: 8, scale: 1.4, frameStep: 90,  dirRows: [2, 1, 0, 3] },
 };
 
 // Specific creatures (by templateId keyword) that override the family sheet.
@@ -68,7 +74,8 @@ export function mobFrame(sheet: MobSheet, e: Entity, moving: boolean, nowMs: num
     const col = moving ? 1 + (Math.floor(nowMs / sheet.frameStep) % sheet.walkFrames) : 0;
     return row * sheet.cols + col;
   }
-  // grid: one direction per row (0..3), col 0 = idle
+  // grid: one direction per row, ordered by dirRows; col 0 = idle
+  const row = (sheet.dirRows ?? [0, 1, 2, 3])[dir];
   const col = moving ? Math.floor(nowMs / sheet.frameStep) % sheet.walkFrames : 0;
-  return dir * sheet.cols + col;
+  return row * sheet.cols + col;
 }

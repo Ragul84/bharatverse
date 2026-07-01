@@ -173,6 +173,8 @@ await drive('ArrowRight', 8000, 'bv_east2');
 for (const [tag, ids] of [
   ['spider', ['webwood_spider', 'sableweb_matriarch', 'sableweb_hatchling']],
   ['undead', ['restless_bones', 'captain_verlan']],
+  ['demon', ['warlock_imp', 'warlock_voidwalker']],
+  ['kobold', ['tunnel_rat', 'grix_the_tunnelking']],
 ]) {
   const found = await page.evaluate((ids) => {
     const ws = window.__game.scene.getScene('WorldScene');
