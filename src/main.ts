@@ -628,6 +628,8 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
 
   // Import and initialize Phaser game
   phaserGame = createPhaserGame(phaserContainer);
+  // Dev-only handle for E2E/screenshot tooling (never referenced by game logic).
+  if (import.meta.env.DEV) (window as unknown as { __game?: unknown }).__game = phaserGame;
 
   // Seed registries with character details
   phaserGame.registry.set('world', world);

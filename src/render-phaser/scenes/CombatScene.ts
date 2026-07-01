@@ -69,18 +69,20 @@ export class CombatScene extends Scene {
   private abilityBtns: Phaser.GameObjects.Container[] = [];
   private streakText!: Phaser.GameObjects.Text;
 
-  // Enemy sprite (placeholder rectangle)
-  private enemySprite!: Phaser.GameObjects.Rectangle;
+  // Combatant sprites (Tiny Swords units)
+  private enemySprite!: Phaser.GameObjects.Sprite;
   private enemyLabel!: Phaser.GameObjects.Text;
-
-  // Player sprite (placeholder)
-  private playerSprite!: Phaser.GameObjects.Rectangle;
+  private playerSprite!: Phaser.GameObjects.Sprite;
 
   constructor() {
     super({ key: 'CombatScene', active: false });
   }
 
   init(combatData: CombatData): void {
+    // Normalize questions array if wrapped in a JSON object
+    if (combatData.questions && (combatData.questions as any).questions) {
+      combatData.questions = (combatData.questions as any).questions;
+    }
     this.data_ = combatData;
     this.playerHp = combatData.playerHp;
     this.playerMaxHp = combatData.playerMaxHp;
@@ -95,48 +97,47 @@ export class CombatScene extends Scene {
     const { width, height } = this.scale;
     const cx = width / 2;
 
-    // Semi-transparent battle background
-    this.add.rectangle(0, 0, width, height, 0x0f0a1f, 0.95).setOrigin(0, 0).setDepth(0);
+    // ---- Battlefield backdrop: dusk sky gradient over a Tiny Swords grass field.
+    const bg = this.add.graphics().setDepth(0);
+    bg.fillGradientStyle(0x3b2a63, 0x3b2a63, 0x1a3a24, 0x1a3a24, 1);
+    bg.fillRect(0, 0, width, height);
+    const groundTop = Math.round(height * 0.50);
+    if (this.textures.exists('ts-tilemap-grass')) {
+      this.add.tileSprite(0, groundTop, width, height - groundTop, 'ts-tilemap-grass', 10)
+        .setOrigin(0, 0).setDepth(1);
+    } else {
+      this.add.rectangle(cx, (groundTop + height) / 2, width, height - groundTop, 0x2f6b34).setDepth(1);
+    }
 
-    // Battle arena bg (gradient-style layered rects)
-    this.add.rectangle(cx, height * 0.35, width, height * 0.5, 0x1e1040).setDepth(1);
-    this.add.rectangle(cx, height * 0.75, width, height * 0.5, 0x0d0821).setDepth(1);
+    const enemyY = Math.round(height * 0.34);
+    const playerY = Math.round(height * 0.60);
+    this.add.ellipse(cx, enemyY + 36, 96, 26, 0x000000, 0.30).setDepth(2);
+    this.add.ellipse(cx, playerY + 36, 96, 26, 0x000000, 0.30).setDepth(2);
 
-    // ---- Enemy area ----
-    this.enemySprite = this.add.rectangle(cx, 160, 72, 72, 0xdc2626).setDepth(3);
-    this.enemyLabel = this.add.text(cx, 200, this.data_.enemy.label, {
-      fontSize: '14px',
-      fontFamily: '"Noto Sans", sans-serif',
-      color: '#fca5a5',
-    }).setOrigin(0.5).setDepth(4);
+    // ---- Enemy header (name + HP + subject) at the top ----
+    this.enemyLabel = this.add.text(cx, 34, this.data_.enemy.label, {
+      fontSize: '15px', fontFamily: '"Noto Sans", sans-serif', color: '#fecaca',
+      fontStyle: 'bold', stroke: '#000000', strokeThickness: 3,
+    }).setOrigin(0.5).setDepth(11);
+    this.add.rectangle(cx, 58, 224, 16, 0x2a1520).setStrokeStyle(2, 0x000000, 0.5).setDepth(10);
+    this.enemyHpBar = this.add.graphics().setDepth(11);
+    this.enemyHpText = this.add.text(cx, 58, '', {
+      fontSize: '11px', fontFamily: '"Noto Sans", sans-serif', color: '#ffffff',
+    }).setOrigin(0.5).setDepth(12);
+    this.add.text(cx, 80, `Subject: ${this.data_.enemy.subject.toUpperCase()}  ·  Tier ${this.data_.enemy.tier}`, {
+      fontSize: '11px', fontFamily: '"Noto Sans", sans-serif', color: '#c4b5fd',
+    }).setOrigin(0.5).setDepth(11);
 
-    // Enemy HP bar
-    this.add.rectangle(cx, 230, 200, 16, 0x374151).setDepth(3);
-    this.enemyHpBar = this.add.graphics().setDepth(4);
-    this.enemyHpText = this.add.text(cx, 230, '', {
-      fontSize: '11px',
-      fontFamily: '"Noto Sans", sans-serif',
-      color: '#ffffff',
-    }).setOrigin(0.5).setDepth(5);
+    // ---- Combatant sprites (Tiny Swords units) ----
+    this.enemySprite = this.makeCombatant(cx, enemyY, this.enemyTexKey(), true).setDepth(3);
+    this.playerSprite = this.makeCombatant(cx, playerY, this.playerTexKey(), false).setDepth(4);
 
-    // Subject badge
-    this.add.text(cx, 250, `Subject: ${this.data_.enemy.subject.toUpperCase()} | Tier ${this.data_.enemy.tier}`, {
-      fontSize: '11px',
-      fontFamily: '"Noto Sans", sans-serif',
-      color: '#a78bfa',
-    }).setOrigin(0.5).setDepth(4);
-
-    // ---- Player area ----
-    this.playerSprite = this.add.rectangle(cx, height - 300, 56, 56, 0x4f46e5).setDepth(3);
-
-    // Player HP bar
-    this.add.rectangle(cx, height - 245, 200, 16, 0x374151).setDepth(3);
-    this.playerHpBar = this.add.graphics().setDepth(4);
+    // ---- Player HP bar (above the ability tray) ----
+    this.add.rectangle(cx, height - 245, 224, 16, 0x14231a).setStrokeStyle(2, 0x000000, 0.5).setDepth(10);
+    this.playerHpBar = this.add.graphics().setDepth(11);
     this.playerHpText = this.add.text(cx, height - 245, '', {
-      fontSize: '11px',
-      fontFamily: '"Noto Sans", sans-serif',
-      color: '#ffffff',
-    }).setOrigin(0.5).setDepth(5);
+      fontSize: '11px', fontFamily: '"Noto Sans", sans-serif', color: '#ffffff',
+    }).setOrigin(0.5).setDepth(12);
 
     // ---- Streak counter ----
     this.streakText = this.add.text(width - 12, 12, '', {
@@ -148,19 +149,24 @@ export class CombatScene extends Scene {
 
     // ---- Turn indicator ----
     this.turnText = this.add.text(cx, height - 220, 'YOUR TURN', {
-      fontSize: '13px',
+      fontSize: '14px',
       fontFamily: '"Noto Sans", sans-serif',
-      color: '#4ade80',
-    }).setOrigin(0.5).setDepth(10);
+      color: '#86efac',
+      fontStyle: 'bold',
+      stroke: '#0b160b',
+      strokeThickness: 4,
+    }).setOrigin(0.5).setDepth(12);
 
     // ---- Message area ----
     this.messageText = this.add.text(cx, height - 195, '', {
       fontSize: '14px',
       fontFamily: '"Noto Sans", sans-serif',
-      color: '#e5e7eb',
+      color: '#f8fafc',
       align: 'center',
+      stroke: '#0b160b',
+      strokeThickness: 4,
       wordWrap: { width: width - 32 },
-    }).setOrigin(0.5).setDepth(10);
+    }).setOrigin(0.5).setDepth(12);
 
     // ---- Ability buttons ----
     this.buildAbilityButtons();
@@ -187,31 +193,28 @@ export class CombatScene extends Scene {
       const bx = 8 + col * (btnW + 8) + btnW / 2;
       const by = startY + row * (btnH + 8);
 
-      const bg = this.add.rectangle(bx, by, btnW, btnH, 0x1e1b4b).setDepth(10)
+      // Wooden ability card with a saffron border (matches the world's palette).
+      const bg = this.add.rectangle(bx, by, btnW, btnH, 0x3b2a1e).setDepth(10)
+        .setStrokeStyle(2, 0xf59e0b, 1)
         .setInteractive({ useHandCursor: true })
-        .on('pointerover', () => bg.setFillStyle(0x3730a3))
-        .on('pointerout', () => bg.setFillStyle(0x1e1b4b))
+        .on('pointerover', () => bg.setFillStyle(0x5a4230))
+        .on('pointerout', () => bg.setFillStyle(0x3b2a1e))
         .on('pointerdown', () => this.useAbility(ability.id));
-
-      // Saffron border
-      const border = this.add.graphics().setDepth(10);
-      border.lineStyle(2, 0xf59e0b, 1);
-      border.strokeRect(bx - btnW / 2, by - btnH / 2, btnW, btnH);
 
       const nameText = this.add.text(bx, by - 8, ability.name, {
         fontSize: '13px',
         fontFamily: '"Noto Sans", sans-serif',
-        color: '#e9d5ff',
+        color: '#fde68a',
         fontStyle: 'bold',
       }).setOrigin(0.5).setDepth(11);
 
       const descText = this.add.text(bx, by + 10, ability.desc, {
         fontSize: '10px',
         fontFamily: '"Noto Sans", sans-serif',
-        color: '#9ca3af',
+        color: '#d6c7a8',
       }).setOrigin(0.5).setDepth(11);
 
-      this.abilityBtns.push(this.add.container(0, 0, [bg, border, nameText, descText]).setDepth(10));
+      this.abilityBtns.push(this.add.container(0, 0, [bg, nameText, descText]).setDepth(10));
     });
   }
 
@@ -321,6 +324,16 @@ export class CombatScene extends Scene {
     this.enemyHp = Math.max(0, this.enemyHp - damage);
     this.playerHp = Math.min(this.playerMaxHp, this.playerHp + heal);
 
+    // Hit feedback on the enemy
+    if (damage > 0) {
+      this.enemySprite.setTint(0xff8888);
+      this.time.delayedCall(90, () => this.enemySprite.clearTint());
+      this.tweens.add({ targets: this.enemySprite, x: this.enemySprite.x + 10, duration: 55, yoyo: true, repeat: 2 });
+    } else if (heal > 0) {
+      this.playerSprite.setTint(0x86efac);
+      this.time.delayedCall(220, () => this.playerSprite.clearTint());
+    }
+
     this.showMessage(message, result === 'correct' ? '#4ade80' : result === 'timeout' ? '#f87171' : '#fbbf24');
     this.refreshHPBars();
     this.updateStreakDisplay();
@@ -341,7 +354,10 @@ export class CombatScene extends Scene {
     this.playerHp = Math.max(0, this.playerHp - dmg);
     this.showMessage(`${this.data_.enemy.label} hits you for ${dmg} damage!`, '#f87171');
 
-    // Shake player sprite
+    // Enemy lunges, player flinches red
+    this.tweens.add({ targets: this.enemySprite, y: this.enemySprite.y + 16, duration: 110, yoyo: true, ease: 'Quad.out' });
+    this.playerSprite.setTint(0xff6b6b);
+    this.time.delayedCall(120, () => this.playerSprite.clearTint());
     this.tweens.add({
       targets: this.playerSprite,
       x: this.playerSprite.x + 8,
@@ -366,17 +382,15 @@ export class CombatScene extends Scene {
 
   private refreshHPBars(): void {
     const cx = this.scale.width / 2;
-    const barW = 200;
+    const barW = 224;
 
-    // Enemy HP bar
     this.enemyHpBar.clear();
     const enemyPct = this.enemyHp / this.enemyMaxHp;
     const enemyColor = enemyPct > 0.5 ? 0x22c55e : enemyPct > 0.25 ? 0xeab308 : 0xdc2626;
     this.enemyHpBar.fillStyle(enemyColor, 1);
-    this.enemyHpBar.fillRect(cx - barW / 2, 222, barW * enemyPct, 16);
+    this.enemyHpBar.fillRect(cx - barW / 2, 50, barW * enemyPct, 16);
     this.enemyHpText.setText(`${this.enemyHp} / ${this.enemyMaxHp}`);
 
-    // Player HP bar
     this.playerHpBar.clear();
     const { height } = this.scale;
     const playerPct = this.playerHp / this.playerMaxHp;
@@ -384,6 +398,31 @@ export class CombatScene extends Scene {
     this.playerHpBar.fillStyle(playerColor, 1);
     this.playerHpBar.fillRect(cx - barW / 2, height - 253, barW * playerPct, 16);
     this.playerHpText.setText(`${this.playerHp} / ${this.playerMaxHp}`);
+  }
+
+  /** Create a combatant as a Tiny Swords unit sprite (idle anim), feet-anchored. */
+  private makeCombatant(x: number, y: number, texKey: string, flip: boolean): Phaser.GameObjects.Sprite {
+    const s = this.add.sprite(x, y, this.textures.exists(texKey) ? texKey : '__DEFAULT')
+      .setOrigin(0.5, 0.82).setScale(1.15).setFlipX(flip);
+    if (this.anims.exists(texKey)) s.play(texKey, true);
+    else s.setTint(flip ? 0xdc2626 : 0x4f46e5); // degraded fallback if art missing
+    return s;
+  }
+
+  /** Tiny Swords idle texture for the enemy (a red unit). */
+  private enemyTexKey(): string {
+    const units = ['warrior', 'archer', 'lancer', 'pawn'];
+    let h = 0;
+    for (const ch of String(this.data_.enemy.id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    return `ts-red-${units[h % units.length]}-idle`;
+  }
+
+  /** Tiny Swords idle texture for the player's class (a blue unit). */
+  private playerTexKey(): string {
+    const cls = this.data_.playerClass;
+    const unit = cls === 'vaishya' || cls === 'hunter' || cls === 'rogue' ? 'archer'
+      : cls === 'shilpi' || cls === 'vaidya' ? 'lancer' : 'warrior';
+    return `ts-blue-${unit}-idle`;
   }
 
   private showMessage(msg: string, color = '#e5e7eb'): void {

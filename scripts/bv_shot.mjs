@@ -64,6 +64,30 @@ const p2 = await playerPos();
 console.log('after click-to-move:', JSON.stringify(p2));
 await page.screenshot({ path: 'tmp/bv_after_click.png' });
 
+// Drive to find the lake (south) and the town (east) to verify water + buildings.
+const drive = async (key, ms, name) => {
+  await page.keyboard.down(key);
+  await sleep(ms);
+  await page.keyboard.up(key);
+  await sleep(300);
+  await page.screenshot({ path: `tmp/${name}.png` });
+};
+await drive('ArrowDown', 7000, 'bv_south');
+await drive('ArrowRight', 8000, 'bv_east');
+await drive('ArrowRight', 8000, 'bv_east2');
+// Launch the CombatScene directly with test data (via the dev __game handle).
+await page.evaluate(() => {
+  const g = window.__game;
+  if (!g) return;
+  g.scene.start('CombatScene', {
+    enemy: { id: 'vigyan1', label: 'Vigyan Varah', subject: 'maths', tier: 1, hp: 66, maxHp: 66 },
+    playerHp: 90, playerMaxHp: 100, playerClass: 'kshatriya',
+    questions: g.registry.get('questions') || [],
+  });
+});
+await sleep(1800);
+await page.screenshot({ path: 'tmp/bv_combat.png' });
+
 if (p0 && p1) {
   const d1 = Math.hypot(p1.x - p0.x, p1.z - p0.z);
   console.log('ArrowUp moved:', d1.toFixed(1), d1 > 3 ? 'OK' : 'FAIL');
