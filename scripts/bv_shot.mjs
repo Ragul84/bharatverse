@@ -63,6 +63,19 @@ await page.evaluate(() => {
 await sleep(1700);
 await page.screenshot({ path: 'tmp/bv_gather_reward.png' });
 
+// Daily-quest board: open the HUD panel (progress should reflect the chop above).
+await page.evaluate(() => {
+  const hud = window.__game.scene.getScene('HUDScene');
+  if (hud && hud.toggleDailyPanel) hud.toggleDailyPanel();
+  else if (hud && hud.buildDailyPanel) hud.buildDailyPanel();
+});
+await sleep(500);
+await page.screenshot({ path: 'tmp/bv_daily.png' });
+await page.evaluate(() => {
+  const hud = window.__game.scene.getScene('HUDScene');
+  if (hud && hud.dailyPanel) { hud.dailyPanel.destroy(); hud.dailyPanel = undefined; }
+});
+
 const globals = await page.evaluate(() => Object.keys(window).filter((k) => k.startsWith('__') || k === 'game'));
 console.log('globals:', JSON.stringify(globals));
 const p0 = await playerPos();

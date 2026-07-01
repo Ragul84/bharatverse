@@ -54,6 +54,11 @@ export const Events = {
   // (damage / heal / death / loot / xp / levelup ...). Consumers turn these
   // into floating combat text and other feedback.
   SIM_EVENTS: 'sim:events',
+
+  // Daily quests: WorldScene bumps progress -> DAILY_CHANGED; HUD claim ->
+  // DAILY_CLAIM ({ gold, xp }) back to WorldScene to award.
+  DAILY_CHANGED: 'daily:changed',
+  DAILY_CLAIM: 'daily:claim',
 } as const;
 
 /**

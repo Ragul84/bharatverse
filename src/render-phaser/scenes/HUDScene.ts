@@ -15,6 +15,7 @@
 import { Scene } from 'phaser';
 import { Events } from '../index';
 import { MAP_W, MAP_H, GROUND_MAP, worldToTile, classifyGround, MM_LANDMARKS } from './WorldScene';
+import { DAILY_DEFS, saveDaily, isComplete, isClaimable, type DailyState } from '../daily';
 
 // Circular minimap (top-right): radius + margin from the screen corner.
 const MM_R = 74;
@@ -35,6 +36,10 @@ export class HUDScene extends Scene {
 
   // Incoming duel-challenge prompt (Accept / Decline)
   private duelPrompt?: Phaser.GameObjects.Container;
+
+  // Daily-quest board (toggled from the button under the minimap)
+  private dailyPanel?: Phaser.GameObjects.Container;
+  private dailyBadge?: Phaser.GameObjects.Arc;
 
   constructor() {
     super({ key: 'HUDScene', active: false });
@@ -90,6 +95,7 @@ export class HUDScene extends Scene {
     world.events.on(Events.HUD_UPDATE_XP, this.onXPUpdate, this);
     world.events.on(Events.HUD_SHOW_MESSAGE, this.showMessage, this);
     world.events.on(Events.SIM_EVENTS, this.onSimEvents, this);
+    world.events.on(Events.DAILY_CHANGED, this.onDailyChanged, this);
 
     // Initial render
     this.onHPUpdate({ hp: 100, maxHp: 100 });
@@ -97,6 +103,9 @@ export class HUDScene extends Scene {
 
     // Minimap (top-right)
     this.buildMinimap();
+
+    // Daily-quest button (under the minimap)
+    this.buildDailyButton();
   }
 
   /** Circular world-map minimap: fit the whole tile map into a disc, paint
@@ -263,5 +272,118 @@ export class HUDScene extends Scene {
   private closeDuelPrompt(): void {
     this.duelPrompt?.destroy();
     this.duelPrompt = undefined;
+  }
+
+  // ---- Daily-quest board ---------------------------------------------------
+
+  /** Pill button under the minimap; a gold dot appears when a reward is ready. */
+  private buildDailyButton(): void {
+    const cx = this.scale.width - MM_R - MM_MARGIN;
+    const by = MM_MARGIN + 2 * MM_R + 18;
+    const bg = this.add.rectangle(cx, by, 118, 30, 0x1a1206, 0.92)
+      .setStrokeStyle(2, 0xf59e0b, 1).setDepth(150).setScrollFactor(0)
+      .setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => this.toggleDailyPanel());
+    this.add.text(cx, by, 'Daily Quests', {
+      fontSize: '13px', fontFamily: '"Noto Sans", sans-serif', color: '#fde68a', fontStyle: 'bold',
+    }).setOrigin(0.5).setDepth(151).setScrollFactor(0);
+    this.dailyBadge = this.add.circle(cx + 55, by - 12, 5, 0x22c55e)
+      .setStrokeStyle(1.5, 0x052e16, 1).setDepth(152).setScrollFactor(0).setVisible(false);
+    void bg;
+    this.refreshDailyBadge();
+  }
+
+  /** Show the green "reward ready" dot if any daily is claimable. */
+  private refreshDailyBadge(): void {
+    const s = this.registry.get('daily') as DailyState | undefined;
+    const ready = !!s && DAILY_DEFS.some((d) => isClaimable(s, d));
+    this.dailyBadge?.setVisible(ready);
+  }
+
+  private onDailyChanged(): void {
+    this.refreshDailyBadge();
+    if (this.dailyPanel) this.buildDailyPanel(); // rebuild while open to show progress
+  }
+
+  private toggleDailyPanel(): void {
+    if (this.dailyPanel) { this.dailyPanel.destroy(); this.dailyPanel = undefined; return; }
+    this.buildDailyPanel();
+  }
+
+  private buildDailyPanel(): void {
+    this.dailyPanel?.destroy();
+    const s = this.registry.get('daily') as DailyState | undefined;
+    const cx = this.scale.width / 2;
+    const cy = this.scale.height / 2;
+    const W = 360, rowH = 62, headH = 54, footH = 16;
+    const H = headH + DAILY_DEFS.length * rowH + footH;
+    const panel = this.add.container(cx, cy).setDepth(310).setScrollFactor(0);
+
+    const bg = this.add.rectangle(0, 0, W, H, 0x140d04, 0.98).setStrokeStyle(3, 0xf59e0b, 1);
+    const title = this.add.text(0, -H / 2 + 20, 'Daily Quests', {
+      fontSize: '19px', fontFamily: '"Noto Sans", sans-serif', color: '#fde68a', fontStyle: 'bold',
+    }).setOrigin(0.5);
+    const close = this.add.text(W / 2 - 16, -H / 2 + 16, '✕', {
+      fontSize: '16px', fontFamily: '"Noto Sans", sans-serif', color: '#f8fafc',
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => { this.dailyPanel?.destroy(); this.dailyPanel = undefined; });
+    panel.add([bg, title, close]);
+
+    DAILY_DEFS.forEach((d, i) => {
+      const y = -H / 2 + headH + i * rowH + rowH / 2 - 6;
+      const done = s ? isComplete(s, d) : false;
+      const claimed = !!s?.claimed[d.id];
+      const cur = s?.progress[d.id] ?? 0;
+      const label = this.add.text(-W / 2 + 18, y - 16, d.label, {
+        fontSize: '14px', fontFamily: '"Noto Sans", sans-serif', color: '#f8fafc', fontStyle: 'bold',
+      }).setOrigin(0, 0.5);
+      const reward = this.add.text(-W / 2 + 18, y + 18, `+${d.gold} Gold   +${d.xp} XP`, {
+        fontSize: '11px', fontFamily: '"Noto Sans", sans-serif', color: '#fbbf24',
+      }).setOrigin(0, 0.5);
+      // progress bar
+      const barX = -W / 2 + 18, barW = 210, barY = y + 2;
+      const track = this.add.rectangle(barX, barY, barW, 8, 0x374151).setOrigin(0, 0.5);
+      const fillW = Math.max(0, Math.min(1, cur / d.goal)) * barW;
+      const fill = this.add.rectangle(barX, barY, fillW, 8, done ? 0x22c55e : 0xa855f7).setOrigin(0, 0.5);
+      const prog = this.add.text(barX + barW + 8, barY, `${Math.min(cur, d.goal)}/${d.goal}`, {
+        fontSize: '11px', fontFamily: '"Noto Sans", sans-serif', color: '#cbd5e1',
+      }).setOrigin(0, 0.5);
+      panel.add([label, reward, track, fill, prog]);
+
+      // Claim button / state
+      const bx = W / 2 - 52;
+      if (claimed) {
+        panel.add(this.add.text(bx, y, 'Claimed', {
+          fontSize: '12px', fontFamily: '"Noto Sans", sans-serif', color: '#64748b',
+        }).setOrigin(0.5));
+      } else if (done) {
+        const btn = this.add.rectangle(bx, y, 78, 34, 0x15803d, 1).setStrokeStyle(2, 0xfde68a, 1)
+          .setInteractive({ useHandCursor: true }).on('pointerdown', () => this.claimDaily(d.id));
+        const bt = this.add.text(bx, y, 'Claim', {
+          fontSize: '13px', fontFamily: '"Noto Sans", sans-serif', color: '#ffffff', fontStyle: 'bold',
+        }).setOrigin(0.5);
+        panel.add([btn, bt]);
+      } else {
+        panel.add(this.add.text(bx, y, 'In progress', {
+          fontSize: '11px', fontFamily: '"Noto Sans", sans-serif', color: '#94a3b8',
+        }).setOrigin(0.5));
+      }
+    });
+
+    panel.setScale(0.6);
+    this.tweens.add({ targets: panel, scale: 1, duration: 200, ease: 'Back.out' });
+    this.dailyPanel = panel;
+  }
+
+  private claimDaily(id: string): void {
+    const s = this.registry.get('daily') as DailyState | undefined;
+    const d = DAILY_DEFS.find((x) => x.id === id);
+    if (!s || !d || !isClaimable(s, d)) return;
+    s.claimed[id] = true;
+    saveDaily(s);
+    // WorldScene owns the Gold total — award there via the shared event bus.
+    this.scene.get('WorldScene').events.emit(Events.DAILY_CLAIM, { gold: d.gold, xp: d.xp });
+    this.refreshDailyBadge();
+    this.buildDailyPanel(); // reflect the "Claimed" state immediately
   }
 }

@@ -26,6 +26,7 @@ import { hash2 } from '../../sim/rng';
 import type { IWorld } from '../../world_api';
 import type { Entity } from '../../sim/types';
 import type { Question } from '../../sim/content/questions';
+import { loadDaily, saveDaily, bumpDaily as bumpDailyState, type DailyState } from '../daily';
 
 // ---- Tile constants (roguelikeSheet_transparent.png layout) ----
 // Sheet: 57 cols x 31 rows, each tile 16x16 with 1px margin.
@@ -550,6 +551,22 @@ export class WorldScene extends Scene {
     this.events.on(Events.QUIZ_CORRECT, () => this.finishGather(true), this);
     this.events.on(Events.QUIZ_WRONG, () => this.finishGather(false), this);
     this.events.on(Events.QUIZ_TIMEOUT, () => this.finishGather(false), this);
+
+    // Daily quests: shared state in the registry; HUD claims award Gold here.
+    this.registry.set('daily', loadDaily());
+    this.events.on(Events.DAILY_CLAIM, (r: { gold: number; xp: number }) => {
+      this.addGold(r.gold);
+      this.emitMsg(`Daily complete!  +${r.gold} Gold`);
+    }, this);
+  }
+
+  /** Advance daily-quest progress for a gameplay event + notify the HUD. */
+  private bumpDaily(type: 'chop' | 'battle' | 'answer', n = 1): void {
+    const s = this.registry.get('daily') as DailyState | undefined;
+    if (!s) return;
+    bumpDailyState(s, type, n);
+    saveDaily(s);
+    this.events.emit(Events.DAILY_CHANGED);
   }
 
   // Classify a GROUND_MAP cell into terrain (shared with the HUD minimap).
@@ -850,6 +867,8 @@ export class WorldScene extends Scene {
       const gold = 5, xp = 10;
       this.woodcuttingXp += xp;
       this.addGold(gold);
+      this.bumpDaily('chop');
+      this.bumpDaily('answer');
       this.floatWorldText(tree, `+${gold} Gold   +1 Wood`, '#fde047');
       this.emitMsg(`Woodcutting +${xp} XP`);
       if (tree) {
@@ -925,6 +944,7 @@ export class WorldScene extends Scene {
   private onCombatEnd(result: { won: boolean; remainingHp: number; xpGained: number; mindcoins: number; enemyId: number }): void {
     this.inCombat = false;
     if (result.mindcoins) this.gold += result.mindcoins; // combat gold folds into the total
+    if (result.won) { this.bumpDaily('battle'); this.bumpDaily('answer'); }
     this.pushHUDUpdate();
     this.scene.resume('WorldScene');
   }
