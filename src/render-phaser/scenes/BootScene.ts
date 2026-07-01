@@ -92,10 +92,17 @@ export class BootScene extends Scene {
     this.load.spritesheet('ts-tilemap-dirt',  'assets/tiny-swords/terrain/tilemap_dirt.png',  { frameWidth: 64, frameHeight: 64 });
 
     // LPC character layers (64x64, standard Universal LPC layout: 13 cols x 21
-    // rows). Composited into one 'lpc-hero' sheet in create() so a single sprite
-    // can play 4-directional walk cycles (rows 8-11).
-    for (const layer of ['body', 'legs', 'feet', 'torso', 'hair']) {
-      this.load.spritesheet(`lpc-${layer}`, `assets/lpc/${layer}_male.png`, { frameWidth: 64, frameHeight: 64 });
+    // rows). Composited into several 'lpc-hero-N' outfit presets in create() so
+    // characters vary and animate 4-directional walk cycles (rows 8-11).
+    const lpcLayerFiles: Record<string, string> = {
+      'lpc-body': 'body_male',
+      'lpc-torso-white': 'torso_male', 'lpc-torso-brown': 'torso_brown', 'lpc-torso-maroon': 'torso_maroon',
+      'lpc-legs-teal': 'legs_male', 'lpc-legs-red': 'legs_red', 'lpc-legs-white': 'legs_white',
+      'lpc-feet-brown': 'feet_male', 'lpc-feet-black': 'feet_black',
+      'lpc-hair-brown': 'hair_male', 'lpc-hair-black': 'hair_black', 'lpc-hair-blonde': 'hair_blonde',
+    };
+    for (const [key, file] of Object.entries(lpcLayerFiles)) {
+      this.load.spritesheet(key, `assets/lpc/${file}.png`, { frameWidth: 64, frameHeight: 64 });
     }
 
     // Tiny Swords water tile (64x64) + sand tilemap for shores
@@ -172,21 +179,31 @@ export class BootScene extends Scene {
       }
     }
 
-    // Composite the LPC layers (body + clothes + hair) into one 'lpc-hero'
-    // spritesheet so a single sprite renders a fully-dressed character with the
-    // standard 13x21 frame layout (4-direction walk on rows 8-11).
-    if (this.textures.exists('lpc-body') && !this.textures.exists('lpc-hero')) {
-      const canvas = document.createElement('canvas');
-      canvas.width = 832; canvas.height = 1344;
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        for (const layer of ['lpc-body', 'lpc-legs', 'lpc-feet', 'lpc-torso', 'lpc-hair']) {
+    // Composite the LPC layers into distinct outfit presets (lpc-hero-0..N), each
+    // a fully-dressed character (13x21 layout, 4-direction walk on rows 8-11).
+    const lpcPresets: string[][] = [
+      ['lpc-body', 'lpc-legs-teal',  'lpc-feet-brown', 'lpc-torso-white',  'lpc-hair-brown'],
+      ['lpc-body', 'lpc-legs-red',   'lpc-feet-black', 'lpc-torso-brown',  'lpc-hair-black'],
+      ['lpc-body', 'lpc-legs-white', 'lpc-feet-brown', 'lpc-torso-maroon', 'lpc-hair-blonde'],
+      ['lpc-body', 'lpc-legs-red',   'lpc-feet-black', 'lpc-torso-white',  'lpc-hair-black'],
+      ['lpc-body', 'lpc-legs-teal',  'lpc-feet-brown', 'lpc-torso-brown',  'lpc-hair-blonde'],
+      ['lpc-body', 'lpc-legs-white', 'lpc-feet-black', 'lpc-torso-maroon', 'lpc-hair-brown'],
+    ];
+    if (this.textures.exists('lpc-body')) {
+      lpcPresets.forEach((layers, i) => {
+        const key = `lpc-hero-${i}`;
+        if (this.textures.exists(key)) return;
+        const canvas = document.createElement('canvas');
+        canvas.width = 832; canvas.height = 1344;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        for (const layer of layers) {
           if (this.textures.exists(layer)) {
             ctx.drawImage(this.textures.get(layer).getSourceImage() as CanvasImageSource, 0, 0);
           }
         }
-        this.textures.addSpriteSheet('lpc-hero', canvas as unknown as HTMLImageElement, { frameWidth: 64, frameHeight: 64 });
-      }
+        this.textures.addSpriteSheet(key, canvas as unknown as HTMLImageElement, { frameWidth: 64, frameHeight: 64 });
+      });
     }
 
     // Cache question bank into registry for all scenes to access

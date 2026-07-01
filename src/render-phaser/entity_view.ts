@@ -17,6 +17,9 @@ const BAR_X = -BAR_W / 2;
 // Target on-screen height in pixels for entity bodies
 const TARGET_BODY_H = 64;
 
+// Number of composited LPC outfit presets (lpc-hero-0..N-1), for character variety.
+const LPC_PRESETS = 6;
+
 // Unit pools for variety: a stable per-entity pick (by id) so a crowd of NPCs
 // or mobs isn't a row of identical sprites. All idle+run anims are registered in
 // BootScene; both colours have warrior/archer/lancer/pawn.
@@ -84,12 +87,12 @@ export class EntityView {
   constructor(scene: Scene, e: Entity, isPlayer: boolean) {
     // Prefer the composited LPC character (top-down, 4-directional walk); fall
     // back to Tiny Swords animated units, then procedural/_v3 art.
-    this.useLpc = scene.textures.exists('lpc-hero');
+    this.useLpc = scene.textures.exists('lpc-hero-0');
     const tsInfo = this.useLpc ? null : tsSpriteKey(e, false);
     let useSprite = false;
     let texKey: string;
     if (this.useLpc) {
-      texKey = 'lpc-hero';
+      texKey = `lpc-hero-${Math.abs(e.id) % LPC_PRESETS}`; // per-entity outfit for variety
     } else if (tsInfo && scene.textures.exists(tsInfo.tex)) {
       texKey = tsInfo.tex;
       useSprite = true;
