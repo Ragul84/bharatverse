@@ -62,7 +62,7 @@ export class HUDScene extends Scene {
     }).setOrigin(0, 0.5).setDepth(101).setScrollFactor(0);
 
     // ---- MindCoins (top right) ----
-    this.mindcoinsText = this.add.text(width - 10, 14, 'MC: 0', {
+    this.mindcoinsText = this.add.text(width - 10, 14, 'Gold: 0', {
       fontSize: '13px',
       fontFamily: '"Noto Sans", sans-serif',
       color: '#fbbf24',
@@ -186,7 +186,7 @@ export class HUDScene extends Scene {
   }
 
   private onMindCoinsUpdate(coins: number): void {
-    this.mindcoinsText.setText(`MC: ${coins.toLocaleString()}`);
+    this.mindcoinsText.setText(`Gold: ${coins.toLocaleString()}`);
 
     // Small bounce animation
     this.tweens.add({

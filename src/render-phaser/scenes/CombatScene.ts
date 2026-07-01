@@ -482,7 +482,7 @@ export class CombatScene extends Scene {
       stroke: '#0b160b', strokeThickness: 6,
     }).setOrigin(0.5).setDepth(31).setScale(0.3);
     this.tweens.add({ targets: banner, scale: 1, duration: 400, ease: 'Back.out' });
-    this.add.text(cx, height / 2 + 24, won ? `+${xpGained} XP    ·    +${mindcoins} MindCoins` : 'Recover, then try again.', {
+    this.add.text(cx, height / 2 + 24, won ? `+${xpGained} XP    ·    +${mindcoins} Gold` : 'Recover, then try again.', {
       fontSize: '16px', fontFamily: '"Noto Sans", sans-serif',
       color: '#f8fafc', stroke: '#0b160b', strokeThickness: 4,
     }).setOrigin(0.5).setDepth(31);
