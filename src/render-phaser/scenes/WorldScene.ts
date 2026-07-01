@@ -466,11 +466,13 @@ export class WorldScene extends Scene {
   // Radial-ish action menu shown when an entity is clicked (Chat / Fight / …).
   private entityMenu?: GameObjects.Container;
 
-  // Gathering (recall-gated woodcutting) + a unified Gold total for the HUD.
+  // Gathering (recall-gated woodcutting + mining) + a unified Gold total.
   private gathering = false;
-  private gatherTree?: GameObjects.Image;
+  private gatherNode?: GameObjects.Image;
+  private gatherKind: 'wood' | 'ore' = 'wood';
   private gold = 0;
   private woodcuttingXp = 0;
+  private miningXp = 0;
 
   constructor() {
     super({ key: 'WorldScene', active: false });
@@ -721,8 +723,10 @@ export class WorldScene extends Scene {
               .setDisplaySize(TILE_SZ * 0.8, TILE_SZ * 0.8).setDepth(depth);
           } else {
             const key = ROCKS[Math.floor(hash2(c, r, 6) * ROCKS.length)];
-            this.add.image(cx, baseY, key).setOrigin(0.5, 0.9)
-              .setDisplaySize(TILE_SZ * 0.7, TILE_SZ * 0.7).setDepth(depth);
+            const rock = this.add.image(cx, baseY, key).setOrigin(0.5, 0.9)
+              .setDisplaySize(TILE_SZ * 0.7, TILE_SZ * 0.7).setDepth(depth)
+              .setInteractive({ useHandCursor: true });
+            rock.on('pointerdown', () => this.startGather(rock, 'ore')); // recall-gated mining
           }
         }
         // house/roof/tent/fire/sign frames are intentionally skipped here.
@@ -948,40 +952,43 @@ export class WorldScene extends Scene {
     this.events.emit(Events.HUD_SHOW_MESSAGE, text);
   }
 
-  /** Recall-gated woodcutting: chop a tree by answering a question correctly. */
-  private startGather(tree: GameObjects.Image): void {
+  /** Recall-gated gathering: fell a tree (wood) or mine a rock (ore) by
+   *  answering a question correctly. */
+  private startGather(node: GameObjects.Image, kind: 'wood' | 'ore' = 'wood'): void {
     if (this.gathering || this.inCombat) return;
     this.closeEntityMenu();
     const q = this.pickGatherQuestion();
     if (!q) { this.emitMsg('No questions available.'); return; }
     const p = this.world.player;
-    const tw = pixelToWorld(tree.x, tree.y);
-    if (this.offline) p.facing = Math.atan2(tw.x - p.pos.x, tw.z - p.pos.z); // face the tree
+    const tw = pixelToWorld(node.x, node.y);
+    if (this.offline) p.facing = Math.atan2(tw.x - p.pos.x, tw.z - p.pos.z); // face the node
     this.gathering = true;
-    this.gatherTree = tree;
-    this.emitMsg('Chopping — answer to fell it!');
-    this.scene.launch('QuizScene', { question: q, abilityId: 'chop', returnTo: 'WorldScene' });
+    this.gatherNode = node;
+    this.gatherKind = kind;
+    this.emitMsg(kind === 'ore' ? 'Mining — answer to break it!' : 'Chopping — answer to fell it!');
+    this.scene.launch('QuizScene', { question: q, abilityId: kind === 'ore' ? 'mine' : 'chop', returnTo: 'WorldScene' });
   }
 
   private finishGather(correct: boolean): void {
     if (!this.gathering) return;
     this.gathering = false;
     this.scene.stop('QuizScene');
-    const tree = this.gatherTree;
-    this.gatherTree = undefined;
+    const node = this.gatherNode;
+    const ore = this.gatherKind === 'ore';
+    this.gatherNode = undefined;
     if (correct) {
-      const gold = 5, xp = 10;
-      this.woodcuttingXp += xp;
+      const gold = ore ? 8 : 5, xp = 10;
+      if (ore) this.miningXp += xp; else this.woodcuttingXp += xp;
       this.addGold(gold);
-      this.bumpDaily('chop');
+      this.bumpDaily(ore ? 'answer' : 'chop'); // no dedicated mine daily yet
       this.bumpDaily('answer');
-      this.floatWorldText(tree, `+${gold} Gold   +1 Wood`, '#fde047');
-      this.emitMsg(`Woodcutting +${xp} XP`);
-      if (tree) {
-        this.tweens.add({ targets: tree, angle: { from: -7, to: 7 }, duration: 70, yoyo: true, repeat: 3, onComplete: () => tree.setAngle(0) });
+      this.floatWorldText(node, `+${gold} Gold   +1 ${ore ? 'Ore' : 'Wood'}`, '#fde047');
+      this.emitMsg(`${ore ? 'Mining' : 'Woodcutting'} +${xp} XP`);
+      if (node) {
+        this.tweens.add({ targets: node, angle: { from: -7, to: 7 }, duration: 70, yoyo: true, repeat: 3, onComplete: () => node.setAngle(0) });
       }
     } else {
-      this.floatWorldText(tree, 'The tree resists!', '#fca5a5');
+      this.floatWorldText(node, ore ? 'The rock holds firm!' : 'The tree resists!', '#fca5a5');
     }
   }
 

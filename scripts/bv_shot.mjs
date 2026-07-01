@@ -63,6 +63,20 @@ await page.evaluate(() => {
 await sleep(1700);
 await page.screenshot({ path: 'tmp/bv_gather_reward.png' });
 
+// Mining: click a rock node -> quiz -> answer -> ore reward.
+await page.evaluate(() => {
+  const ws = window.__game.scene.getScene('WorldScene');
+  const rock = ws.children.list.find((o) => o.type === 'Image' && o.input && o.input.enabled && o.displayWidth > 30 && o.displayWidth < 48);
+  if (rock && ws.startGather) ws.startGather(rock, 'ore');
+});
+await sleep(700);
+await page.evaluate(() => {
+  const q = window.__game.scene.getScene('QuizScene');
+  if (q && q.scene.isActive() && q.data_) q.selectOption(q.data_.question.correct);
+});
+await sleep(1600);
+await page.screenshot({ path: 'tmp/bv_mine_reward.png' });
+
 // Daily-quest board: open the HUD panel (progress should reflect the chop above).
 await page.evaluate(() => {
   const hud = window.__game.scene.getScene('HUDScene');
