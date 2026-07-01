@@ -110,7 +110,7 @@ export class CombatScene extends Scene {
     }
 
     const enemyY = Math.round(height * 0.34);
-    const playerY = Math.round(height * 0.60);
+    const playerY = Math.round(height * 0.62);
     this.add.ellipse(cx, enemyY + 36, 96, 26, 0x000000, 0.30).setDepth(2);
     this.add.ellipse(cx, playerY + 36, 96, 26, 0x000000, 0.30).setDepth(2);
 
@@ -129,8 +129,8 @@ export class CombatScene extends Scene {
     }).setOrigin(0.5).setDepth(11);
 
     // ---- Combatant sprites (Tiny Swords units) ----
-    this.enemySprite = this.makeCombatant(cx, enemyY, this.enemyTexKey(), true).setDepth(3);
-    this.playerSprite = this.makeCombatant(cx, playerY, this.playerTexKey(), false).setDepth(4);
+    this.enemySprite = this.makeCombatant(cx, enemyY, this.enemyTexKey(), true, 1.2).setDepth(3);
+    this.playerSprite = this.makeCombatant(cx, playerY, this.playerTexKey(), false, 1.45).setDepth(4);
 
     // ---- Player HP bar (above the ability tray) ----
     this.add.rectangle(cx, height - 245, 224, 16, 0x14231a).setStrokeStyle(2, 0x000000, 0.5).setDepth(10);
@@ -329,9 +329,12 @@ export class CombatScene extends Scene {
       this.enemySprite.setTint(0xff8888);
       this.time.delayedCall(90, () => this.enemySprite.clearTint());
       this.tweens.add({ targets: this.enemySprite, x: this.enemySprite.x + 10, duration: 55, yoyo: true, repeat: 2 });
+      this.floatText(this.enemySprite.x, this.enemySprite.y - 56, `-${damage}`, result === 'correct' && this.correctStreak >= 3 ? '#fde047' : '#fca5a5');
+      this.cameras.main.shake(120, 0.006);
     } else if (heal > 0) {
       this.playerSprite.setTint(0x86efac);
       this.time.delayedCall(220, () => this.playerSprite.clearTint());
+      this.floatText(this.playerSprite.x, this.playerSprite.y - 80, `+${heal}`, '#86efac');
     }
 
     this.showMessage(message, result === 'correct' ? '#4ade80' : result === 'timeout' ? '#f87171' : '#fbbf24');
@@ -353,6 +356,7 @@ export class CombatScene extends Scene {
     const dmg = Math.floor(8 + Math.random() * 14);
     this.playerHp = Math.max(0, this.playerHp - dmg);
     this.showMessage(`${this.data_.enemy.label} hits you for ${dmg} damage!`, '#f87171');
+    this.floatText(this.playerSprite.x, this.playerSprite.y - 84, `-${dmg}`, '#fca5a5');
 
     // Enemy lunges, player flinches red
     this.tweens.add({ targets: this.enemySprite, y: this.enemySprite.y + 16, duration: 110, yoyo: true, ease: 'Quad.out' });
@@ -401,12 +405,21 @@ export class CombatScene extends Scene {
   }
 
   /** Create a combatant as a Tiny Swords unit sprite (idle anim), feet-anchored. */
-  private makeCombatant(x: number, y: number, texKey: string, flip: boolean): Phaser.GameObjects.Sprite {
+  private makeCombatant(x: number, y: number, texKey: string, flip: boolean, scale = 1.2): Phaser.GameObjects.Sprite {
     const s = this.add.sprite(x, y, this.textures.exists(texKey) ? texKey : '__DEFAULT')
-      .setOrigin(0.5, 0.82).setScale(1.15).setFlipX(flip);
+      .setOrigin(0.5, 0.82).setScale(scale).setFlipX(flip);
     if (this.anims.exists(texKey)) s.play(texKey, true);
     else s.setTint(flip ? 0xdc2626 : 0x4f46e5); // degraded fallback if art missing
     return s;
+  }
+
+  /** Floating combat number that rises and fades above a point. */
+  private floatText(x: number, y: number, text: string, color: string): void {
+    const t = this.add.text(x, y, text, {
+      fontSize: '22px', fontFamily: '"Noto Sans", sans-serif', color,
+      fontStyle: 'bold', stroke: '#0b160b', strokeThickness: 5,
+    }).setOrigin(0.5).setDepth(20);
+    this.tweens.add({ targets: t, y: y - 46, alpha: { from: 1, to: 0 }, duration: 900, ease: 'Quad.out', onComplete: () => t.destroy() });
   }
 
   /** Tiny Swords idle texture for the enemy (a red unit). */
@@ -451,11 +464,28 @@ export class CombatScene extends Scene {
     const xpGained = won ? Math.round(20 + this.data_.enemy.tier * 15 + this.correctStreak * 5) : 5;
     const mindcoins = won ? Math.round(10 + this.data_.enemy.tier * 8 + this.correctStreak * 3) : 0;
 
-    const resultMsg = won
-      ? `Victory! +${xpGained} XP | +${mindcoins} MindCoins`
-      : 'Defeated! Try again when you have recovered.';
+    const { width, height } = this.scale;
+    const cx = width / 2;
 
-    this.showMessage(resultMsg, won ? '#4ade80' : '#f87171');
+    // Defeated enemy fades and drops on a win.
+    if (won) {
+      this.tweens.add({ targets: this.enemySprite, alpha: 0, y: this.enemySprite.y + 18, angle: 20, duration: 500 });
+    } else {
+      this.cameras.main.flash(300, 120, 0, 0);
+    }
+
+    // Result banner
+    this.add.rectangle(cx, height / 2, width, height, 0x000000, 0.55).setDepth(30);
+    const banner = this.add.text(cx, height / 2 - 30, won ? 'VICTORY!' : 'DEFEATED', {
+      fontSize: '44px', fontFamily: '"Noto Sans", sans-serif',
+      color: won ? '#fde047' : '#f87171', fontStyle: 'bold',
+      stroke: '#0b160b', strokeThickness: 6,
+    }).setOrigin(0.5).setDepth(31).setScale(0.3);
+    this.tweens.add({ targets: banner, scale: 1, duration: 400, ease: 'Back.out' });
+    this.add.text(cx, height / 2 + 24, won ? `+${xpGained} XP    ·    +${mindcoins} MindCoins` : 'Recover, then try again.', {
+      fontSize: '16px', fontFamily: '"Noto Sans", sans-serif',
+      color: '#f8fafc', stroke: '#0b160b', strokeThickness: 4,
+    }).setOrigin(0.5).setDepth(31);
 
     this.time.delayedCall(1800, () => {
       // Notify WorldScene

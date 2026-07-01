@@ -88,6 +88,24 @@ await page.evaluate(() => {
 await sleep(1800);
 await page.screenshot({ path: 'tmp/bv_combat.png' });
 
+// Simulate a big hit (floating number + shake), then a victory banner.
+await page.evaluate(() => {
+  const cs = window.__game.scene.getScene('CombatScene');
+  if (cs && cs.enemySprite) {
+    cs.floatText(cs.enemySprite.x, cs.enemySprite.y - 56, '-38', '#fde047');
+    cs.enemySprite.setTint(0xff8888);
+    cs.enemyHp = 8; cs.refreshHPBars && cs.refreshHPBars();
+  }
+});
+await sleep(500);
+await page.screenshot({ path: 'tmp/bv_combat_hit.png' });
+await page.evaluate(() => {
+  const cs = window.__game.scene.getScene('CombatScene');
+  if (cs && cs.endCombat) cs.endCombat(true);
+});
+await sleep(700);
+await page.screenshot({ path: 'tmp/bv_combat_win.png' });
+
 if (p0 && p1) {
   const d1 = Math.hypot(p1.x - p0.x, p1.z - p0.z);
   console.log('ArrowUp moved:', d1.toFixed(1), d1 > 3 ? 'OK' : 'FAIL');
