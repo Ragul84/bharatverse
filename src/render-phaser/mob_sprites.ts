@@ -29,17 +29,17 @@ export interface MobSheet {
 
 // Whole mob families that map to one sheet.
 const FAMILY_SHEETS: Partial<Record<string, MobSheet>> = {
-  undead: { key: 'mob-skeleton', kind: 'lpc',  cols: 13, walkFrames: 8, scale: 1.5, frameStep: 110 },
-  spider: { key: 'mob-spider',   kind: 'grid', cols: 10, walkFrames: 8, scale: 1.3, frameStep: 100 },
+  undead: { key: 'mob-skeleton', kind: 'lpc',  cols: 13, walkFrames: 8, scale: 1.15, frameStep: 110 },
+  spider: { key: 'mob-spider',   kind: 'grid', cols: 10, walkFrames: 8, scale: 1.0,  frameStep: 100 },
   // 4x4 imp walk (up/left/down/right rows).
-  demon:  { key: 'mob-imp',    kind: 'grid', cols: 4,  walkFrames: 4, scale: 1.4, frameStep: 150, dirRows: [0, 1, 2, 3] },
+  demon:  { key: 'mob-imp',    kind: 'grid', cols: 4,  walkFrames: 4, scale: 1.05, frameStep: 150, dirRows: [0, 1, 2, 3] },
   // 11-wide goblin; row order verified empirically (down/left/up/right).
-  kobold: { key: 'mob-goblin', kind: 'grid', cols: 11, walkFrames: 8, scale: 1.4, frameStep: 90,  dirRows: [2, 1, 0, 3] },
+  kobold: { key: 'mob-goblin', kind: 'grid', cols: 11, walkFrames: 8, scale: 1.05, frameStep: 90,  dirRows: [2, 1, 0, 3] },
 };
 
 // Specific creatures (by templateId keyword) that override the family sheet.
 const WOLF: MobSheet = {
-  key: 'mob-wolf', kind: 'quad', cols: 10, walkFrames: 4, scale: 1.35,
+  key: 'mob-wolf', kind: 'quad', cols: 10, walkFrames: 4, scale: 1.05,
   frameStep: 120, sideFrames: [15, 16, 17, 18], // row-1 side-view walk (faces right)
 };
 

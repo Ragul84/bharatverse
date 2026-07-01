@@ -138,7 +138,8 @@ export class EntityView {
     } else if (this.useLpc) {
       this.body.setFrame(this.lpcFrame(e, false));
       this.body.setOrigin(0.5, 0.92)
-        .setScale((isPlayer ? 1.5 : 1.35) * Math.max(0.7, e.scale || 1));
+        // Smaller, kintara-like proportion (~1 tile) now that the camera is zoomed out.
+        .setScale((isPlayer ? 1.15 : 1.05) * Math.max(0.7, e.scale || 1));
     } else {
       const texH = this.body.height || CHAR_H;
       // Tiny Swords frames have empty space below the feet; procedural/_v3 art has

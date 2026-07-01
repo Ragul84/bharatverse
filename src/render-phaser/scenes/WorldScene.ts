@@ -541,10 +541,10 @@ export class WorldScene extends Scene {
     const mapPxH = MAP_H * TILE_SZ;
     this.cameras.main.setBounds(0, 0, mapPxW, mapPxH);
     this.cameras.main.startFollow(this.playerView.container, true, 0.1, 0.1);
-    // Integer zoom = exact pixel doubling (crisp, no blur/shimmer). With RESIZE
-    // the canvas is the real window size, so large/retina screens still see plenty
-    // of world at 2x — sharp everywhere.
-    this.cameras.main.setZoom(2);
+    // Zoom 1 = no scaling at all → maximally crisp, and shows ~2x more world than
+    // 2x, matching kintara's zoomed-out, spacious framing (small characters, lots
+    // of map on screen). RESIZE means bigger screens simply see even more.
+    this.cameras.main.setZoom(1);
 
     // Click empty ground to move; clicking an entity (or a menu button) is handled
     // by that object and must NOT also move or dismiss via this handler.
@@ -645,7 +645,7 @@ export class WorldScene extends Scene {
     const pp = worldToPixel(this.world.player.pos.x, this.world.player.pos.z);
     this.petPx = pp.px - 22; this.petPy = pp.py + 6;
     this.petSprite = this.add.sprite(this.petPx, this.petPy, def.key, 1)
-      .setOrigin(0.5, 0.9).setScale(1.6).setDepth(D_ENTITY);
+      .setOrigin(0.5, 0.9).setScale(1.2).setDepth(D_ENTITY);
   }
 
   private clearPet(): void {
