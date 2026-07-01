@@ -91,16 +91,13 @@ export function createPhaserGame(parentElement: HTMLElement): Phaser.Game {
     parent: parentElement,
     backgroundColor: '#1a0a2e', // Deep indigo - BharatVerse night sky base
     scale: {
-      mode: Phaser.Scale.FIT,
-      autoCenter: Phaser.Scale.CENTER_BOTH,
-      min: {
-        width: 480,
-        height: 270,
-      },
-      max: {
-        width: 1920,
-        height: 1080,
-      },
+      // RESIZE: the canvas matches the container's real pixel size (times DPR
+      // below) instead of FIT-upscaling a fixed low-res canvas — the upscale was
+      // what blurred sprites AND text. Camera zoom sets how much world is shown,
+      // so bigger/retina screens simply see more, all sharp.
+      mode: Phaser.Scale.RESIZE,
+      width: GAME_WIDTH,
+      height: GAME_HEIGHT,
     },
     physics: {
       default: 'arcade',
