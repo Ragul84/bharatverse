@@ -90,6 +90,12 @@ export class EntityView {
   // Humanoid mob rendered as a rugged bandit (LPC human, no hostile red tint).
   private isBandit = false;
 
+  // Walk-animation gating: the sim only writes vx/vz when airborne, so ground
+  // walking is detected from actual position change over a short time window.
+  private prevX = NaN;
+  private prevZ = NaN;
+  private lastMoveMs = -1e9;
+
   constructor(scene: Scene, e: Entity, isPlayer: boolean) {
     this.isPlayer = isPlayer;
     // Prefer the composited LPC character (top-down, 4-directional walk); fall
@@ -180,8 +186,15 @@ export class EntityView {
   }
 
   update(e: Entity): void {
-    const speed = Math.hypot(e.vx, e.vz);
-    const moving = speed > 0.15 && !e.dead;
+    // Detect movement from position change (sim vx/vz is ~0 while walking on
+    // ground). "Moving" persists briefly after the last change so the walk cycle
+    // doesn't flicker between the 20 Hz sim ticks and the render frames.
+    const now = this.body.scene.time.now;
+    if (!Number.isNaN(this.prevX) && Math.hypot(e.pos.x - this.prevX, e.pos.z - this.prevZ) > 0.02) {
+      this.lastMoveMs = now;
+    }
+    this.prevX = e.pos.x; this.prevZ = e.pos.z;
+    const moving = !e.dead && (now - this.lastMoveMs) < 160;
 
     if (this.mobSheet) {
       // Real creature art — animate the walk cycle; no red tint needed.

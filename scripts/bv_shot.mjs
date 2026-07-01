@@ -24,7 +24,7 @@ const playerPos = () => page.evaluate(() => {
   const g = window.__game || window.game;
   const w = g && (g.sim || g.world || (g.registry && g.registry.get && g.registry.get('world')));
   const p = w && w.player;
-  return p ? { x: +p.pos.x.toFixed(2), z: +p.pos.z.toFixed(2), facing: +(+p.facing).toFixed(2) } : null;
+  return p ? { x: +p.pos.x.toFixed(2), z: +p.pos.z.toFixed(2), facing: +(+p.facing).toFixed(2), vx: +(+p.vx).toFixed(2), vz: +(+p.vz).toFixed(2) } : null;
 });
 
 await page.goto(URL, { waitUntil: 'networkidle0', timeout: 30000 });
@@ -126,8 +126,18 @@ console.log('spawn pos:', JSON.stringify(p0));
 
 // Arrow-key movement: press Up for 2s.
 await page.keyboard.down('ArrowUp');
-await sleep(2000);
+await sleep(1000);
+const readFrame = () => page.evaluate(() => {
+  const ws = window.__game.scene.getScene('WorldScene');
+  const b = ws.playerView && ws.playerView.body;
+  return b ? Number(b.frame.name) : null;
+});
+const f1 = await readFrame(); await sleep(130); const f2 = await readFrame(); await sleep(130); const f3 = await readFrame();
+console.log('walk frames while moving:', f1, f2, f3, (f1 !== f2 || f2 !== f3) ? 'ANIMATING' : 'STATIC');
+await sleep(700);
 await page.keyboard.up('ArrowUp');
+await sleep(300);
+console.log('idle frame after stop:', await readFrame());
 await sleep(200);
 const p1 = await playerPos();
 console.log('after ArrowUp:', JSON.stringify(p1));
