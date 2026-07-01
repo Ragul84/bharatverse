@@ -3039,28 +3039,28 @@ export const en: EnTranslations = {
     },
     "mobs": {
       "forest_wolf": {
-        "name": "Gyaan-Bhediya"
+        "name": "Timberfang Wolf"
       },
       "old_greyjaw": {
-        "name": "Mahavidya"
+        "name": "Old Greyjaw"
       },
       "wild_boar": {
-        "name": "Vigyan Varah"
+        "name": "Tuskgore Boar"
       },
       "webwood_spider": {
-        "name": "Jaal-Makdi"
+        "name": "Webwood Spider"
       },
       "mudfin_murloc": {
-        "name": "Bharatiya Makara"
+        "name": "Mudfin Snapper"
       },
       "tunnel_rat": {
-        "name": "Pariksha Pisach"
+        "name": "Tunnel Rat"
       },
       "vale_bandit": {
-        "name": "Adhura Chor"
+        "name": "Vale Bandit"
       },
       "restless_bones": {
-        "name": "Bhool-Bhoolaiya"
+        "name": "Restless Bones"
       },
       "gorrak": {
         "name": "Gorrak the Ruthless"
@@ -4413,22 +4413,22 @@ export const en: EnTranslations = {
             "label": "Vidya Nagar"
           },
           "1": {
-            "label": "Gyaan-Bhediya Run"
+            "label": "Timberfang Wolf Run"
           },
           "2": {
-            "label": "Vigyan Varah Meadow"
+            "label": "Tuskgore Boar Meadow"
           },
           "3": {
             "label": "Ganga Lake"
           },
           "4": {
-            "label": "Jaal-Makdi Forest"
+            "label": "Webwood Spider Forest"
           },
           "5": {
             "label": "Copper Dig"
           },
           "6": {
-            "label": "Adhura Chor Camp"
+            "label": "Vale Bandit Camp"
           },
           "7": {
             "label": "Fallen Mandir"
@@ -25699,28 +25699,28 @@ export const en_CA: EnTranslations = {
     },
     "mobs": {
       "forest_wolf": {
-        "name": "Gyaan-Bhediya"
+        "name": "Timberfang Wolf"
       },
       "old_greyjaw": {
-        "name": "Mahavidya"
+        "name": "Old Greyjaw"
       },
       "wild_boar": {
-        "name": "Vigyan Varah"
+        "name": "Tuskgore Boar"
       },
       "webwood_spider": {
-        "name": "Jaal-Makdi"
+        "name": "Webwood Spider"
       },
       "mudfin_murloc": {
-        "name": "Bharatiya Makara"
+        "name": "Mudfin Snapper"
       },
       "tunnel_rat": {
-        "name": "Pariksha Pisach"
+        "name": "Tunnel Rat"
       },
       "vale_bandit": {
-        "name": "Adhura Chor"
+        "name": "Vale Bandit"
       },
       "restless_bones": {
-        "name": "Bhool-Bhoolaiya"
+        "name": "Restless Bones"
       },
       "gorrak": {
         "name": "Gorrak the Ruthless"
@@ -27073,22 +27073,22 @@ export const en_CA: EnTranslations = {
             "label": "Vidya Nagar"
           },
           "1": {
-            "label": "Gyaan-Bhediya Run"
+            "label": "Timberfang Wolf Run"
           },
           "2": {
-            "label": "Vigyan Varah Meadow"
+            "label": "Tuskgore Boar Meadow"
           },
           "3": {
             "label": "Ganga Lake"
           },
           "4": {
-            "label": "Jaal-Makdi Forest"
+            "label": "Webwood Spider Forest"
           },
           "5": {
             "label": "Copper Dig"
           },
           "6": {
-            "label": "Adhura Chor Camp"
+            "label": "Vale Bandit Camp"
           },
           "7": {
             "label": "Fallen Mandir"
@@ -69100,28 +69100,28 @@ export const en_XA: EnTranslations = {
     },
     "mobs": {
       "forest_wolf": {
-        "name": "[Ĝýááñ-Ɓĥéðíýá]"
+        "name": "[Ţíɱƀéŕƒáñĝ Ŵóļƒ]"
       },
       "old_greyjaw": {
-        "name": "[Ɱáĥáʋíðýá]"
+        "name": "[Óļð Ĝŕéýĵáŵ]"
       },
       "wild_boar": {
-        "name": "[Ʋíĝýáñ Ʋáŕáĥ]"
+        "name": "[Ţúšķĝóŕé Ɓóáŕ]"
       },
       "webwood_spider": {
-        "name": "[Ĵááļ-Ɱáķðí]"
+        "name": "[Ŵéƀŵóóð Šþíðéŕ]"
       },
       "mudfin_murloc": {
-        "name": "[Ɓĥáŕáţíýá Ɱáķáŕá]"
+        "name": "[Ɱúðƒíñ Šñáþþéŕ]"
       },
       "tunnel_rat": {
-        "name": "[Þáŕíķšĥá Þíšáçĥ]"
+        "name": "[Ţúññéļ Ŕáţ]"
       },
       "vale_bandit": {
-        "name": "[Áðĥúŕá Çĥóŕ]"
+        "name": "[Ʋáļé Ɓáñðíţ]"
       },
       "restless_bones": {
-        "name": "[Ɓĥóóļ-Ɓĥóóļáíýá]"
+        "name": "[Ŕéšţļéšš Ɓóñéš]"
       },
       "gorrak": {
         "name": "[Ĝóŕŕáķ ţĥé Ŕúţĥļéšš]"
@@ -70474,22 +70474,22 @@ export const en_XA: EnTranslations = {
             "label": "[Ʋíðýá Ñáĝáŕ]"
           },
           "1": {
-            "label": "[Ĝýááñ-Ɓĥéðíýá Ŕúñ]"
+            "label": "[Ţíɱƀéŕƒáñĝ Ŵóļƒ Ŕúñ]"
           },
           "2": {
-            "label": "[Ʋíĝýáñ Ʋáŕáĥ Ɱéáðóŵ]"
+            "label": "[Ţúšķĝóŕé Ɓóáŕ Ɱéáðóŵ]"
           },
           "3": {
             "label": "[Ĝáñĝá Ļáķé]"
           },
           "4": {
-            "label": "[Ĵááļ-Ɱáķðí Ƒóŕéšţ]"
+            "label": "[Ŵéƀŵóóð Šþíðéŕ Ƒóŕéšţ]"
           },
           "5": {
             "label": "[Çóþþéŕ Ðíĝ]"
           },
           "6": {
-            "label": "[Áðĥúŕá Çĥóŕ Çáɱþ]"
+            "label": "[Ʋáļé Ɓáñðíţ Çáɱþ]"
           },
           "7": {
             "label": "[Ƒáļļéñ Ɱáñðíŕ]"

@@ -60,7 +60,7 @@ describe('colors', () => {
 
 describe('nameplateText', () => {
   it('appends the level number with no translatable word', () => {
-    expect(nameplateText({ name: 'Gyaan Bhediya', level: 3 })).toBe('Gyaan Bhediya  3');
+    expect(nameplateText({ name: 'Timberfang Wolf', level: 3 })).toBe('Timberfang Wolf  3');
     expect(nameplateText({ name: 'Merchant', level: 0 })).toBe('Merchant');
   });
 });

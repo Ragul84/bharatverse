@@ -1,5 +1,5 @@
 // Zone 1 — Gangapur Nagari (levels 1-7). The starter zone: town of Vidya Nagar,
-// Gyaan-Bhediya and Vigyan Varah, the bandit camp, and Guru Shukracharya's chain
+// Timberfang Wolf and Tuskgore Boar, the bandit camp, and Guru Shukracharya's chain
 // leading to the Itihas Kund (History Well dungeon).
 // BharatVerse fork of world-of-claudecraft zone 1 (Eastbrook Vale).
 
@@ -23,12 +23,12 @@ export const ZONE1_ZONE: ZoneDef = {
   lakes: [LAKE],
   pois: [
     { x: 0, z: -3, label: 'Vidya Nagar' },
-    { x: -2, z: 70, label: 'Gyaan-Bhediya Run' },
-    { x: 65, z: 0, label: 'Vigyan Varah Meadow' },
+    { x: -2, z: 70, label: 'Timberfang Wolf Run' },
+    { x: 65, z: 0, label: 'Tuskgore Boar Meadow' },
     { x: -88, z: 82, label: 'Ganga Lake' },
-    { x: -60, z: 4, label: 'Jaal-Makdi Forest' },
+    { x: -60, z: 4, label: 'Webwood Spider Forest' },
     { x: -84, z: -64, label: 'Copper Dig' },
-    { x: 76, z: -76, label: 'Adhura Chor Camp' },
+    { x: 76, z: -76, label: 'Vale Bandit Camp' },
     { x: 80, z: 80, label: 'Fallen Mandir' },
     { x: 40, z: 140, label: 'Prakriti Glade' },
   ],
@@ -59,7 +59,7 @@ export const ZONE1_MOBS: Record<string, MobTemplate> = {
     petRole: 'melee_tank',
   },
   forest_wolf: {
-    id: 'forest_wolf', name: 'Gyaan-Bhediya', minLevel: 1, maxLevel: 2, family: 'beast',
+    id: 'forest_wolf', name: 'Timberfang Wolf', minLevel: 1, maxLevel: 2, family: 'beast',
     hpBase: 28, hpPerLevel: 14, dmgBase: 3, dmgPerLevel: 1.6, attackSpeed: 2.0,
     armorPerLevel: 10, moveSpeed: 8, aggroRadius: 10,
     // BharatVerse: subject tag for knowledge combat routing
@@ -73,11 +73,11 @@ export const ZONE1_MOBS: Record<string, MobTemplate> = {
     packFrenzy: { radius: 12, hasteMult: 1.3, duration: 8 },
   },
   old_greyjaw: {
-    id: 'old_greyjaw', name: 'Mahavidya', minLevel: 4, maxLevel: 4, family: 'beast', rare: true,
+    id: 'old_greyjaw', name: 'Old Greyjaw', minLevel: 4, maxLevel: 4, family: 'beast', rare: true,
     subjectTag: 'general', // Full syllabus boss — random subject each encounter
     hpBase: 110, hpPerLevel: 20, dmgBase: 5, dmgPerLevel: 2.0, attackSpeed: 1.8,
     armorPerLevel: 16, moveSpeed: 8.5, aggroRadius: 12,
-    // Mahavidya: the Great Knowledge; grows frantic as it is unmade.
+    // Old Greyjaw: the Great Knowledge; grows frantic as it is unmade.
     frenzyOnHit: { chance: 0.25, hasteMult: 1.3, duration: 8, name: 'Knowledge Surge' },
     loot: [
       { copper: 60, chance: 1 },
@@ -87,12 +87,12 @@ export const ZONE1_MOBS: Record<string, MobTemplate> = {
     scale: 1.25, color: 0x566061,
   },
   wild_boar: {
-    id: 'wild_boar', name: 'Vigyan Varah', minLevel: 2, maxLevel: 3, family: 'beast',
+    id: 'wild_boar', name: 'Tuskgore Boar', minLevel: 2, maxLevel: 3, family: 'beast',
     subjectTag: 'science',
     hpBase: 34, hpPerLevel: 16, dmgBase: 4, dmgPerLevel: 1.8, attackSpeed: 2.2,
     armorPerLevel: 14, moveSpeed: 7.5, aggroRadius: 9,
-    // Stiff bristles prick anyone who melees the Vigyan Varah.
-    thorns: { value: 2, name: 'Vigyan Kavach' },
+    // Stiff bristles prick anyone who melees the Tuskgore Boar.
+    thorns: { value: 2, name: 'Bristle Guard' },
     loot: [
       { copper: 12, chance: 1 },
       { itemId: 'boar_hide', chance: 0.6, questId: 'q_boars' },
@@ -123,12 +123,12 @@ export const ZONE1_MOBS: Record<string, MobTemplate> = {
     scale: 1.2, color: 0x7b3f13,
   },
   webwood_spider: {
-    id: 'webwood_spider', name: 'Jaal-Makdi', minLevel: 2, maxLevel: 4, family: 'spider',
+    id: 'webwood_spider', name: 'Webwood Spider', minLevel: 2, maxLevel: 4, family: 'spider',
     subjectTag: 'math',
     hpBase: 30, hpPerLevel: 15, dmgBase: 4, dmgPerLevel: 1.7, attackSpeed: 1.8,
     armorPerLevel: 8, moveSpeed: 8, aggroRadius: 10,
-    venom: { chance: 0.35, perTick: 2, interval: 2, duration: 10, name: 'Jaal Vish', school: 'nature' },
-    ensnare: { chance: 0.25, duration: 3, name: 'Jaal Bandhan', school: 'nature' },
+    venom: { chance: 0.35, perTick: 2, interval: 2, duration: 10, name: 'Web Venom', school: 'nature' },
+    ensnare: { chance: 0.25, duration: 3, name: 'Web Snare', school: 'nature' },
     loot: [
       { copper: 14, chance: 1 },
       { itemId: 'webwood_silk', chance: 0.55, questId: 'q_spiders' },
@@ -189,7 +189,7 @@ export const ZONE1_MOBS: Record<string, MobTemplate> = {
     scale: 0.95, color: 0x7b4b2b,
   },
   mudfin_murloc: {
-    id: 'mudfin_murloc', name: 'Bharatiya Makara', minLevel: 3, maxLevel: 5, family: 'murloc',
+    id: 'mudfin_murloc', name: 'Mudfin Snapper', minLevel: 3, maxLevel: 5, family: 'murloc',
     subjectTag: 'geography',
     hpBase: 36, hpPerLevel: 17, dmgBase: 5, dmgPerLevel: 1.9, attackSpeed: 1.9,
     armorPerLevel: 12, moveSpeed: 8, aggroRadius: 13,
@@ -200,10 +200,10 @@ export const ZONE1_MOBS: Record<string, MobTemplate> = {
     ],
     scale: 0.8, color: 0x52be80,
     // River Demon's Hex: briefly confuses a foe with illusion of wrong answer.
-    polymorphHex: { chance: 0.12, duration: 4, name: 'Bhram Jaal', school: 'nature' },
+    polymorphHex: { chance: 0.12, duration: 4, name: 'Bewilder', school: 'nature' },
   },
   tunnel_rat: {
-    id: 'tunnel_rat', name: 'Pariksha Pisach', minLevel: 4, maxLevel: 6, family: 'kobold',
+    id: 'tunnel_rat', name: 'Tunnel Rat', minLevel: 4, maxLevel: 6, family: 'kobold',
     subjectTag: 'general', // Exam Ghost tests all subjects — random per encounter
     hpBase: 42, hpPerLevel: 18, dmgBase: 6, dmgPerLevel: 2.0, attackSpeed: 2.1,
     armorPerLevel: 16, moveSpeed: 7, aggroRadius: 10,
@@ -236,7 +236,7 @@ export const ZONE1_MOBS: Record<string, MobTemplate> = {
     scale: 1.15, color: 0xb9770e,
   },
   vale_bandit: {
-    id: 'vale_bandit', name: 'Adhura Chor', minLevel: 3, maxLevel: 5, family: 'humanoid',
+    id: 'vale_bandit', name: 'Vale Bandit', minLevel: 3, maxLevel: 5, family: 'humanoid',
     subjectTag: 'economics',
     hpBase: 40, hpPerLevel: 18, dmgBase: 5, dmgPerLevel: 2.0, attackSpeed: 2.0,
     armorPerLevel: 20, moveSpeed: 7, aggroRadius: 11,
@@ -247,10 +247,10 @@ export const ZONE1_MOBS: Record<string, MobTemplate> = {
     ],
     scale: 1.0, color: 0x943126,
     // A practiced thug flings a handful of road grit to foul your aim.
-    blind: { chance: 0.25, miss: 0.3, duration: 5, name: 'Dhool Prahaar', school: 'physical' },
+    blind: { chance: 0.25, miss: 0.3, duration: 5, name: 'Dust Strike', school: 'physical' },
   },
   restless_bones: {
-    id: 'restless_bones', name: 'Bhool-Bhoolaiya', minLevel: 5, maxLevel: 7, family: 'undead',
+    id: 'restless_bones', name: 'Restless Bones', minLevel: 5, maxLevel: 7, family: 'undead',
     subjectTag: 'history',
     hpBase: 46, hpPerLevel: 19, dmgBase: 7, dmgPerLevel: 2.1, attackSpeed: 2.3,
     armorPerLevel: 14, moveSpeed: 6.5, aggroRadius: 11,
@@ -261,9 +261,9 @@ export const ZONE1_MOBS: Record<string, MobTemplate> = {
     ],
     scale: 1.0, color: 0xd5dbdb,
     // A forgotten soldier's grave-cold wail saps knowledge from the living.
-    demoralize: { ap: 20, duration: 8, name: 'Gyan Nasha' },
-    // Bhool-Bhoolaiya confusion: a clawing swing may fester creeping amnesia.
-    soulrot: { chance: 0.25, perTick: 4, interval: 3, duration: 12, name: 'Smriti Nasha' },
+    demoralize: { ap: 20, duration: 8, name: 'Mind Drain' },
+    // Restless Bones confusion: a clawing swing may fester creeping amnesia.
+    soulrot: { chance: 0.25, perTick: 4, interval: 3, duration: 12, name: 'Memory Rot' },
   },
   captain_verlan: {
     // A rare named undead champion risen among the ruins' Restless Bones —
