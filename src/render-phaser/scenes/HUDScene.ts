@@ -20,6 +20,7 @@ import {
   HAT_SHOP, PET_SHOP, hatLabel, ownsHat, ownsPet, type CosmeticState,
 } from '../cosmetics';
 import { compositeLpc, lpcReady } from '../lpc_composite';
+import { RESOURCE_DEFS, type ResourceState } from '../resources';
 
 // Circular minimap (top-right): radius + margin from the screen corner.
 const MM_R = 74;
@@ -49,6 +50,9 @@ export class HUDScene extends Scene {
   private shopPanel?: Phaser.GameObjects.Container;
   private shopTab: 'hat' | 'pet' = 'hat';
   private gold = 0;
+
+  // Trading Post (sell gathered resources)
+  private marketPanel?: Phaser.GameObjects.Container;
 
   constructor() {
     super({ key: 'HUDScene', active: false });
@@ -107,6 +111,8 @@ export class HUDScene extends Scene {
     world.events.on(Events.DAILY_CHANGED, this.onDailyChanged, this);
     world.events.on(Events.OPEN_SHOP, () => this.toggleShopPanel(true), this);
     world.events.on(Events.SHOP_CHANGED, () => { if (this.shopPanel) this.buildShopPanel(); }, this);
+    world.events.on(Events.OPEN_MARKET, () => this.toggleMarketPanel(true), this);
+    world.events.on(Events.RESOURCES_CHANGED, () => { if (this.marketPanel) this.buildMarketPanel(); }, this);
 
     // Initial render
     this.onHPUpdate({ hp: 100, maxHp: 100 });
@@ -214,6 +220,7 @@ export class HUDScene extends Scene {
   private onMindCoinsUpdate(coins: number): void {
     this.gold = coins;
     if (this.shopPanel) this.buildShopPanel(); // keep the shop's Gold label live
+    if (this.marketPanel) this.buildMarketPanel();
     this.mindcoinsText.setText(`Gold: ${coins.toLocaleString()}`);
 
     // Small bounce animation
@@ -318,6 +325,16 @@ export class HUDScene extends Scene {
       .setInteractive({ useHandCursor: true })
       .on('pointerdown', () => this.toggleShopPanel());
     this.add.text(cx, sy, 'Cosmetics', {
+      fontSize: '13px', fontFamily: '"Noto Sans", sans-serif', color: '#fde68a', fontStyle: 'bold',
+    }).setOrigin(0.5).setDepth(151).setScrollFactor(0);
+
+    // Trading Post button
+    const my = sy + 34;
+    this.add.rectangle(cx, my, 118, 30, 0x1a1206, 0.92)
+      .setStrokeStyle(2, 0xf59e0b, 1).setDepth(150).setScrollFactor(0)
+      .setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => this.toggleMarketPanel());
+    this.add.text(cx, my, 'Trading Post', {
       fontSize: '13px', fontFamily: '"Noto Sans", sans-serif', color: '#fde68a', fontStyle: 'bold',
     }).setOrigin(0.5).setDepth(151).setScrollFactor(0);
   }
@@ -550,5 +567,65 @@ export class HUDScene extends Scene {
   }
   private shopEquip(kind: 'hat' | 'pet', ref: number | string): void {
     this.scene.get('WorldScene').events.emit(Events.SHOP_EQUIP, { kind, ref });
+  }
+
+  // ---- Trading Post (sell gathered resources) ------------------------------
+
+  private toggleMarketPanel(forceOpen = false): void {
+    if (this.marketPanel && !forceOpen) { this.marketPanel.destroy(); this.marketPanel = undefined; return; }
+    this.buildMarketPanel();
+  }
+
+  private buildMarketPanel(): void {
+    this.marketPanel?.destroy();
+    const res = this.registry.get('resources') as ResourceState | undefined;
+    const cx = this.scale.width / 2, cy = this.scale.height / 2;
+    const W = 380, rowH = 70, H = 96 + RESOURCE_DEFS.length * rowH;
+    const panel = this.add.container(cx, cy).setDepth(320).setScrollFactor(0);
+
+    const bg = this.add.rectangle(0, 0, W, H, 0x140d04, 0.98).setStrokeStyle(3, 0xf59e0b, 1);
+    const title = this.add.text(-W / 2 + 18, -H / 2 + 18, 'Trading Post', {
+      fontSize: '18px', fontFamily: '"Noto Sans", sans-serif', color: '#fde68a', fontStyle: 'bold',
+    }).setOrigin(0, 0.5);
+    const goldT = this.add.text(W / 2 - 38, -H / 2 + 18, `Gold: ${this.gold.toLocaleString()}`, {
+      fontSize: '14px', fontFamily: '"Noto Sans", sans-serif', color: '#fbbf24', fontStyle: 'bold',
+    }).setOrigin(1, 0.5);
+    const close = this.add.text(W / 2 - 14, -H / 2 + 18, '✕', {
+      fontSize: '16px', fontFamily: '"Noto Sans", sans-serif', color: '#f8fafc',
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => { this.marketPanel?.destroy(); this.marketPanel = undefined; });
+    panel.add([bg, title, goldT, close]);
+
+    RESOURCE_DEFS.forEach((d, i) => {
+      const y = -H / 2 + 70 + i * rowH + rowH / 2 - 8;
+      const count = res ? res[d.id] : 0;
+      panel.add(this.add.rectangle(-W / 2 + 32, y, 26, 26, d.color, 1).setStrokeStyle(2, 0x000000, 0.4));
+      panel.add(this.add.text(-W / 2 + 56, y - 9, `${d.label}  ×${count}`, {
+        fontSize: '15px', fontFamily: '"Noto Sans", sans-serif', color: '#f8fafc', fontStyle: 'bold',
+      }).setOrigin(0, 0.5));
+      panel.add(this.add.text(-W / 2 + 56, y + 12, `${d.price} Gold each`, {
+        fontSize: '11px', fontFamily: '"Noto Sans", sans-serif', color: '#fbbf24',
+      }).setOrigin(0, 0.5));
+
+      const has = count > 0;
+      const bx = W / 2 - 78;
+      const btn = this.add.rectangle(bx, y, 128, 34, has ? 0x854d0e : 0x3a2a12, 1)
+        .setStrokeStyle(2, has ? 0xfde68a : 0x6b4a24, 1)
+        .setInteractive({ useHandCursor: true })
+        .on('pointerdown', () => { if (has) this.marketSell(d.id, count); });
+      const bt = this.add.text(bx, y, has ? `Sell all · ${count * d.price}` : 'None', {
+        fontSize: '12px', fontFamily: '"Noto Sans", sans-serif',
+        color: has ? '#fef9c3' : '#8a7a5a', fontStyle: 'bold',
+      }).setOrigin(0.5);
+      panel.add([btn, bt]);
+    });
+
+    panel.setScale(0.7);
+    this.tweens.add({ targets: panel, scale: 1, duration: 200, ease: 'Back.out' });
+    this.marketPanel = panel;
+  }
+
+  private marketSell(kind: 'wood' | 'ore', count: number): void {
+    this.scene.get('WorldScene').events.emit(Events.MARKET_SELL, { kind, count });
   }
 }

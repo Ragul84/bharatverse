@@ -77,6 +77,28 @@ await page.evaluate(() => {
 await sleep(1600);
 await page.screenshot({ path: 'tmp/bv_mine_reward.png' });
 
+// Trading Post: sell gathered Wood/Ore for Gold.
+const goldBefore = await page.evaluate(() => window.__game.scene.getScene('HUDScene').gold);
+await page.evaluate(() => {
+  const ws = window.__game.scene.getScene('WorldScene');
+  const hud = window.__game.scene.getScene('HUDScene');
+  ws.events.emit('market:open');
+  void hud;
+});
+await sleep(500);
+await page.screenshot({ path: 'tmp/bv_market.png' });
+await page.evaluate(() => {
+  const ws = window.__game.scene.getScene('WorldScene');
+  const res = ws.registry.get('resources') || {};
+  if (res.wood > 0) ws.events.emit('market:sell', { kind: 'wood', count: res.wood });
+  if (res.ore > 0) ws.events.emit('market:sell', { kind: 'ore', count: res.ore });
+});
+await sleep(400);
+const goldAfter = await page.evaluate(() => window.__game.scene.getScene('HUDScene').gold);
+console.log('market: gold', goldBefore, '->', goldAfter, goldAfter > goldBefore ? 'SOLD OK' : 'NO SALE');
+await page.screenshot({ path: 'tmp/bv_market_sold.png' });
+await page.evaluate(() => { const h = window.__game.scene.getScene('HUDScene'); if (h.marketPanel) { h.marketPanel.destroy(); h.marketPanel = undefined; } });
+
 // Daily-quest board: open the HUD panel (progress should reflect the chop above).
 await page.evaluate(() => {
   const hud = window.__game.scene.getScene('HUDScene');

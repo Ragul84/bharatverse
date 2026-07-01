@@ -31,6 +31,10 @@ import {
   loadCosmetics, saveCosmetics, petDef,
   type CosmeticState, type PetDef,
 } from '../cosmetics';
+import {
+  loadResources, saveResources, addResource, RESOURCE_DEFS,
+  type ResourceState, type ResourceId,
+} from '../resources';
 
 // ---- Tile constants (roguelikeSheet_transparent.png layout) ----
 // Sheet: 57 cols x 31 rows, each tile 16x16 with 1px margin.
@@ -579,6 +583,25 @@ export class WorldScene extends Scene {
     if (cos.equippedPet) this.spawnPet(cos.equippedPet);
     this.events.on(Events.SHOP_BUY, this.onShopBuy, this);
     this.events.on(Events.SHOP_EQUIP, this.onShopEquip, this);
+
+    // Gathered-resource inventory + Trading Post sales.
+    this.registry.set('resources', loadResources());
+    this.events.on(Events.MARKET_SELL, this.onMarketSell, this);
+  }
+
+  /** Sell gathered resources for Gold at the Trading Post. */
+  private onMarketSell(o: { kind: ResourceId; count: number }): void {
+    const res = this.registry.get('resources') as ResourceState | undefined;
+    if (!res) return;
+    const def = RESOURCE_DEFS.find((d) => d.id === o.kind);
+    const count = Math.min(o.count, res[o.kind]);
+    if (!def || count <= 0) return;
+    const gold = count * def.price;
+    addResource(res, o.kind, -count);
+    saveResources(res);
+    this.addGold(gold);
+    this.emitMsg(`Sold ${count} ${def.label}  ·  +${gold} Gold`);
+    this.events.emit(Events.RESOURCES_CHANGED);
   }
 
   // ---- Cosmetic shop (Gold spend + appearance) ----------------------------
@@ -744,26 +767,27 @@ export class WorldScene extends Scene {
       this.add.image(x, baseY, key).setOrigin(0.5, 1)
         .setDisplaySize(w, h).setDepth(D_ENTITY + baseY);
     };
-    // Village houses (south-west + south-centre)
-    place('ts-house1', 18, 37, TILE_SZ * 2, TILE_SZ * 3);
+    // Village houses (south-west + south-centre). House1 is the Trading Post
+    // where gathered Wood/Ore is sold for Gold.
+    this.placeBuilding('ts-house1', 18, 37, TILE_SZ * 2, TILE_SZ * 3, 'Trading Post', Events.OPEN_MARKET);
     place('ts-house2', 40, 45, TILE_SZ * 2, TILE_SZ * 3);
     // Town (east): a tower, the big castle and a monastery around the plaza
     place('ts-tower', 66, 23, TILE_SZ * 2, TILE_SZ * 4);
     place('ts-castle', 70, 32, TILE_SZ * 5, TILE_SZ * 4);
     // Monastery doubles as the Cosmetics Emporium — click it to open the shop.
-    this.placeShop('ts-monastery', 73, 26, TILE_SZ * 3, TILE_SZ * 3);
+    this.placeBuilding('ts-monastery', 73, 26, TILE_SZ * 3, TILE_SZ * 3, 'Cosmetics Emporium', Events.OPEN_SHOP);
   }
 
-  /** The cosmetic-shop building: a labelled, clickable Tiny Swords sprite. */
-  private placeShop(key: string, col: number, row: number, w: number, h: number): void {
+  /** A labelled, clickable building that opens a panel (shop / market). */
+  private placeBuilding(key: string, col: number, row: number, w: number, h: number, label: string, event: string): void {
     if (!this.textures.exists(key)) return;
     const x = col * TILE_SZ + TILE_SZ / 2;
     const baseY = row * TILE_SZ + TILE_SZ;
     const b = this.add.image(x, baseY, key).setOrigin(0.5, 1)
       .setDisplaySize(w, h).setDepth(D_ENTITY + baseY)
       .setInteractive({ useHandCursor: true });
-    b.on('pointerdown', () => this.events.emit(Events.OPEN_SHOP));
-    this.add.text(x, baseY - h - 4, 'Cosmetics Emporium', {
+    b.on('pointerdown', () => this.events.emit(event));
+    this.add.text(x, baseY - h - 4, label, {
       fontSize: '12px', fontFamily: '"Noto Sans", sans-serif',
       color: '#fde68a', stroke: '#000000', strokeThickness: 3,
     }).setOrigin(0.5, 1).setDepth(D_ENTITY + baseY + 1);
@@ -977,13 +1001,15 @@ export class WorldScene extends Scene {
     const ore = this.gatherKind === 'ore';
     this.gatherNode = undefined;
     if (correct) {
-      const gold = ore ? 8 : 5, xp = 10;
+      const xp = 10;
       if (ore) this.miningXp += xp; else this.woodcuttingXp += xp;
-      this.addGold(gold);
+      // Gathering yields resources; sell them at the Trading Post for Gold.
+      const res = this.registry.get('resources') as ResourceState | undefined;
+      if (res) { addResource(res, ore ? 'ore' : 'wood', 1); saveResources(res); this.events.emit(Events.RESOURCES_CHANGED); }
       this.bumpDaily(ore ? 'answer' : 'chop'); // no dedicated mine daily yet
       this.bumpDaily('answer');
-      this.floatWorldText(node, `+${gold} Gold   +1 ${ore ? 'Ore' : 'Wood'}`, '#fde047');
-      this.emitMsg(`${ore ? 'Mining' : 'Woodcutting'} +${xp} XP`);
+      this.floatWorldText(node, `+1 ${ore ? 'Ore' : 'Wood'}`, '#fde047');
+      this.emitMsg(`${ore ? 'Mining' : 'Woodcutting'} +${xp} XP  ·  sell at the Trading Post`);
       if (node) {
         this.tweens.add({ targets: node, angle: { from: -7, to: 7 }, duration: 70, yoyo: true, repeat: 3, onComplete: () => node.setAngle(0) });
       }

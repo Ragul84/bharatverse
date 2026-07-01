@@ -69,6 +69,13 @@ export const Events = {
   SHOP_BUY: 'shop:buy',
   SHOP_EQUIP: 'shop:equip',
   SHOP_CHANGED: 'shop:changed',
+
+  // Marketplace: building/HUD -> OPEN_MARKET; HUD sell -> MARKET_SELL
+  // ({ kind, count }) to WorldScene (owns Gold + resources); WorldScene ->
+  // RESOURCES_CHANGED so the market + any counters refresh.
+  OPEN_MARKET: 'market:open',
+  MARKET_SELL: 'market:sell',
+  RESOURCES_CHANGED: 'resources:changed',
 } as const;
 
 /**
