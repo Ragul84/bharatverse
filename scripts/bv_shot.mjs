@@ -64,6 +64,23 @@ const p2 = await playerPos();
 console.log('after click-to-move:', JSON.stringify(p2));
 await page.screenshot({ path: 'tmp/bv_after_click.png' });
 
+// Open the entity action menu (Chat / Fight / …) on the nearest mob.
+await page.evaluate(() => {
+  const ws = window.__game.scene.getScene('WorldScene');
+  const w = ws && ws.world;
+  if (!ws || !w) return;
+  const p = w.player;
+  let best = null, bd = 1e9;
+  for (const e of w.entities.values()) {
+    if ((e.kind !== 'mob' && e.kind !== 'npc') || e.dead || e.id === w.playerId) continue;
+    const d = Math.hypot(e.pos.x - p.pos.x, e.pos.z - p.pos.z);
+    if (d < bd) { bd = d; best = e; }
+  }
+  if (best) ws.openEntityMenu(best.id);
+});
+await sleep(500);
+await page.screenshot({ path: 'tmp/bv_menu.png' });
+
 // Drive to find the lake (south) and the town (east) to verify water + buildings.
 const drive = async (key, ms, name) => {
   await page.keyboard.down(key);

@@ -452,6 +452,9 @@ export class WorldScene extends Scene {
   private moveTarget: { x: number; z: number } | null = null;
   private moveMarker!: GameObjects.Graphics;
 
+  // Radial-ish action menu shown when an entity is clicked (Chat / Fight / …).
+  private entityMenu?: GameObjects.Container;
+
   constructor() {
     super({ key: 'WorldScene', active: false });
   }
@@ -517,11 +520,12 @@ export class WorldScene extends Scene {
     this.cameras.main.startFollow(this.playerView.container, true, 0.1, 0.1);
     this.cameras.main.setZoom(1.5);
 
-    // Click-to-move
-    this.input.on('pointerdown', (ptr: Phaser.Input.Pointer) => {
-      const wx = ptr.worldX;
-      const wy = ptr.worldY;
-      const w = pixelToWorld(wx, wy);
+    // Click empty ground to move; clicking an entity (or a menu button) is handled
+    // by that object and must NOT also move or dismiss via this handler.
+    this.input.on('pointerdown', (ptr: Phaser.Input.Pointer, over: Phaser.GameObjects.GameObject[]) => {
+      if (over && over.length > 0) return; // an interactive object was clicked
+      this.closeEntityMenu();
+      const w = pixelToWorld(ptr.worldX, ptr.worldY);
       this.moveTarget = { x: w.x, z: w.z };
     });
 
@@ -658,8 +662,7 @@ export class WorldScene extends Scene {
     // Target ring
     this.updateTargetRing(alpha);
 
-    // Aggro check
-    this.checkAggroEncounters();
+    // Combat is now started intentionally (click a mob -> Fight), not by auto-aggro.
 
     // Zone label
     this.updateZoneLabel();
@@ -741,7 +744,7 @@ export class WorldScene extends Scene {
       let view = this.entityViews.get(id);
       if (!view) {
         view = new EntityView(this, entity, false)
-          .setInteractiveTarget(() => this.world.targetEntity(id));
+          .setInteractiveTarget(() => { this.world.targetEntity(id); this.openEntityMenu(id); });
         this.entityViews.set(id, view);
       }
       view.setPosition(pp.px, pp.py).setDepth(D_ENTITY + pp.py);
@@ -754,6 +757,54 @@ export class WorldScene extends Scene {
         this.entityViews.delete(id);
       }
     }
+  }
+
+  /** Action menu (Chat / Fight / Challenge / Talk) shown above a clicked entity. */
+  private openEntityMenu(id: number): void {
+    this.closeEntityMenu();
+    const e = this.world.entities.get(id);
+    if (!e || e.dead) return;
+
+    interface Act { label: string; color: number; fn: () => void; }
+    const acts: Act[] = [];
+    if (e.kind === 'mob') {
+      acts.push({ label: 'Fight', color: 0xb91c1c, fn: () => this.startCombat(e) });
+      acts.push({ label: 'Inspect', color: 0x3b2a1e, fn: () => this.emitMsg(`${e.name}  ·  Lv ${(e as { level?: number }).level ?? 1}`) });
+    } else if (e.kind === 'npc') {
+      acts.push({ label: 'Talk', color: 0x1d4ed8, fn: () => { this.world.targetEntity(id); this.world.interact(); } });
+      acts.push({ label: 'Chat', color: 0x3b2a1e, fn: () => this.emitMsg(`You greet ${e.name}.`) });
+    } else if (e.kind === 'player') {
+      acts.push({ label: 'Chat', color: 0x1d4ed8, fn: () => this.emitMsg('Namaste!') });
+      acts.push({ label: 'Challenge', color: 0xb91c1c, fn: () => { this.world.duelRequest(id); this.emitMsg(`Challenge sent to ${e.name}.`); } });
+    } else {
+      return; // objects have no menu
+    }
+
+    const pp = worldToPixel(e.pos.x, e.pos.z);
+    const bw = 118, bh = 30, gap = 6;
+    const cont = this.add.container(pp.px, pp.py).setDepth(D_UI);
+    acts.forEach((a, i) => {
+      const by = -72 - (acts.length - 1 - i) * (bh + gap);
+      const r = this.add.rectangle(0, by, bw, bh, a.color, 0.96).setStrokeStyle(2, 0xfde68a, 1)
+        .setInteractive({ useHandCursor: true })
+        .on('pointerover', () => r.setFillStyle(a.color, 1).setScale(1.04))
+        .on('pointerout', () => r.setFillStyle(a.color, 0.96).setScale(1))
+        .on('pointerdown', () => { a.fn(); this.closeEntityMenu(); });
+      const t = this.add.text(0, by, a.label, {
+        fontSize: '13px', fontFamily: '"Noto Sans", sans-serif', color: '#ffffff', fontStyle: 'bold',
+      }).setOrigin(0.5);
+      cont.add([r, t]);
+    });
+    this.entityMenu = cont;
+  }
+
+  private closeEntityMenu(): void {
+    this.entityMenu?.destroy();
+    this.entityMenu = undefined;
+  }
+
+  private emitMsg(text: string): void {
+    this.events.emit(Events.HUD_SHOW_MESSAGE, text);
   }
 
   private checkAggroEncounters(): void {
