@@ -17,17 +17,24 @@ const BAR_X = -BAR_W / 2;
 // Target on-screen height in pixels for entity bodies
 const TARGET_BODY_H = 64;
 
+// Unit pools for variety: a stable per-entity pick (by id) so a crowd of NPCs
+// or mobs isn't a row of identical sprites. All idle+run anims are registered in
+// BootScene; both colours have warrior/archer/lancer/pawn.
+const RED_UNITS = ['warrior', 'archer', 'lancer', 'pawn'];
+const BLUE_UNITS = ['pawn', 'archer', 'lancer', 'warrior'];
+
 /** Pick a Tiny Swords spritesheet key + anim key based on entity kind/class. */
 function tsSpriteKey(e: Entity, moving: boolean): { tex: string; anim: string } | null {
+  const suffix = moving ? 'run' : 'idle';
   if (e.kind === 'mob') {
-    return moving
-      ? { tex: 'ts-red-warrior-run',  anim: 'ts-red-warrior-run'  }
-      : { tex: 'ts-red-warrior-idle', anim: 'ts-red-warrior-idle' };
+    const u = RED_UNITS[Math.abs(e.id) % RED_UNITS.length];
+    const tex = `ts-red-${u}-${suffix}`;
+    return { tex, anim: tex };
   }
   if (e.kind === 'npc') {
-    return moving
-      ? { tex: 'ts-blue-pawn-run',  anim: 'ts-blue-pawn-run'  }
-      : { tex: 'ts-blue-pawn-idle', anim: 'ts-blue-pawn-idle' };
+    const u = BLUE_UNITS[Math.abs(e.id) % BLUE_UNITS.length];
+    const tex = `ts-blue-${u}-${suffix}`;
+    return { tex, anim: tex };
   }
   if (e.kind === 'player') {
     const cls = (e as { class?: string }).class ?? '';
