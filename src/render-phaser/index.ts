@@ -12,6 +12,7 @@
 
 import Phaser, { Types } from 'phaser';
 import { BootScene } from './scenes/BootScene';
+import { CharacterCreatorScene } from './scenes/CharacterCreatorScene';
 import { WorldScene } from './scenes/WorldScene';
 import { CombatScene } from './scenes/CombatScene';
 import { QuizScene } from './scenes/QuizScene';
@@ -91,6 +92,7 @@ export function createPhaserGame(parentElement: HTMLElement): Phaser.Game {
     },
     scene: [
       BootScene,
+      CharacterCreatorScene,
       WorldScene,
       CombatScene,
       QuizScene,

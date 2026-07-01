@@ -95,11 +95,13 @@ export class BootScene extends Scene {
     // rows). Composited into several 'lpc-hero-N' outfit presets in create() so
     // characters vary and animate 4-directional walk cycles (rows 8-11).
     const lpcLayerFiles: Record<string, string> = {
-      'lpc-body': 'body_male',
+      'lpc-body': 'body_male', 'lpc-body-tanned': 'body_tanned', 'lpc-body-dark': 'body_dark',
       'lpc-torso-white': 'torso_male', 'lpc-torso-brown': 'torso_brown', 'lpc-torso-maroon': 'torso_maroon',
       'lpc-legs-teal': 'legs_male', 'lpc-legs-red': 'legs_red', 'lpc-legs-white': 'legs_white',
       'lpc-feet-brown': 'feet_male', 'lpc-feet-black': 'feet_black',
       'lpc-hair-brown': 'hair_male', 'lpc-hair-black': 'hair_black', 'lpc-hair-blonde': 'hair_blonde',
+      'lpc-hair-white': 'hair_plain_white', 'lpc-hair-messy': 'hair_messy_brown',
+      'lpc-hair-mohawk': 'hair_mohawk_black', 'lpc-hair-long': 'hair_long_brown',
     };
     for (const [key, file] of Object.entries(lpcLayerFiles)) {
       this.load.spritesheet(key, `assets/lpc/${file}.png`, { frameWidth: 64, frameHeight: 64 });
@@ -179,32 +181,8 @@ export class BootScene extends Scene {
       }
     }
 
-    // Composite the LPC layers into distinct outfit presets (lpc-hero-0..N), each
-    // a fully-dressed character (13x21 layout, 4-direction walk on rows 8-11).
-    const lpcPresets: string[][] = [
-      ['lpc-body', 'lpc-legs-teal',  'lpc-feet-brown', 'lpc-torso-white',  'lpc-hair-brown'],
-      ['lpc-body', 'lpc-legs-red',   'lpc-feet-black', 'lpc-torso-brown',  'lpc-hair-black'],
-      ['lpc-body', 'lpc-legs-white', 'lpc-feet-brown', 'lpc-torso-maroon', 'lpc-hair-blonde'],
-      ['lpc-body', 'lpc-legs-red',   'lpc-feet-black', 'lpc-torso-white',  'lpc-hair-black'],
-      ['lpc-body', 'lpc-legs-teal',  'lpc-feet-brown', 'lpc-torso-brown',  'lpc-hair-blonde'],
-      ['lpc-body', 'lpc-legs-white', 'lpc-feet-black', 'lpc-torso-maroon', 'lpc-hair-brown'],
-    ];
-    if (this.textures.exists('lpc-body')) {
-      lpcPresets.forEach((layers, i) => {
-        const key = `lpc-hero-${i}`;
-        if (this.textures.exists(key)) return;
-        const canvas = document.createElement('canvas');
-        canvas.width = 832; canvas.height = 1344;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-        for (const layer of layers) {
-          if (this.textures.exists(layer)) {
-            ctx.drawImage(this.textures.get(layer).getSourceImage() as CanvasImageSource, 0, 0);
-          }
-        }
-        this.textures.addSpriteSheet(key, canvas as unknown as HTMLImageElement, { frameWidth: 64, frameHeight: 64 });
-      });
-    }
+    // LPC outfits are now composited on demand per character (see lpc_composite.ts):
+    // the player's from the character creator, NPCs/mobs from a per-id random config.
 
     // Cache question bank into registry for all scenes to access
     const questions = this.cache.json.get('questions_sample');
@@ -215,9 +193,16 @@ export class BootScene extends Scene {
     this.registry.set('playerXp', 0);
     this.registry.set('playerClass', 'arjuna'); // default, overridden at char select
 
-    // Small delay so player can read the "Enter the Realm" text
+    // Load any saved appearance so the creator opens pre-filled.
+    try {
+      const saved = localStorage.getItem('bv_customization');
+      if (saved) this.registry.set('customization', JSON.parse(saved));
+    } catch { /* ignore */ }
+
+    // Small delay so player can read the "Enter the Realm" text, then the
+    // character creator (which starts WorldScene once appearance is confirmed).
     this.time.delayedCall(600, () => {
-      this.scene.start('WorldScene');
+      this.scene.start(this.textures.exists('lpc-body') ? 'CharacterCreatorScene' : 'WorldScene');
     });
   }
 }

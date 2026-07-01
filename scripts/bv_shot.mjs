@@ -37,6 +37,15 @@ await sleep(200);
 await clickById('btn-start-offline');
 await sleep(9000); // let the world + sprites load (real PNGs are ~1MB each)
 
+// Character creator now sits between boot and world — capture it, then advance.
+await page.screenshot({ path: 'tmp/bv_creator.png' });
+await page.evaluate(() => {
+  const g = window.__game;
+  const cc = g && g.scene.getScene('CharacterCreatorScene');
+  if (cc && cc.scene.isActive()) g.scene.start('WorldScene');
+});
+await sleep(2500);
+
 await page.screenshot({ path: 'tmp/bv_spawn.png' });
 const globals = await page.evaluate(() => Object.keys(window).filter((k) => k.startsWith('__') || k === 'game'));
 console.log('globals:', JSON.stringify(globals));
