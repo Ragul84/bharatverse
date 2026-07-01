@@ -20,6 +20,8 @@ three.js water normal maps (MIT). Attribution is provided as a courtesy.
 | LPC hat cosmetics (`public/assets/lpc/cosmetics/*` — crown, tiara, tophat, wizard/scholar, feather_cap, bandana) worn in the Cosmetics Emporium | Liberated Pixel Cup contributors (via Universal-LPC-Spritesheet-Character-Generator) | https://github.com/sanderfrenken/Universal-LPC-Spritesheet-Character-Generator | **CC-BY-SA 3.0 / GPL 3.0** |
 | Pet follower sprites — birds (`public/assets/lpc/pets/bird_*`) | bluecarrot16 (LPC Birds) | https://opengameart.org/content/lpc-birds | **CC-BY-SA 3.0 / GPL 3.0** |
 | Pet follower sprites — cats (`public/assets/lpc/pets/cat_*`, 32×48 walk) | Shepy (OpenGameArt "Cats") | https://opengameart.org/content/cats | **CC-BY-SA 3.0** |
+| Monster sheet — skeleton (`public/assets/lpc/mobs/skeleton.png`, undead-family mobs) | LPC contributors (OpenGameArt "LPC Skeleton") | https://opengameart.org/content/lpc-skeleton | **CC-BY-SA 3.0 / GPL 3.0** |
+| Monster sheet — spider (`public/assets/lpc/mobs/spider.png`, spider-family mobs) | LPC contributors (OpenGameArt "LPC Spider") | https://opengameart.org/content/lpc-spider | **CC-BY-SA 3.0 / GPL 3.0** |
 | Terrain PBR textures (Grass001, Ground048, Rock051, Ground071, Ground080, PavingStones046, Snow010A) | ambientCG | https://ambientcg.com | CC0 1.0 |
 | HDRI environment maps (kloofendal_48d_partly_cloudy_puresky, belfast_open_field, kiara_1_dawn, dikhololo_night) | Poly Haven | https://polyhaven.com | CC0 1.0 |
 | Water normal maps (waternormals.jpg, Water_1/2_M_Normal.jpg) | three.js authors | https://github.com/mrdoob/three.js (r165, examples/textures) | MIT |

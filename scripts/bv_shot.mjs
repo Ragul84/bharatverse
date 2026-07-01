@@ -167,6 +167,34 @@ const drive = async (key, ms, name) => {
 await drive('ArrowDown', 7000, 'bv_south');
 await drive('ArrowRight', 8000, 'bv_east');
 await drive('ArrowRight', 8000, 'bv_east2');
+
+// Monster art: teleport next to a spider- and an undead-family mob to verify
+// they render as real creatures (not red-tinted humans).
+for (const [tag, ids] of [
+  ['spider', ['webwood_spider', 'sableweb_matriarch', 'sableweb_hatchling']],
+  ['undead', ['restless_bones', 'captain_verlan']],
+]) {
+  const found = await page.evaluate((ids) => {
+    const ws = window.__game.scene.getScene('WorldScene');
+    const hud = window.__game.scene.getScene('HUDScene');
+    if (ws.closeEntityMenu) ws.closeEntityMenu();
+    if (hud && hud.closeDuelPrompt) hud.closeDuelPrompt();
+    const w = ws && ws.world;
+    if (!w) return null;
+    for (const e of w.entities.values()) {
+      if (e.kind === 'mob' && !e.dead && ids.includes(e.templateId)) {
+        const nx = e.pos.x + 1.5, nz = e.pos.z + 1.2;
+        w.player.pos.x = nx; w.player.pos.z = nz;
+        if (w.player.prevPos) { w.player.prevPos.x = nx; w.player.prevPos.z = nz; }
+        return { name: e.name, tid: e.templateId };
+      }
+    }
+    return null;
+  }, ids);
+  await sleep(1100);
+  await page.screenshot({ path: `tmp/bv_mob_${tag}.png` });
+  console.log(`${tag} mob:`, JSON.stringify(found));
+}
 // Launch the CombatScene directly with test data (via the dev __game handle).
 await page.evaluate(() => {
   const g = window.__game;

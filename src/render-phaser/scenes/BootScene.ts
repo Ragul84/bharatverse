@@ -120,6 +120,11 @@ export class BootScene extends Scene {
     for (const cat of ['cat_orange', 'cat_black']) {
       this.load.spritesheet(`pet-${cat}`, `assets/lpc/pets/${cat}.png`, { frameWidth: 32, frameHeight: 48 });
     }
+    // Monster sheets (real creature art per mob family, replacing red-tinted
+    // humans). Skeleton is the standard 13-wide LPC humanoid layout; spider is a
+    // 10-wide top-down grid (dir rows 0-3 + a death row).
+    this.load.spritesheet('mob-skeleton', 'assets/lpc/mobs/skeleton.png', { frameWidth: 64, frameHeight: 64 });
+    this.load.spritesheet('mob-spider', 'assets/lpc/mobs/spider.png', { frameWidth: 64, frameHeight: 64 });
 
     // Tiny Swords water tile (64x64) + sand tilemap for shores
     this.load.image('ts-water', 'assets/tiny-swords/terrain/water_bg.png');

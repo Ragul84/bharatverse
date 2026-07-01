@@ -11,6 +11,7 @@ import { archetypeFor } from './character_archetype';
 import { CHAR_H } from './character_sprites';
 import { resolveCharacterTexture } from './bv_assets';
 import { compositeLpc, randomConfig, lpcReady, type LpcConfig } from './lpc_composite';
+import { mobSheetFor, mobFrame, type MobSheet } from './mob_sprites';
 
 const BAR_W = 32;
 const BAR_X = -BAR_W / 2;
@@ -83,16 +84,26 @@ export class EntityView {
   // driven by 4-directional frames (rows 8-11) instead of Tiny Swords anims.
   private useLpc = false;
   private isPlayer = false;
+  // When set, this mob renders from a dedicated creature sheet (skeleton/spider)
+  // instead of the tinted LPC human.
+  private mobSheet?: MobSheet;
 
   constructor(scene: Scene, e: Entity, isPlayer: boolean) {
     this.isPlayer = isPlayer;
     // Prefer the composited LPC character (top-down, 4-directional walk); fall
     // back to Tiny Swords animated units, then procedural/_v3 art.
     this.useLpc = lpcReady(scene);
+    // Mobs with dedicated creature art use their own sheet, not the LPC human.
+    if (this.useLpc) {
+      const ms = mobSheetFor(e);
+      if (ms && scene.textures.exists(ms.key)) this.mobSheet = ms;
+    }
     const tsInfo = this.useLpc ? null : tsSpriteKey(e, false);
     let useSprite = false;
     let texKey: string;
-    if (this.useLpc) {
+    if (this.mobSheet) {
+      texKey = this.mobSheet.key;
+    } else if (this.useLpc) {
       // Player: creator appearance + the currently equipped cosmetic hat. Others:
       // a stable random config by id (no hat), so the crowd varies.
       const cfg = isPlayer
@@ -109,7 +120,11 @@ export class EntityView {
 
     this.body = scene.add.sprite(0, 0, texKey);
 
-    if (this.useLpc) {
+    if (this.mobSheet) {
+      this.body.setFrame(mobFrame(this.mobSheet, e, false, 0));
+      this.body.setOrigin(0.5, 0.9)
+        .setScale(this.mobSheet.scale * Math.max(0.7, e.scale || 1));
+    } else if (this.useLpc) {
       this.body.setFrame(this.lpcFrame(e, false));
       this.body.setOrigin(0.5, 0.92)
         .setScale((isPlayer ? 1.5 : 1.35) * Math.max(0.7, e.scale || 1));
@@ -164,7 +179,12 @@ export class EntityView {
     const speed = Math.hypot(e.vx, e.vz);
     const moving = speed > 0.15 && !e.dead;
 
-    if (this.useLpc) {
+    if (this.mobSheet) {
+      // Real creature art — animate the walk cycle; no red tint needed.
+      this.body.setFrame(mobFrame(this.mobSheet, e, moving, this.body.scene.time.now));
+      if (e.dead) { this.body.setTint(0x888888); this.shadow.setVisible(false); }
+      else { this.body.clearTint(); this.shadow.setVisible(true); }
+    } else if (this.useLpc) {
       // LPC: pick the frame for the current 4-direction facing + walk cycle.
       this.body.setFrame(this.lpcFrame(e, moving));
       if (e.dead) { this.body.setTint(0x4b5563); this.shadow.setVisible(false); }
