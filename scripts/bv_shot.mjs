@@ -98,6 +98,18 @@ await page.evaluate(() => { const h = window.__game.scene.getScene('HUDScene'); 
 await page.evaluate(() => window.__game.scene.getScene('WorldScene').events.emit('theatre:open'));
 await sleep(1800);
 console.log('theatre overlay present:', await page.evaluate(() => !!document.getElementById('bv-theatre')));
+// Sit in the first free seat.
+const seated = await page.evaluate(() => {
+  const free = document.querySelector('#bv-theatre button[data-seat]');
+  const btns = Array.from(document.querySelectorAll('#bv-theatre button[data-seat]'));
+  const pick = btns.find((b) => b.title && b.title.startsWith('Sit in'));
+  if (pick) pick.click();
+  void free;
+  const s = document.getElementById('bv-seat-status');
+  return s ? s.textContent : null;
+});
+console.log('seat status:', JSON.stringify(seated));
+await sleep(300);
 await page.screenshot({ path: 'tmp/bv_theatre.png' });
 await page.evaluate(() => { const o = document.getElementById('bv-theatre'); if (o) o.remove(); });
 
