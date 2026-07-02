@@ -57,10 +57,21 @@ void assetsReady()
        keep falling back to the class crest. */
   });
 
+// Set once if WebGL context creation fails, so we don't retry (and spam errors /
+// exhaust GL driver options) on every portrait call — which can leave WebGL
+// unavailable for the Phaser client, forcing it into the blurry Canvas renderer.
+let rigFailed = false;
+
 function ensureRig(): void {
-  if (renderer) return;
+  if (renderer || rigFailed) return;
   const canvas = document.createElement('canvas');
-  renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, preserveDrawingBuffer: true });
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, preserveDrawingBuffer: true });
+  } catch {
+    rigFailed = true;
+    renderer = null;
+    return;
+  }
   renderer.setPixelRatio(1);
   renderer.setSize(PORTRAIT_SIZE, PORTRAIT_SIZE, false);
   renderer.shadowMap.enabled = false;
@@ -100,11 +111,12 @@ export function visualPortraitDataUrl(visualKey: string, skin = 0): string | nul
   const key = `${visualKey}:${skin}`;
   const cached = cache.get(key);
   if (cached) return cached;
-  if (!assetsAreReady) return null;
+  if (!assetsAreReady || rigFailed) return null;
 
   let visual: CharacterVisual | null = null;
   try {
     ensureRig();
+    if (!renderer) return null; // WebGL unavailable — fall back to the class crest
     visual = new CharacterVisual(visualKey, 0xffffff, skin);
     mount!.add(visual.root);
     mount!.rotation.y = 0;
