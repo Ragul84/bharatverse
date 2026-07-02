@@ -124,6 +124,10 @@ const D_UI       = 100000;
 // Click-to-move arrival radius
 const ARRIVE_PX = 8;
 
+// Player-controlled camera zoom range (wheel + pinch).
+const ZOOM_MIN = 1.2;
+const ZOOM_MAX = 4.5;
+
 // Important buildings to highlight on the minimap, as [col, row] map anchors.
 export const MM_LANDMARKS: [number, number][] = [[18, 37], [40, 45], [66, 23], [70, 32], [73, 26]];
 
@@ -450,6 +454,7 @@ export class WorldScene extends Scene {
   private petSprite?: GameObjects.Sprite;
   private petMeta?: PetDef;
   private petPx = 0; private petPy = 0;
+  private pinchDist = 0; // last two-finger distance, for touch pinch-zoom
 
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private wasd!: {
@@ -540,12 +545,18 @@ export class WorldScene extends Scene {
     const mapPxW = MAP_W * TILE_SZ;
     const mapPxH = MAP_H * TILE_SZ;
     this.cameras.main.setBounds(0, 0, mapPxW, mapPxH);
-    // The canvas backs the DEVICE pixel grid (width = window×dpr), so pick an
-    // INTEGER zoom that frames ~16 tiles across — spacious kintara-style view and
-    // crisp (integer = exact pixel multiples). Bigger/hi-DPI screens still show a
-    // similar amount of world, just at higher resolution.
+    // The canvas backs the DEVICE pixel grid (width = window×dpr). Frame ~12 tiles
+    // across for a kintara-style but not-too-distant view; the player can zoom with
+    // the mousepad wheel or a touch pinch (see below).
     this.cameras.main.startFollow(this.playerView.container, true, 0.1, 0.1);
-    this.cameras.main.setZoom(Math.max(1, Math.round(this.scale.width / (TILE_SZ * 16))));
+    this.cameras.main.setZoom(Phaser.Math.Clamp(this.scale.width / (TILE_SZ * 12), ZOOM_MIN, ZOOM_MAX));
+
+    // Mousepad / mouse wheel zoom (a laptop two-finger scroll or pinch arrives as
+    // a wheel event).
+    this.input.on('wheel', (_p: unknown, _o: unknown, _dx: number, dy: number) => {
+      const cam = this.cameras.main;
+      cam.setZoom(Phaser.Math.Clamp(cam.zoom * (dy > 0 ? 0.9 : 1.1), ZOOM_MIN, ZOOM_MAX));
+    });
 
     // Click empty ground to move; clicking an entity (or a menu button) is handled
     // by that object and must NOT also move or dismiss via this handler.
@@ -798,6 +809,19 @@ export class WorldScene extends Scene {
   update(): void {
     const events = this.bridge ? this.bridge.drain() : [];
     if (events.length) this.events.emit(Events.SIM_EVENTS, events);
+
+    // Touch pinch-to-zoom (two fingers).
+    const p1 = this.input.pointer1, p2 = this.input.pointer2;
+    if (p1?.isDown && p2?.isDown) {
+      const d = Phaser.Math.Distance.Between(p1.x, p1.y, p2.x, p2.y);
+      if (this.pinchDist > 0 && d > 0) {
+        const cam = this.cameras.main;
+        cam.setZoom(Phaser.Math.Clamp(cam.zoom * (d / this.pinchDist), ZOOM_MIN, ZOOM_MAX));
+      }
+      this.pinchDist = d;
+    } else {
+      this.pinchDist = 0;
+    }
 
     if (this.inCombat) return;
 

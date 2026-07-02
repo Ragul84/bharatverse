@@ -91,8 +91,10 @@ export const Events = {
  * at native resolution and stays crisp. Done once, globally, before any Text.
  */
 function patchTextResolutionForDpi(): void {
-  const dpr = Math.min(4, Math.max(1, Math.round(window.devicePixelRatio || 1)));
-  if (dpr <= 1) return;
+  // World-space text (nameplates) is drawn at device pixels AND further scaled by
+  // the camera zoom (2-3x), so its bitmap must be rendered at ~dpr + a zoom margin
+  // to stay crisp. HUD text (no zoom) is just over-resolved, which is fine.
+  const res = Math.min(4, Math.max(2, Math.round(window.devicePixelRatio || 1) + 1));
   const proto = Phaser.GameObjects.TextStyle.prototype as unknown as {
     setStyle: (style: Record<string, unknown>, updateText?: boolean, setDefaults?: boolean) => unknown;
     __dpiPatched?: boolean;
@@ -101,7 +103,7 @@ function patchTextResolutionForDpi(): void {
   const orig = proto.setStyle;
   proto.setStyle = function (style, updateText, setDefaults) {
     const s = style ? { ...style } : {};
-    if (s.resolution == null) s.resolution = dpr;
+    if (s.resolution == null) s.resolution = res;
     return orig.call(this, s, updateText, setDefaults);
   };
   proto.__dpiPatched = true;
