@@ -3364,11 +3364,35 @@
     inset: 0;
     z-index: -1;
     overflow: hidden;
-    background: url('/bharatverse-logo.png') no-repeat center center;
+    /* The art doubles as the logo (title baked in), so darken it heavily —
+       especially the top — so it reads as cinematic ambiance behind the crisp
+       foreground logo + menu, not a second competing title. */
+    background:
+      linear-gradient(180deg,
+        rgba(6,5,14,0.97) 0%, rgba(6,5,14,0.94) 32%,
+        rgba(6,5,14,0.52) 52%, rgba(6,5,14,0.72) 80%, rgba(6,5,14,0.96) 100%),
+      url('/bharatverse-logo.png') no-repeat center center;
     background-size: cover;
   }
   .bg-trailer, .portal-ring, .portal-ring-reverse, .nebula-overlay, .homepage-header, .homepage-footer {
     display: none !important;
+  }
+  /* Crisp centered brand logo (the art itself carries the title). */
+  .main-logo {
+    display: block;
+    width: min(46vw, 300px);
+    height: auto;
+    margin: clamp(24px, 7vh, 84px) auto 8px;
+    border-radius: 18px;
+    box-shadow: 0 18px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(245,158,11,0.25);
+  }
+  /* #mode-select is just a centering wrapper — the glass console below is the
+     card, so drop its own panel box to avoid a double frame. */
+  #mode-select {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
   }
   .kintara-console {
     display: flex;
