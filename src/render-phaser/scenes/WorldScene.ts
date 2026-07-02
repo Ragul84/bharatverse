@@ -35,7 +35,6 @@ import {
   loadResources, saveResources, addResource, RESOURCE_DEFS,
   type ResourceState, type ResourceId,
 } from '../resources';
-import { openTheatre } from '../theatre';
 import {
   loadSkills, saveSkills, addSkillXp, levelForXp, gatherBonus,
   type SkillState,
@@ -593,11 +592,13 @@ export class WorldScene extends Scene {
       this.emitMsg(`Daily complete!  +${r.gold} Gold`);
     }, this);
 
-    // Learning Theatre: pause world input while the video overlay is open.
+    // Learning Theatre: enter the cinema interior (its own scene). Pause the world
+    // + hide the HUD while inside; TheatreScene wakes them on Leave.
     this.events.on(Events.OPEN_THEATRE, () => {
       this.cancelGather();
-      this.input.keyboard!.enabled = false;
-      openTheatre(() => { this.input.keyboard!.enabled = true; });
+      this.scene.sleep('HUDScene');
+      this.scene.launch('TheatreScene');
+      this.scene.pause();
     }, this);
 
     // Cosmetic shop: shared state in the registry; WorldScene owns Gold + look.

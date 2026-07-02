@@ -17,6 +17,7 @@ import { WorldScene } from './scenes/WorldScene';
 import { CombatScene } from './scenes/CombatScene';
 import { QuizScene } from './scenes/QuizScene';
 import { HUDScene } from './scenes/HUDScene';
+import { TheatreScene } from './scenes/TheatreScene';
 
 /** Base logical resolution - scales to fill device screen. Higher than the
  *  display of most laptops so the FIT scaler downscales (crisp) rather than
@@ -156,6 +157,7 @@ export function createPhaserGame(parentElement: HTMLElement): Phaser.Game {
       CombatScene,
       QuizScene,
       HUDScene,
+      TheatreScene,
     ],
     // Crisp pixel-art rendering: the world (Kenney 16px tiles) and characters
     // (Tiny Swords pixel sprites) are pixel art, so nearest-neighbor sampling

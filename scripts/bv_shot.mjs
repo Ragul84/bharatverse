@@ -94,24 +94,13 @@ console.log('market: gold', goldBefore, '->', goldAfter, goldAfter > goldBefore 
 await page.screenshot({ path: 'tmp/bv_market_sold.png' });
 await page.evaluate(() => { const h = window.__game.scene.getScene('HUDScene'); if (h.marketPanel) { h.marketPanel.destroy(); h.marketPanel = undefined; } });
 
-// Learning Theatre overlay (DOM): open it and capture.
+// Learning Theatre interior (its own scene): enter, capture, leave.
 await page.evaluate(() => window.__game.scene.getScene('WorldScene').events.emit('theatre:open'));
-await sleep(1800);
-console.log('theatre overlay present:', await page.evaluate(() => !!document.getElementById('bv-theatre')));
-// Sit in the first free seat.
-const seated = await page.evaluate(() => {
-  const free = document.querySelector('#bv-theatre button[data-seat]');
-  const btns = Array.from(document.querySelectorAll('#bv-theatre button[data-seat]'));
-  const pick = btns.find((b) => b.title && b.title.startsWith('Sit in'));
-  if (pick) pick.click();
-  void free;
-  const s = document.getElementById('bv-seat-status');
-  return s ? s.textContent : null;
-});
-console.log('seat status:', JSON.stringify(seated));
-await sleep(300);
+await sleep(1600);
+console.log('theatre scene active:', await page.evaluate(() => window.__game.scene.isActive('TheatreScene')));
 await page.screenshot({ path: 'tmp/bv_theatre.png' });
-await page.evaluate(() => { const o = document.getElementById('bv-theatre'); if (o) o.remove(); });
+await page.evaluate(() => { const t = window.__game.scene.getScene('TheatreScene'); if (t && t.leave) t.leave(); });
+await sleep(500);
 
 // Subject Mastery panel + verify gather XP was tracked.
 console.log('skills xp:', await page.evaluate(() => JSON.stringify(window.__game.scene.getScene('WorldScene').registry.get('skills'))));
