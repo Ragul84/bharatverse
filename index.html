@@ -5440,20 +5440,39 @@
   .char-preview-container {
     width: 100%;
     height: 240px;
-    background: rgba(0, 0, 0, 0.4);
+    background: radial-gradient(ellipse at 50% 32%, #241a33 0%, #0d0a16 78%);
     border: 2px solid var(--color-border-default);
     border-radius: var(--radius-md);
     position: relative;
     overflow: hidden;
     box-sizing: border-box;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* The live 3D turntable is retired on the 2D client; the box now reads as an
+     intentional placeholder (the real look is customised in the Hero Creator). */
+  .char-preview-container::after {
+    content: '✦  Your hero is customised in the next step';
+    color: rgba(245, 158, 11, 0.6);
+    font-family: var(--font-heading);
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    text-align: center;
+    padding: 0 24px;
   }
 
   .char-preview-container canvas {
     display: block;
+    position: absolute;
+    inset: 0;
     width: 100% !important;
     height: 100% !important;
   }
+
+  /* Broken 3D portrait thumbnails on the class buttons -> hide, keep clean labels. */
+  .mini-class-portrait { display: none !important; }
 
   .char-input-group {
     position: relative;
