@@ -4,6 +4,29 @@ Kintara's loop reworked so it makes sense for an **educational** MMO where
 **active recall is the power** (there are no axes — *your knowledge is the tool*).
 This is the reference the client should converge on.
 
+## CORE RULE: recall is a multiplier, never per-action friction (updated)
+Gating every single tree-chop / rock-hit behind a question is exhausting and kills
+flow. **Gathering is engaging click-and-gather** (click node → progress bar →
+materials, kintara-style). **Recall lives where it's genuinely fun and meaningful:**
+- **Combat** — quiz-powered attacks (a deliberate encounter, not spam).
+- **Study Hall** — an opt-in focused quiz session that raises Subject Mastery tiers.
+- **Daily challenges** — answer N questions for big Gold/badges.
+- **Focus buff** — optionally answer one question to get a timed "focus" that
+  multiplies the NEXT run of gathers (2× yield/XP for ~30s). Fully optional, never
+  blocks a swing.
+- **Theatre** — passive learning (auto-playing educational videos).
+So knowledge is the **multiplier and destination**, not a toll on every click.
+
+## Extra pillars requested (2026-07-02)
+- **Universal chat** — a global channel everyone shares (kintara-style), always
+  visible bottom-left. (Multiplayer → server; offline shows a local/system feed.)
+- **Movie Theatre** — a cinema building with **limited seats**; sit to watch a big
+  screen **auto-playing English-only educational YouTube videos, 6am–9pm**. The
+  screen sits at an in-world angle (you can't read it fully) → a **Fullscreen**
+  button takes over the screen for real viewing. A shared learning hangout.
+- **Modern, professional layouts** — landing page, character select, and every
+  HUD/panel redesigned to kintara.gg-level polish.
+
 ## The one reframe that drives everything
 | Kintara | Bharatverse |
 |---|---|
@@ -67,12 +90,16 @@ One coherent map, three bands (safe → practice → challenge), matching NCERT 
 - Click mob → quiz-combat (have). **Damage = base × answer-quality × Combat-Mastery tier.** Faster/correct = crit. Mobs scale by zone tier. **No armor** (kintara parity) — cosmetics never change damage (matches our shop promise).
 - **Quiz Duels** (PvP): two players answer the same question; faster-correct deals damage. Frontier only.
 
-## Build sequence (each shippable on its own)
-1. **Mastery that matters** — make tracked Woodcutting/Mining/Combat XP level up and boost yield/damage + a HUD skill readout. *(Highest value; unlocks the whole progression feel; self-contained.)*
-2. **Study Hall building** — spend materials+Gold to raise a mastery tier (our anvil). Gives materials a purpose beyond selling.
-3. **Town hub polish** — Guru tutorial NPC + Chai Stall heal + Library Locker (bank). Makes Vidya Nagar read like Mainland.
-4. **Fishing** (3rd gather skill) + **zone tiers** (Practice vs Frontier question difficulty).
-5. **Quiz Duels** (PvP) + Frontier risk/reward.
+## Build sequence (revised 2026-07-02, each shippable on its own)
+1. **Gathering rework** — click node → progress-bar gather → materials + Mastery XP,
+   **no per-swing quiz**. Foundational; makes the core loop feel like kintara. ← FIRST
+2. **Mastery that matters** — that XP now levels up and boosts yield/damage; HUD skill readout.
+3. **Movie Theatre** — cinema building, limited seats, angled screen auto-playing
+   English educational YouTube videos 6am–9pm, Fullscreen button.
+4. **Modern layouts** — redesign landing page + character select + HUD to kintara-grade polish.
+5. **Universal chat** — global channel (server-backed online; local feed offline).
+6. **Study Hall** (mastery upgrades / focus buff) + **Guru/Chai/Library** hub buildings.
+7. **Fishing** + **zone tiers**; then **Quiz Duels (PvP)** + Frontier risk/reward.
 
 ## Non-negotiables (keep)
 - Recall stays the core input (no literal tools/axes).

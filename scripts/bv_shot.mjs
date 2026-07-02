@@ -49,32 +49,27 @@ await sleep(2500);
 await page.screenshot({ path: 'tmp/bv_spawn.png' });
 
 // Gathering: chop a tree -> quiz -> answer -> reward.
+// Woodcutting: click a tree -> progress bar runs -> auto-award Wood (no quiz).
 await page.evaluate(() => {
   const ws = window.__game.scene.getScene('WorldScene');
   const tree = ws.children.list.find((o) => o.type === 'Image' && o.input && o.input.enabled && o.displayWidth > 70);
   if (tree && ws.startGather) ws.startGather(tree);
 });
-await sleep(800);
-await page.screenshot({ path: 'tmp/bv_gather_quiz.png' });
-await page.evaluate(() => {
-  const q = window.__game.scene.getScene('QuizScene');
-  if (q && q.scene.isActive() && q.data_) q.selectOption(q.data_.question.correct);
-});
-await sleep(1700);
-await page.screenshot({ path: 'tmp/bv_gather_reward.png' });
+await sleep(700);
+await page.screenshot({ path: 'tmp/bv_gather_progress.png' }); // mid-gather (progress bar)
+await sleep(900);
+await page.screenshot({ path: 'tmp/bv_gather_reward.png' });   // after first Wood
+await page.evaluate(() => { const ws = window.__game.scene.getScene('WorldScene'); ws.cancelGather && ws.cancelGather(); });
 
-// Mining: click a rock node -> quiz -> answer -> ore reward.
+// Mining: click a rock node -> progress -> auto-award Ore (no quiz).
 await page.evaluate(() => {
   const ws = window.__game.scene.getScene('WorldScene');
   const rock = ws.children.list.find((o) => o.type === 'Image' && o.input && o.input.enabled && o.displayWidth > 30 && o.displayWidth < 48);
   if (rock && ws.startGather) ws.startGather(rock, 'ore');
 });
-await sleep(700);
-await page.evaluate(() => {
-  const q = window.__game.scene.getScene('QuizScene');
-  if (q && q.scene.isActive() && q.data_) q.selectOption(q.data_.question.correct);
-});
-await sleep(1600);
+await sleep(1700);
+const gathered = await page.evaluate(() => { const ws = window.__game.scene.getScene('WorldScene'); ws.cancelGather && ws.cancelGather(); return ws.registry.get('resources'); });
+console.log('gathered resources:', JSON.stringify(gathered));
 await page.screenshot({ path: 'tmp/bv_mine_reward.png' });
 
 // Trading Post: sell gathered Wood/Ore for Gold.

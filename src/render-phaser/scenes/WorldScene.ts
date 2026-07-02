@@ -479,6 +479,8 @@ export class WorldScene extends Scene {
   private gathering = false;
   private gatherNode?: GameObjects.Image;
   private gatherKind: 'wood' | 'ore' = 'wood';
+  private gatherTween?: Phaser.Tweens.Tween;
+  private gatherBar?: GameObjects.Graphics;
   private gold = 0;
   private woodcuttingXp = 0;
   private miningXp = 0;
@@ -563,6 +565,7 @@ export class WorldScene extends Scene {
     this.input.on('pointerdown', (ptr: Phaser.Input.Pointer, over: Phaser.GameObjects.GameObject[]) => {
       if (over && over.length > 0) return; // an interactive object was clicked
       this.closeEntityMenu();
+      this.cancelGather(); // moving away stops gathering
       const w = pixelToWorld(ptr.worldX, ptr.worldY);
       this.moveTarget = { x: w.x, z: w.z };
     });
@@ -577,10 +580,8 @@ export class WorldScene extends Scene {
     this.gold = this.world.copper || 0;
     this.events.emit(Events.HUD_UPDATE_MINDCOINS, this.gold);
 
-    // Recall-gated gathering results — QuizScene emits back here via returnTo.
-    this.events.on(Events.QUIZ_CORRECT, () => this.finishGather(true), this);
-    this.events.on(Events.QUIZ_WRONG, () => this.finishGather(false), this);
-    this.events.on(Events.QUIZ_TIMEOUT, () => this.finishGather(false), this);
+    // (Gathering no longer quizzes — it's click-and-gather. Recall lives in combat,
+    // the Study Hall, dailies, and the theatre. Combat's quiz is owned by CombatScene.)
 
     // Daily quests: shared state in the registry; HUD claims award Gold here.
     this.registry.set('daily', loadDaily());
@@ -832,6 +833,8 @@ export class WorldScene extends Scene {
     const left  = this.cursors.left.isDown  || this.wasd.left.isDown;
     const right = this.cursors.right.isDown || this.wasd.right.isDown;
 
+    if (this.gathering && (up || down || left || right)) this.cancelGather(); // walking away stops gathering
+
     if (this.offline) this.steerOffline(up, down, left, right);
     else {
       this.world.moveInput.forward     = up;
@@ -1004,44 +1007,73 @@ export class WorldScene extends Scene {
 
   /** Recall-gated gathering: fell a tree (wood) or mine a rock (ore) by
    *  answering a question correctly. */
+  /**
+   * Click-and-gather (kintara-style, engaging — NOT a per-swing quiz): run a short
+   * progress cycle, auto-award a material + Mastery XP, then repeat on the same
+   * node until the player moves or fights. Recall lives in combat / Study Hall /
+   * dailies instead, so gathering stays a relaxing flow.
+   */
   private startGather(node: GameObjects.Image, kind: 'wood' | 'ore' = 'wood'): void {
-    if (this.gathering || this.inCombat) return;
+    if (this.inCombat) return;
     this.closeEntityMenu();
-    const q = this.pickGatherQuestion();
-    if (!q) { this.emitMsg('No questions available.'); return; }
+    if (this.gathering && this.gatherNode === node) return; // already working this node
+    this.cancelGather();
     const p = this.world.player;
     const tw = pixelToWorld(node.x, node.y);
     if (this.offline) p.facing = Math.atan2(tw.x - p.pos.x, tw.z - p.pos.z); // face the node
+    this.moveTarget = null; // stand and gather
     this.gathering = true;
     this.gatherNode = node;
     this.gatherKind = kind;
-    this.emitMsg(kind === 'ore' ? 'Mining — answer to break it!' : 'Chopping — answer to fell it!');
-    this.scene.launch('QuizScene', { question: q, abilityId: kind === 'ore' ? 'mine' : 'chop', returnTo: 'WorldScene' });
+    this.gatherBar = this.add.graphics().setDepth(D_UI - 1);
+    this.emitMsg(kind === 'ore' ? 'Mining…' : 'Chopping…');
+    this.gatherCycle();
   }
 
-  private finishGather(correct: boolean): void {
-    if (!this.gathering) return;
-    this.gathering = false;
-    this.scene.stop('QuizScene');
+  private gatherCycle(): void {
     const node = this.gatherNode;
+    if (!this.gathering || !node) return;
+    const dur = this.gatherKind === 'ore' ? 1500 : 1200;
+    const state = { v: 0 };
+    this.gatherTween = this.tweens.add({
+      targets: state, v: 1, duration: dur, ease: 'Linear',
+      onUpdate: () => this.drawGatherBar(node, state.v),
+      onComplete: () => {
+        if (!this.gathering) return;
+        this.awardGather();
+        this.tweens.add({ targets: node, angle: { from: -6, to: 6 }, duration: 55, yoyo: true, repeat: 2, onComplete: () => node.setAngle(0) });
+        this.gatherCycle(); // auto-continue until interrupted
+      },
+    });
+  }
+
+  private drawGatherBar(node: GameObjects.Image, v: number): void {
+    const g = this.gatherBar;
+    if (!g) return;
+    const w = 40, h = 6, x = node.x - w / 2, y = node.y - node.displayHeight * 0.9;
+    g.clear();
+    g.fillStyle(0x000000, 0.55).fillRect(x - 1, y - 1, w + 2, h + 2);
+    g.fillStyle(this.gatherKind === 'ore' ? 0x93c5fd : 0x22c55e, 1).fillRect(x, y, w * v, h);
+  }
+
+  private awardGather(): void {
     const ore = this.gatherKind === 'ore';
+    const xp = 10;
+    if (ore) this.miningXp += xp; else this.woodcuttingXp += xp;
+    const res = this.registry.get('resources') as ResourceState | undefined;
+    if (res) { addResource(res, ore ? 'ore' : 'wood', 1); saveResources(res); this.events.emit(Events.RESOURCES_CHANGED); }
+    if (!ore) this.bumpDaily('chop'); // trees count toward the "chop" daily
+    this.floatWorldText(this.gatherNode, `+1 ${ore ? 'Ore' : 'Wood'}`, '#fde047');
+  }
+
+  /** Stop any in-progress gathering (movement, combat, or clicking elsewhere). */
+  private cancelGather(): void {
+    this.gatherTween?.stop();
+    this.gatherTween = undefined;
+    this.gatherBar?.destroy();
+    this.gatherBar = undefined;
+    this.gathering = false;
     this.gatherNode = undefined;
-    if (correct) {
-      const xp = 10;
-      if (ore) this.miningXp += xp; else this.woodcuttingXp += xp;
-      // Gathering yields resources; sell them at the Trading Post for Gold.
-      const res = this.registry.get('resources') as ResourceState | undefined;
-      if (res) { addResource(res, ore ? 'ore' : 'wood', 1); saveResources(res); this.events.emit(Events.RESOURCES_CHANGED); }
-      this.bumpDaily(ore ? 'answer' : 'chop'); // no dedicated mine daily yet
-      this.bumpDaily('answer');
-      this.floatWorldText(node, `+1 ${ore ? 'Ore' : 'Wood'}`, '#fde047');
-      this.emitMsg(`${ore ? 'Mining' : 'Woodcutting'} +${xp} XP  ·  sell at the Trading Post`);
-      if (node) {
-        this.tweens.add({ targets: node, angle: { from: -7, to: 7 }, duration: 70, yoyo: true, repeat: 3, onComplete: () => node.setAngle(0) });
-      }
-    } else {
-      this.floatWorldText(node, ore ? 'The rock holds firm!' : 'The tree resists!', '#fca5a5');
-    }
   }
 
   private pickGatherQuestion(): Question | null {
