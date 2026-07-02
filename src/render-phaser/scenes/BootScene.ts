@@ -9,7 +9,6 @@
 
 import { Scene } from 'phaser';
 import { Events } from '../index';
-import { optionalAssets } from '../bv_assets';
 
 export class BootScene extends Scene {
   private progressBar!: Phaser.GameObjects.Graphics;
@@ -73,11 +72,9 @@ export class BootScene extends Scene {
     // Question bank (first batch loaded at boot)
     this.load.json('questions_sample', 'data/questions_sample.json');
 
-    // Optional real-art assets (Kenney CC0). Any that 404 are simply skipped.
-    this.load.on('loaderror', () => { /* missing optional asset -> procedural fallback */ });
-    for (const a of optionalAssets()) {
-      this.load.image(a.key, a.url);
-    }
+    // (Legacy pre-LPC character/prop art removed: LPC is now the active character
+    // renderer, so those optional _v3 sprites were unused and their missing files
+    // spammed load errors. entity_view falls back to procedural textures if needed.)
 
     // Roguelike RPG spritesheet (legacy, kept as fallback)
     this.load.spritesheet('roguelike_sheet', 'assets/tilesets/roguelikeSheet_transparent.png', {

@@ -44,6 +44,9 @@ let camera: THREE.PerspectiveCamera | null = null;
 let mount: THREE.Group | null = null;
 
 const cache = new Map<string, string>();
+// Keys that have no 3D portrait (e.g. the 2D-only BharatVerse classes) — remember
+// them so we don't re-attempt (and re-spam the console) on every char-select paint.
+const failedKeys = new Set<string>();
 const readyListeners = new Set<() => void>();
 let assetsAreReady = false;
 void assetsReady()
@@ -111,7 +114,7 @@ export function visualPortraitDataUrl(visualKey: string, skin = 0): string | nul
   const key = `${visualKey}:${skin}`;
   const cached = cache.get(key);
   if (cached) return cached;
-  if (!assetsAreReady || rigFailed) return null;
+  if (!assetsAreReady || rigFailed || failedKeys.has(key)) return null;
 
   let visual: CharacterVisual | null = null;
   try {
@@ -140,7 +143,12 @@ export function visualPortraitDataUrl(visualKey: string, skin = 0): string | nul
     cache.set(key, url);
     return url;
   } catch (err) {
-    if (import.meta.env?.DEV) console.warn(`[portrait] failed for ${key}`, err);
+    failedKeys.add(key); // don't retry this key
+    // "unknown visual key" is expected for 2D-only classes — stay quiet; only
+    // surface genuinely unexpected failures, and only in dev.
+    if (import.meta.env?.DEV && !String(err).includes('unknown visual key')) {
+      console.warn(`[portrait] failed for ${key}`, err);
+    }
     return null;
   } finally {
     if (visual) {
