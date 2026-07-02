@@ -83,7 +83,32 @@ export const Events = {
  * Called from src/main.ts when the player selects offline or online mode.
  * The parent element is the full-screen game container div.
  */
+/**
+ * Phaser rasterises Text into a bitmap at `style.resolution` (default 1) and then
+ * the browser upscales that bitmap to the device's real pixels — on any scaled or
+ * hi-DPI display (Windows 125%/150%, retina) that upscale is what makes text look
+ * blurry. Default every Text to the device pixel ratio so the bitmap is rendered
+ * at native resolution and stays crisp. Done once, globally, before any Text.
+ */
+function patchTextResolutionForDpi(): void {
+  const dpr = Math.min(4, Math.max(1, Math.round(window.devicePixelRatio || 1)));
+  if (dpr <= 1) return;
+  const proto = Phaser.GameObjects.TextStyle.prototype as unknown as {
+    setStyle: (style: Record<string, unknown>, updateText?: boolean, setDefaults?: boolean) => unknown;
+    __dpiPatched?: boolean;
+  };
+  if (proto.__dpiPatched) return;
+  const orig = proto.setStyle;
+  proto.setStyle = function (style, updateText, setDefaults) {
+    const s = style ? { ...style } : {};
+    if (s.resolution == null) s.resolution = dpr;
+    return orig.call(this, s, updateText, setDefaults);
+  };
+  proto.__dpiPatched = true;
+}
+
 export function createPhaserGame(parentElement: HTMLElement): Phaser.Game {
+  patchTextResolutionForDpi();
   const config: Types.Core.GameConfig = {
     type: Phaser.AUTO, // WebGL preferred, Canvas fallback (for low-end Android)
     width: GAME_WIDTH,
