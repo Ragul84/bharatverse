@@ -35,6 +35,7 @@ import {
   loadResources, saveResources, addResource, RESOURCE_DEFS,
   type ResourceState, type ResourceId,
 } from '../resources';
+import { openTheatre } from '../theatre';
 
 // ---- Tile constants (roguelikeSheet_transparent.png layout) ----
 // Sheet: 57 cols x 31 rows, each tile 16x16 with 1px margin.
@@ -590,6 +591,13 @@ export class WorldScene extends Scene {
       this.emitMsg(`Daily complete!  +${r.gold} Gold`);
     }, this);
 
+    // Learning Theatre: pause world input while the video overlay is open.
+    this.events.on(Events.OPEN_THEATRE, () => {
+      this.cancelGather();
+      this.input.keyboard!.enabled = false;
+      openTheatre(() => { this.input.keyboard!.enabled = true; });
+    }, this);
+
     // Cosmetic shop: shared state in the registry; WorldScene owns Gold + look.
     const cos = loadCosmetics();
     this.registry.set('cosmetics', cos);
@@ -784,7 +792,8 @@ export class WorldScene extends Scene {
     // Village houses (south-west + south-centre). House1 is the Trading Post
     // where gathered Wood/Ore is sold for Gold.
     this.placeBuilding('ts-house1', 18, 37, TILE_SZ * 2, TILE_SZ * 3, 'Trading Post', Events.OPEN_MARKET);
-    place('ts-house2', 40, 45, TILE_SZ * 2, TILE_SZ * 3);
+    // House2 is the Learning Theatre — sit and watch educational videos.
+    this.placeBuilding('ts-house2', 40, 45, TILE_SZ * 2, TILE_SZ * 3, '🎬 Learning Theatre', Events.OPEN_THEATRE);
     // Town (east): a tower, the big castle and a monastery around the plaza
     place('ts-tower', 66, 23, TILE_SZ * 2, TILE_SZ * 4);
     place('ts-castle', 70, 32, TILE_SZ * 5, TILE_SZ * 4);

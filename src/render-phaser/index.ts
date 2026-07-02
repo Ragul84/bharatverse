@@ -76,6 +76,9 @@ export const Events = {
   OPEN_MARKET: 'market:open',
   MARKET_SELL: 'market:sell',
   RESOURCES_CHANGED: 'resources:changed',
+
+  // Learning Theatre building -> open the video overlay.
+  OPEN_THEATRE: 'theatre:open',
 } as const;
 
 /**

@@ -94,6 +94,13 @@ console.log('market: gold', goldBefore, '->', goldAfter, goldAfter > goldBefore 
 await page.screenshot({ path: 'tmp/bv_market_sold.png' });
 await page.evaluate(() => { const h = window.__game.scene.getScene('HUDScene'); if (h.marketPanel) { h.marketPanel.destroy(); h.marketPanel = undefined; } });
 
+// Learning Theatre overlay (DOM): open it and capture.
+await page.evaluate(() => window.__game.scene.getScene('WorldScene').events.emit('theatre:open'));
+await sleep(1800);
+console.log('theatre overlay present:', await page.evaluate(() => !!document.getElementById('bv-theatre')));
+await page.screenshot({ path: 'tmp/bv_theatre.png' });
+await page.evaluate(() => { const o = document.getElementById('bv-theatre'); if (o) o.remove(); });
+
 // Daily-quest board: open the HUD panel (progress should reflect the chop above).
 await page.evaluate(() => {
   const hud = window.__game.scene.getScene('HUDScene');
