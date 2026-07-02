@@ -16,6 +16,7 @@ import { Scene } from 'phaser';
 import { Events } from '../index';
 import type { Question } from '../../sim/content/questions';
 import { compositeLpc, randomConfig, lpcReady, type LpcConfig } from '../lpc_composite';
+import { levelForXp, combatDamageMult, type SkillState } from '../skills';
 
 // LPC 13-wide sheet: idle frame (col 0) of the up / down walk rows.
 const LPC_UP_IDLE = 8 * 13;    // 104 — facing away (player, lower, faces the enemy)
@@ -71,6 +72,7 @@ export class CombatScene extends Scene {
   private currentAbility = '';
   private correctStreak = 0;
   private turnCount = 0;
+  private combatMult = 1; // Combat Mastery damage bonus
 
   // UI elements
   private enemyHpBar!: Phaser.GameObjects.Graphics;
@@ -105,6 +107,9 @@ export class CombatScene extends Scene {
     this.playerTurn = true;
     this.correctStreak = 0;
     this.turnCount = 0;
+    // Combat Mastery: higher Combat level hits harder (our "upgraded weapon").
+    const skills = this.registry.get('skills') as SkillState | undefined;
+    this.combatMult = skills ? combatDamageMult(levelForXp(skills.combat)) : 1;
   }
 
   create(): void {
@@ -315,7 +320,7 @@ export class CombatScene extends Scene {
   }
 
   private resolveAbility(abilityId: string, result: AbilityResult): void {
-    const base = BASE_DAMAGE[this.data_.playerClass] ?? 20;
+    const base = (BASE_DAMAGE[this.data_.playerClass] ?? 20) * this.combatMult; // Combat Mastery bonus
     const streakMult = 1 + Math.min(this.correctStreak * 0.1, 0.5); // up to +50% at 5-streak
 
     let damage = 0;

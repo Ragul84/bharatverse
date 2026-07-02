@@ -101,6 +101,13 @@ console.log('theatre overlay present:', await page.evaluate(() => !!document.get
 await page.screenshot({ path: 'tmp/bv_theatre.png' });
 await page.evaluate(() => { const o = document.getElementById('bv-theatre'); if (o) o.remove(); });
 
+// Subject Mastery panel + verify gather XP was tracked.
+console.log('skills xp:', await page.evaluate(() => JSON.stringify(window.__game.scene.getScene('WorldScene').registry.get('skills'))));
+await page.evaluate(() => window.__game.scene.getScene('HUDScene').toggleSkillsPanel());
+await sleep(500);
+await page.screenshot({ path: 'tmp/bv_skills.png' });
+await page.evaluate(() => { const h = window.__game.scene.getScene('HUDScene'); if (h.skillsPanel) { h.skillsPanel.destroy(); h.skillsPanel = undefined; } });
+
 // Daily-quest board: open the HUD panel (progress should reflect the chop above).
 await page.evaluate(() => {
   const hud = window.__game.scene.getScene('HUDScene');

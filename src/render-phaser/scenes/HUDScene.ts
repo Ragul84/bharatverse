@@ -21,6 +21,7 @@ import {
 } from '../cosmetics';
 import { compositeLpc, lpcReady } from '../lpc_composite';
 import { RESOURCE_DEFS, type ResourceState } from '../resources';
+import { SKILL_DEFS, levelProgress, MAX_LEVEL, type SkillState } from '../skills';
 
 // Circular minimap (top-right): radius + margin from the screen corner.
 const MM_R = 74;
@@ -53,6 +54,9 @@ export class HUDScene extends Scene {
 
   // Trading Post (sell gathered resources)
   private marketPanel?: Phaser.GameObjects.Container;
+
+  // Subject Mastery panel
+  private skillsPanel?: Phaser.GameObjects.Container;
 
   constructor() {
     super({ key: 'HUDScene', active: false });
@@ -113,6 +117,7 @@ export class HUDScene extends Scene {
     world.events.on(Events.SHOP_CHANGED, () => { if (this.shopPanel) this.buildShopPanel(); }, this);
     world.events.on(Events.OPEN_MARKET, () => this.toggleMarketPanel(true), this);
     world.events.on(Events.RESOURCES_CHANGED, () => { if (this.marketPanel) this.buildMarketPanel(); }, this);
+    world.events.on(Events.SKILLS_CHANGED, () => { if (this.skillsPanel) this.buildSkillsPanel(); }, this);
 
     // Initial render
     this.onHPUpdate({ hp: 100, maxHp: 100 });
@@ -335,6 +340,16 @@ export class HUDScene extends Scene {
       .setInteractive({ useHandCursor: true })
       .on('pointerdown', () => this.toggleMarketPanel());
     this.add.text(cx, my, 'Trading Post', {
+      fontSize: '13px', fontFamily: '"Noto Sans", sans-serif', color: '#fde68a', fontStyle: 'bold',
+    }).setOrigin(0.5).setDepth(151).setScrollFactor(0);
+
+    // Skills (Subject Mastery) button
+    const ky = my + 34;
+    this.add.rectangle(cx, ky, 118, 30, 0x1a1206, 0.92)
+      .setStrokeStyle(2, 0xf59e0b, 1).setDepth(150).setScrollFactor(0)
+      .setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => this.toggleSkillsPanel());
+    this.add.text(cx, ky, 'Skills', {
       fontSize: '13px', fontFamily: '"Noto Sans", sans-serif', color: '#fde68a', fontStyle: 'bold',
     }).setOrigin(0.5).setDepth(151).setScrollFactor(0);
   }
@@ -627,5 +642,50 @@ export class HUDScene extends Scene {
 
   private marketSell(kind: 'wood' | 'ore', count: number): void {
     this.scene.get('WorldScene').events.emit(Events.MARKET_SELL, { kind, count });
+  }
+
+  // ---- Subject Mastery panel -----------------------------------------------
+
+  private toggleSkillsPanel(): void {
+    if (this.skillsPanel) { this.skillsPanel.destroy(); this.skillsPanel = undefined; return; }
+    this.buildSkillsPanel();
+  }
+
+  private buildSkillsPanel(): void {
+    this.skillsPanel?.destroy();
+    const skills = this.registry.get('skills') as SkillState | undefined;
+    const cx = this.scale.width / 2, cy = this.scale.height / 2;
+    const W = 360, rowH = 64, H = 70 + SKILL_DEFS.length * rowH;
+    const panel = this.add.container(cx, cy).setDepth(320).setScrollFactor(0);
+
+    const bg = this.add.rectangle(0, 0, W, H, 0x140d04, 0.98).setStrokeStyle(3, 0xf59e0b, 1);
+    const title = this.add.text(-W / 2 + 18, -H / 2 + 18, 'Subject Mastery', {
+      fontSize: '18px', fontFamily: '"Noto Sans", sans-serif', color: '#fde68a', fontStyle: 'bold',
+    }).setOrigin(0, 0.5);
+    const close = this.add.text(W / 2 - 14, -H / 2 + 18, '✕', {
+      fontSize: '16px', fontFamily: '"Noto Sans", sans-serif', color: '#f8fafc',
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => { this.skillsPanel?.destroy(); this.skillsPanel = undefined; });
+    panel.add([bg, title, close]);
+
+    SKILL_DEFS.forEach((d, i) => {
+      const xp = skills ? skills[d.id] : 0;
+      const { level, frac } = levelProgress(xp);
+      const y = -H / 2 + 60 + i * rowH + rowH / 2 - 8;
+      panel.add(this.add.text(-W / 2 + 20, y - 12, d.label, {
+        fontSize: '15px', fontFamily: '"Noto Sans", sans-serif', color: '#f8fafc', fontStyle: 'bold',
+      }).setOrigin(0, 0.5));
+      panel.add(this.add.text(W / 2 - 20, y - 12, `Lv ${level}${level >= MAX_LEVEL ? ' (MAX)' : ''}`, {
+        fontSize: '14px', fontFamily: '"Noto Sans", sans-serif', color: '#fbbf24', fontStyle: 'bold',
+      }).setOrigin(1, 0.5));
+      // XP bar
+      const barX = -W / 2 + 20, barW = W - 40, barY = y + 12;
+      panel.add(this.add.rectangle(barX, barY, barW, 9, 0x374151).setOrigin(0, 0.5));
+      panel.add(this.add.rectangle(barX, barY, barW * frac, 9, d.color).setOrigin(0, 0.5));
+    });
+
+    panel.setScale(0.7);
+    this.tweens.add({ targets: panel, scale: 1, duration: 200, ease: 'Back.out' });
+    this.skillsPanel = panel;
   }
 }

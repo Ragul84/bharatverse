@@ -79,6 +79,10 @@ export const Events = {
 
   // Learning Theatre building -> open the video overlay.
   OPEN_THEATRE: 'theatre:open',
+
+  // Subject Mastery: WorldScene/Combat grant XP -> SKILLS_CHANGED so the HUD
+  // skills panel refreshes.
+  SKILLS_CHANGED: 'skills:changed',
 } as const;
 
 /**

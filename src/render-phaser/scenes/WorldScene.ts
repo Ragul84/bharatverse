@@ -36,6 +36,10 @@ import {
   type ResourceState, type ResourceId,
 } from '../resources';
 import { openTheatre } from '../theatre';
+import {
+  loadSkills, saveSkills, addSkillXp, levelForXp, gatherBonus,
+  type SkillState,
+} from '../skills';
 
 // ---- Tile constants (roguelikeSheet_transparent.png layout) ----
 // Sheet: 57 cols x 31 rows, each tile 16x16 with 1px margin.
@@ -483,8 +487,6 @@ export class WorldScene extends Scene {
   private gatherTween?: Phaser.Tweens.Tween;
   private gatherBar?: GameObjects.Graphics;
   private gold = 0;
-  private woodcuttingXp = 0;
-  private miningXp = 0;
 
   constructor() {
     super({ key: 'WorldScene', active: false });
@@ -609,6 +611,9 @@ export class WorldScene extends Scene {
     // Gathered-resource inventory + Trading Post sales.
     this.registry.set('resources', loadResources());
     this.events.on(Events.MARKET_SELL, this.onMarketSell, this);
+
+    // Subject Mastery (levels that boost gather yield + combat damage).
+    this.registry.set('skills', loadSkills());
   }
 
   /** Sell gathered resources for Gold at the Trading Post. */
@@ -1067,12 +1072,21 @@ export class WorldScene extends Scene {
 
   private awardGather(): void {
     const ore = this.gatherKind === 'ore';
-    const xp = 10;
-    if (ore) this.miningXp += xp; else this.woodcuttingXp += xp;
+    const skillId = ore ? 'mining' : 'woodcutting';
+    const skills = this.registry.get('skills') as SkillState | undefined;
+    // Higher Mastery = more materials per gather (our "upgraded tool").
+    const level = skills ? levelForXp(skills[skillId]) : 1;
+    const amount = 1 + gatherBonus(level);
     const res = this.registry.get('resources') as ResourceState | undefined;
-    if (res) { addResource(res, ore ? 'ore' : 'wood', 1); saveResources(res); this.events.emit(Events.RESOURCES_CHANGED); }
+    if (res) { addResource(res, ore ? 'ore' : 'wood', amount); saveResources(res); this.events.emit(Events.RESOURCES_CHANGED); }
+    if (skills) {
+      const leveled = addSkillXp(skills, skillId, 10);
+      saveSkills(skills);
+      this.events.emit(Events.SKILLS_CHANGED);
+      if (leveled) this.emitMsg(`${ore ? 'Mining' : 'Woodcutting'} Lv ${levelForXp(skills[skillId])}!`);
+    }
     if (!ore) this.bumpDaily('chop'); // trees count toward the "chop" daily
-    this.floatWorldText(this.gatherNode, `+1 ${ore ? 'Ore' : 'Wood'}`, '#fde047');
+    this.floatWorldText(this.gatherNode, `+${amount} ${ore ? 'Ore' : 'Wood'}`, '#fde047');
   }
 
   /** Stop any in-progress gathering (movement, combat, or clicking elsewhere). */
@@ -1150,7 +1164,16 @@ export class WorldScene extends Scene {
   private onCombatEnd(result: { won: boolean; remainingHp: number; xpGained: number; mindcoins: number; enemyId: number }): void {
     this.inCombat = false;
     if (result.mindcoins) this.gold += result.mindcoins; // combat gold folds into the total
-    if (result.won) { this.bumpDaily('battle'); this.bumpDaily('answer'); }
+    if (result.won) {
+      this.bumpDaily('battle'); this.bumpDaily('answer');
+      const skills = this.registry.get('skills') as SkillState | undefined;
+      if (skills) {
+        const leveled = addSkillXp(skills, 'combat', 30);
+        saveSkills(skills);
+        this.events.emit(Events.SKILLS_CHANGED);
+        if (leveled) this.emitMsg(`Combat Lv ${levelForXp(skills.combat)}!`);
+      }
+    }
     this.pushHUDUpdate();
     this.scene.resume('WorldScene');
   }
