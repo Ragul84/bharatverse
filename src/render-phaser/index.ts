@@ -113,20 +113,22 @@ export function createPhaserGame(parentElement: HTMLElement): Phaser.Game {
   // blocked driver) and Phaser falls back to the Canvas 2D renderer. `?canvas2d`
   // forces that path in dev so the blur can be reproduced + verified.
   const forceCanvas = import.meta.env.DEV && typeof location !== 'undefined' && location.search.includes('canvas2d');
+  // Render at the DEVICE's real pixels, not CSS pixels. On a scaled/hi-DPI display
+  // (e.g. 150% Windows = devicePixelRatio 1.62) the browser blows a CSS-sized
+  // canvas up to the real pixel grid — rendering *below* screen resolution, which
+  // looks blurry no matter the smoothing. So we size the game to window×DPR and
+  // display it at the CSS size: the backing store then matches the screen 1:1.
+  const dpr = Math.min(3, Math.max(1, (typeof window !== 'undefined' && window.devicePixelRatio) || 1));
+  const winW = typeof window !== 'undefined' ? window.innerWidth : GAME_WIDTH;
+  const winH = typeof window !== 'undefined' ? window.innerHeight : GAME_HEIGHT;
   const config: Types.Core.GameConfig = {
     type: forceCanvas ? Phaser.CANVAS : Phaser.AUTO, // WebGL preferred, Canvas fallback
-    width: GAME_WIDTH,
-    height: GAME_HEIGHT,
     parent: parentElement,
     backgroundColor: '#1a0a2e', // Deep indigo - BharatVerse night sky base
     scale: {
-      // RESIZE: the canvas matches the container's real pixel size (times DPR
-      // below) instead of FIT-upscaling a fixed low-res canvas — the upscale was
-      // what blurred sprites AND text. Camera zoom sets how much world is shown,
-      // so bigger/retina screens simply see more, all sharp.
-      mode: Phaser.Scale.RESIZE,
-      width: GAME_WIDTH,
-      height: GAME_HEIGHT,
+      mode: Phaser.Scale.NONE, // we size the backing store to device pixels manually
+      width: Math.round(winW * dpr),
+      height: Math.round(winH * dpr),
     },
     physics: {
       default: 'arcade',
@@ -155,19 +157,23 @@ export function createPhaserGame(parentElement: HTMLElement): Phaser.Game {
   };
 
   const game = new Phaser.Game(config);
-  // When WebGL is unavailable, Phaser uses the Canvas 2D renderer whose backing
-  // store is CSS-sized; the browser then upscales it to the device's real pixels
-  // (e.g. 1.5x/1.62x on 150% Windows scaling) with SMOOTH interpolation = blur.
-  // Force that upscale to be nearest-neighbor so pixel art + text stay sharp.
-  const applyCrispCanvas = (): void => {
+  game.registry.set('dpr', dpr);
+  // Keep the backing store at device pixels (game size = window×dpr) while the
+  // canvas DISPLAYS at CSS size — so it maps 1:1 to the screen and stays sharp.
+  // Also force nearest-neighbor for any residual scaling (crisp pixel art).
+  const fitDevicePixels = (): void => {
     const c = game.canvas;
     if (!c) return;
+    const w = window.innerWidth, h = window.innerHeight;
+    game.scale.resize(Math.round(w * dpr), Math.round(h * dpr));
+    c.style.width = w + 'px';
+    c.style.height = h + 'px';
     c.style.imageRendering = 'pixelated';
-    // Safari/older spellings
-    (c.style as unknown as Record<string, string>).imageRendering = 'pixelated';
   };
-  applyCrispCanvas();
-  game.events.once('ready', applyCrispCanvas);
-  game.scale.on('resize', applyCrispCanvas);
+  fitDevicePixels();
+  game.events.once('ready', fitDevicePixels);
+  if (typeof window !== 'undefined') {
+    window.addEventListener('resize', () => window.requestAnimationFrame(fitDevicePixels));
+  }
   return game;
 }

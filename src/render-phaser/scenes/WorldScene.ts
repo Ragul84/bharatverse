@@ -540,11 +540,12 @@ export class WorldScene extends Scene {
     const mapPxW = MAP_W * TILE_SZ;
     const mapPxH = MAP_H * TILE_SZ;
     this.cameras.main.setBounds(0, 0, mapPxW, mapPxH);
+    // The canvas backs the DEVICE pixel grid (width = window×dpr), so pick an
+    // INTEGER zoom that frames ~16 tiles across — spacious kintara-style view and
+    // crisp (integer = exact pixel multiples). Bigger/hi-DPI screens still show a
+    // similar amount of world, just at higher resolution.
     this.cameras.main.startFollow(this.playerView.container, true, 0.1, 0.1);
-    // Zoom 1 = no scaling at all → maximally crisp, and shows ~2x more world than
-    // 2x, matching kintara's zoomed-out, spacious framing (small characters, lots
-    // of map on screen). RESIZE means bigger screens simply see even more.
-    this.cameras.main.setZoom(1);
+    this.cameras.main.setZoom(Math.max(1, Math.round(this.scale.width / (TILE_SZ * 16))));
 
     // Click empty ground to move; clicking an entity (or a menu button) is handled
     // by that object and must NOT also move or dismiss via this handler.
