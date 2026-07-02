@@ -109,8 +109,12 @@ function patchTextResolutionForDpi(): void {
 
 export function createPhaserGame(parentElement: HTMLElement): Phaser.Game {
   patchTextResolutionForDpi();
+  // Some machines can't create a WebGL context (hardware acceleration off /
+  // blocked driver) and Phaser falls back to the Canvas 2D renderer. `?canvas2d`
+  // forces that path in dev so the blur can be reproduced + verified.
+  const forceCanvas = import.meta.env.DEV && typeof location !== 'undefined' && location.search.includes('canvas2d');
   const config: Types.Core.GameConfig = {
-    type: Phaser.AUTO, // WebGL preferred, Canvas fallback (for low-end Android)
+    type: forceCanvas ? Phaser.CANVAS : Phaser.AUTO, // WebGL preferred, Canvas fallback
     width: GAME_WIDTH,
     height: GAME_HEIGHT,
     parent: parentElement,
@@ -150,5 +154,20 @@ export function createPhaserGame(parentElement: HTMLElement): Phaser.Game {
     roundPixels: true,
   };
 
-  return new Phaser.Game(config);
+  const game = new Phaser.Game(config);
+  // When WebGL is unavailable, Phaser uses the Canvas 2D renderer whose backing
+  // store is CSS-sized; the browser then upscales it to the device's real pixels
+  // (e.g. 1.5x/1.62x on 150% Windows scaling) with SMOOTH interpolation = blur.
+  // Force that upscale to be nearest-neighbor so pixel art + text stay sharp.
+  const applyCrispCanvas = (): void => {
+    const c = game.canvas;
+    if (!c) return;
+    c.style.imageRendering = 'pixelated';
+    // Safari/older spellings
+    (c.style as unknown as Record<string, string>).imageRendering = 'pixelated';
+  };
+  applyCrispCanvas();
+  game.events.once('ready', applyCrispCanvas);
+  game.scale.on('resize', applyCrispCanvas);
+  return game;
 }
