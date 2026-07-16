@@ -4976,8 +4976,8 @@ function updateSeoMetadata(lang: SupportedLanguage): void {
           {
             '@type': 'WebSite',
             '@id': 'https://worldofclaudecraft.com/#website',
-            name: 'World of ClaudeCraft',
-            alternateName: 'World of Claudecraft',
+            name: 'BharatVerse',
+            alternateName: 'Bharatverse',
             url: canonicalHref,
             inLanguage: languageTag(lang),
             description: t('seo.description'),
@@ -4986,7 +4986,7 @@ function updateSeoMetadata(lang: SupportedLanguage): void {
           {
             '@type': 'Organization',
             '@id': 'https://worldofclaudecraft.com/#organization',
-            name: 'World of ClaudeCraft',
+            name: 'BharatVerse',
             url: 'https://worldofclaudecraft.com/',
             logo: 'https://worldofclaudecraft.com/woc_logo_square.webp',
             sameAs,
@@ -4994,8 +4994,8 @@ function updateSeoMetadata(lang: SupportedLanguage): void {
           {
             '@type': 'VideoGame',
             '@id': 'https://worldofclaudecraft.com/#game',
-            name: 'World of ClaudeCraft',
-            alternateName: 'World of Claudecraft',
+            name: 'BharatVerse',
+            alternateName: 'Bharatverse',
             genre: t('seo.genre'),
             playMode: t('seo.playMode'),
             applicationCategory: t('seo.applicationCategory'),

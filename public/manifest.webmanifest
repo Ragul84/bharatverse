@@ -1,7 +1,7 @@
 {
-  "name": "World of ClaudeCraft",
-  "short_name": "ClaudeCraft",
-  "description": "World of ClaudeCraft mobile realm",
+  "name": "BharatVerse",
+  "short_name": "BharatVerse",
+  "description": "BharatVerse — India's first educational MMO",
   "start_url": "/",
   "scope": "/",
   "display": "fullscreen",

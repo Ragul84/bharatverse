@@ -689,10 +689,10 @@ describe('client HTML shell', () => {
       '<meta name="robots" content="index, follow, max-image-preview:large" />',
     );
     expect(html).toContain('<link rel="canonical" href="https://worldofclaudecraft.com/" />');
-    expect(html).toContain('<meta property="og:site_name" content="World of ClaudeCraft" />');
-    expect(html).toContain('"alternateName": "World of Claudecraft"');
+    expect(html).toContain('<meta property="og:site_name" content="BharatVerse" />');
+    expect(html).toContain('"alternateName": "Bharatverse"');
     expect(html).toContain('"https://github.com/levy-street/world-of-claudecraft"');
-    expect(mainTs).toContain("alternateName: 'World of Claudecraft'");
+    expect(mainTs).toContain("alternateName: 'Bharatverse'");
     expect(mainTs).toContain("'https://github.com/levy-street/world-of-claudecraft'");
     expect(robotsTxt.trim()).toBe(
       'User-agent: *\nAllow: /\n\nSitemap: https://worldofclaudecraft.com/sitemap.xml\nSitemap: https://worldofclaudecraft.com/sitemap-characters.xml',

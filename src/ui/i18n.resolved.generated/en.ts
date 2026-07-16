@@ -4571,14 +4571,14 @@ export const en: EnTranslations = {
     }
   },
   "seo": {
-    "title": "World of ClaudeCraft: Classic-Style Web MMO",
-    "description": "Embark on an epic adventure in World of ClaudeCraft, a classic-style micro-MMO playable directly in your browser. Join a persistent shared world, level up classes, and defeat enemies!",
+    "title": "BharatVerse: India's First Educational MMO",
+    "description": "Learn while you play in BharatVerse, India's first educational MMO. Explore a persistent shared world, master subjects through active recall, and adventure with players across the country — right in your browser.",
     "genre": "MMORPG",
     "playMode": "Multiplayer",
     "applicationCategory": "Game",
     "operatingSystem": "Web browser",
-    "officialLabel": "Official World of ClaudeCraft website",
-    "officialBody": "worldofclaudecraft.com is the official free browser MMO for the Claudemoon world. Play online with a persistent character, explore solo offline, read the wiki, and follow verified community links from this site."
+    "officialLabel": "Official BharatVerse website",
+    "officialBody": "BharatVerse is India's first educational MMO: play online with a persistent character, master subjects through active recall, read the wiki, and follow verified community links from this site."
   },
   "a11y": {
     "goHome": "Go to homepage",

@@ -61,7 +61,7 @@ async function main() {
     // Verify Title and Meta Description
     const pageTitle = await page.title();
     console.log(`Page Title: "${pageTitle}"`);
-    if (pageTitle !== 'World of ClaudeCraft: Classic-Style Web MMO') {
+    if (pageTitle !== "BharatVerse: India's First Educational MMO") {
       throw new Error(`Unexpected page title: "${pageTitle}"`);
     }
 
