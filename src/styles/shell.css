@@ -7459,3 +7459,11 @@
     border-color: var(--color-primary);
   }
 }
+
+/* ---------- bharatverse crypto removal ---------- */
+/* Hide the Solana wallet / $WOC "holder flair" UI (char-select group + account card).
+   Not appropriate for an educational MMO; the dormant backend is a later cleanup. */
+.cs-wallet-group,
+.account-wallet-card {
+  display: none !important;
+}
