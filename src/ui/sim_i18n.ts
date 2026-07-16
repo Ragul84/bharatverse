@@ -78,6 +78,7 @@ const baseEnTable = {
   "log.partyLeft": "{name} has left the party.",
   "log.partyRemoved": "{name} has been removed from the party.",
   "loot.rollWin": "{winner} wins {item} ({roll})",
+  "loot.wildernessLoss": "You died in the Wilderness and lost {amount}!",
   "aura.tamed": "Tamed",
   "aura.causticSpores": "Caustic Spores",
   "aura.elixirBear": "Might of the Bear",
@@ -191,6 +192,8 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.partyLeft": "{name} has left the party.",
     "log.partyRemoved": "{name} has been removed from the party.",
     "loot.rollWin": "{winner} wins {item} ({roll})",
+
+      "loot.wildernessLoss": "You died in the Wilderness and lost {amount}!",
     "aura.tamed": "Tamed",
     "aura.causticSpores": "Caustic Spores",
     "aura.elixirBear": "Might of the Bear",
@@ -258,6 +261,8 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.partyLeft": "{name} ha abandonado el grupo.",
     "log.partyRemoved": "{name} ha sido expulsado del grupo.",
     "loot.rollWin": "{winner} gana {item} ({roll})",
+
+      "loot.wildernessLoss": "¡Moriste en el desierto y perdiste {amount}!",
     "aura.tamed": "Domado",
     "aura.causticSpores": "Esporas Cáusticas",
     "aura.elixirBear": "Poder del Oso",
@@ -325,6 +330,8 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.partyLeft": "{name} ha abandonado el grupo.",
     "log.partyRemoved": "{name} ha sido expulsado del grupo.",
     "loot.rollWin": "{winner} gana {item} ({roll})",
+
+      "loot.wildernessLoss": "¡Moriste en el desierto y perdiste {amount}!",
     "aura.tamed": "Domado",
     "aura.causticSpores": "Esporas Cáusticas",
     "aura.elixirBear": "Poder del Oso",
@@ -392,6 +399,8 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.partyLeft": "{name} a quitté le groupe.",
     "log.partyRemoved": "{name} a été retiré du groupe.",
     "loot.rollWin": "{winner} remporte {item} ({roll})",
+
+      "loot.wildernessLoss": "Vous êtes mort dans le désert et avez perdu {amount} !",
     "aura.tamed": "Apprivoisé",
     "aura.causticSpores": "Spores Caustiques",
     "aura.elixirBear": "Puissance de l'Ours",
@@ -459,6 +468,8 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.partyLeft": "{name} a quitté le groupe.",
     "log.partyRemoved": "{name} a été retiré du groupe.",
     "loot.rollWin": "{winner} remporte {item} ({roll})",
+
+      "loot.wildernessLoss": "Vous êtes mort dans le désert et avez perdu {amount} !",
     "aura.tamed": "Apprivoisé",
     "aura.causticSpores": "Spores Caustiques",
     "aura.elixirBear": "Puissance de l'Ours",
@@ -526,6 +537,8 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.partyLeft": "{name} has left the party.",
     "log.partyRemoved": "{name} has been removed from the party.",
     "loot.rollWin": "{winner} wins {item} ({roll})",
+
+      "loot.wildernessLoss": "You died in the Wilderness and lost {amount}!",
     "aura.tamed": "Tamed",
     "aura.causticSpores": "Caustic Spores",
     "aura.elixirBear": "Might of the Bear",
@@ -593,6 +606,8 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.partyLeft": "{name} ha abbandonato il gruppo.",
     "log.partyRemoved": "{name} è stato rimosso dal gruppo.",
     "loot.rollWin": "{winner} vince {item} ({roll})",
+
+      "loot.wildernessLoss": "Sei morto nelle Terre Selvagge e hai perso {amount}!",
     "aura.tamed": "Addomesticato",
     "aura.causticSpores": "Spore Caustiche",
     "aura.elixirBear": "Potenza dell'Orso",
@@ -660,6 +675,8 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.partyLeft": "{name} hat die Gruppe verlassen.",
     "log.partyRemoved": "{name} wurde aus der Gruppe entfernt.",
     "loot.rollWin": "{winner} gewinnt {item} ({roll})",
+
+      "loot.wildernessLoss": "Ihr seid in der Wildnis gestorben und habt {amount} verloren!",
     "aura.tamed": "Gezähmt",
     "aura.causticSpores": "Ätzende Sporen",
     "aura.elixirBear": "Macht des Bären",
@@ -727,6 +744,8 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.partyLeft": "{name}已离开队伍。",
     "log.partyRemoved": "{name}已被移出队伍。",
     "loot.rollWin": "{winner}赢得了{item}（{roll}）",
+
+      "loot.wildernessLoss": "你在荒野中死亡并失去了{amount}！",
     "aura.tamed": "已驯服",
     "aura.causticSpores": "腐蚀孢子",
     "aura.elixirBear": "巨熊之力",
@@ -794,6 +813,8 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.partyLeft": "{name} 已離開隊伍。",
     "log.partyRemoved": "{name} 已被移出隊伍。",
     "loot.rollWin": "{winner} 擲骰獲得 {item}（{roll}）",
+
+      "loot.wildernessLoss": "你在荒野中死亡並失去了{amount}！",
     "aura.tamed": "馴服",
     "aura.causticSpores": "腐蝕孢子",
     "aura.elixirBear": "巨熊之力",
@@ -861,6 +882,8 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.partyLeft": "{name}님이 파티를 떠났습니다.",
     "log.partyRemoved": "{name}님이 파티에서 제외되었습니다.",
     "loot.rollWin": "{winner}님이 {item}을(를) 획득했습니다 ({roll})",
+
+      "loot.wildernessLoss": "황야에서 사망하여 {amount}을(를) 잃었습니다!",
     "aura.tamed": "길들여짐",
     "aura.causticSpores": "부식성 포자",
     "aura.elixirBear": "곰의 힘",
@@ -928,6 +951,8 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.partyLeft": "{name}がパーティーを離れました。",
     "log.partyRemoved": "{name}がパーティーから除外されました。",
     "loot.rollWin": "{winner}が{item}を獲得しました（{roll}）",
+
+      "loot.wildernessLoss": "荒野で死亡し、{amount}を失いました！",
     "aura.tamed": "テイム",
     "aura.causticSpores": "腐食胞子",
     "aura.elixirBear": "熊の力",
@@ -995,6 +1020,8 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.partyLeft": "{name} saiu do grupo.",
     "log.partyRemoved": "{name} foi removido do grupo.",
     "loot.rollWin": "{winner} vence {item} ({roll})",
+
+      "loot.wildernessLoss": "Você morreu no Deserto e perdeu {amount}!",
     "aura.tamed": "Domado",
     "aura.causticSpores": "Esporos Cáusticos",
     "aura.elixirBear": "Força do Urso",
@@ -1062,6 +1089,8 @@ const BASE_DICT: Record<SupportedLanguage, Record<BaseSimMessageKey, string>> = 
     "log.partyLeft": "{name} покинул(а) группу.",
     "log.partyRemoved": "{name} исключён(а) из группы.",
     "loot.rollWin": "{winner} выигрывает {item} ({roll})",
+
+      "loot.wildernessLoss": "Вы погибли в Диких землях и потеряли {amount}!",
     "aura.tamed": "Приручён",
     "aura.causticSpores": "Едкие споры",
     "aura.elixirBear": "Мощь Медведя",
@@ -2322,6 +2351,7 @@ const RULES: Rule[] = [
   { re: /^Equipped (?!\()(.+)\.$/, build: (m) => tSim('log.equipped', { item: locItem(m[1]) }) },
   { re: /^You quaff (.+)\.$/, build: (m) => tSim('log.quaff', { item: locItem(m[1]) }) },
   { re: /^(.+) wins (.+) \((\d+)\)$/, build: (m) => tSim('loot.rollWin', { winner: m[1], item: locItem(m[2]), roll: m[3] }) },
+  { re: /^You died in the Wilderness and lost (.+)!$/, build: (m) => tSim('loot.wildernessLoss', { amount: m[1] }) },
   { re: /^(.+) leaves the party\.$/, build: (m) => tSim('log.partyLeaves', { name: m[1] }) },
   { re: /^(.+) has left the party\.$/, build: (m) => tSim('log.partyLeft', { name: m[1] }) },
   { re: /^(.+) has been removed from the party\.$/, build: (m) => tSim('log.partyRemoved', { name: m[1] }) },

@@ -11,12 +11,12 @@ export const DEEPFEN_SHALLOWS_LAKE = { x: -110, z: 310, radius: 35 };
 
 export const ZONE2_ZONE: ZoneDef = {
   id: 'vigyan_vana',
-  name: 'Vigyan Vana',
+  name: 'Scholars Fen',
   zMin: 180,
   zMax: 540,
   levelRange: [6, 13],
   biome: 'marsh',
-  hub: { x: 0, z: 300, radius: 20, name: 'Shastra Gram' },
+  hub: { x: 0, z: 300, radius: 20, name: 'Poompuhar Haven' },
   graveyard: { x: -18, z: 286 },
   lakes: [
     DEEPFEN_SHALLOWS_LAKE,
@@ -24,16 +24,16 @@ export const ZONE2_ZONE: ZoneDef = {
     { x: -40, z: 450, radius: 20 },
   ],
   pois: [
-    { x: 0, z: 300, label: 'Shastra Gram' },
-    { x: -40, z: 230, label: 'Vigyan Vana Entry' },
-    { x: -105, z: 300, label: 'Rasayan Kund (Chemistry Pool)' },
-    { x: 80, z: 315, label: 'Jeevan Vatika (Biology Garden)' },
-    { x: 100, z: 435, label: 'Dooba Prakashsthal' },
-    { x: -95, z: 440, label: 'Agyaan Mounds' },
-    { x: 0, z: 485, label: 'Bhram Asura Camp' },
-    { x: 45, z: 515, label: 'Vigyan Garh (Science Fort)' },
+    { x: 0, z: 300, label: 'Poompuhar Haven' },
+    { x: -40, z: 230, label: 'Fen Pathway' },
+    { x: -105, z: 300, label: 'Chemistry Pool' },
+    { x: 80, z: 315, label: 'Biology Garden' },
+    { x: 100, z: 435, label: 'Drowned Lighthouse' },
+    { x: -95, z: 440, label: 'Dark Mounds' },
+    { x: 0, z: 485, label: 'Illusion Demon Camp' },
+    { x: 45, z: 515, label: 'Fort Citadel' },
   ],
-  welcome: 'Report to Vidyarthi Rakshak at the Shastra Gram gate.',
+  welcome: 'Report to the Sentinel at the Poompuhar Haven gate.',
 };
 
 // Causeway north from Eastbrook to Fenbridge, then spokes to each hub.

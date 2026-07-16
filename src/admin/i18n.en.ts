@@ -10,7 +10,7 @@
 // renamed key - the same completeness safety net the game client has.
 
 export const en = {
-  "app.title": "World of ClaudeCraft - Admin",
+  "app.title": "BharatVerse - Admin",
   "auth.username": "Username",
   "auth.password": "Password",
   "auth.signIn": "Sign in",

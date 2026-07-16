@@ -1,4 +1,4 @@
-/**
+﻿/**
  * BootScene - BharatVerse loading screen
  *
  * Responsibilities:
@@ -104,7 +104,7 @@ export class BootScene extends Scene {
       this.load.spritesheet(key, `assets/lpc/${file}.png`, { frameWidth: 64, frameHeight: 64 });
     }
 
-    // LPC hat cosmetics — the modern Universal-LPC expanded layout (832x2944);
+    // LPC hat cosmetics â€” the modern Universal-LPC expanded layout (832x2944);
     // its first 21 rows match the classic layout our bodies use, so overlaying
     // onto the 64px composite lines the hat up on the walk frames (rows 8-11).
     for (const hat of ['crown', 'tiara', 'tophat', 'wizard', 'feather_cap', 'bandana']) {
@@ -147,6 +147,14 @@ export class BootScene extends Scene {
     this.load.image('ts-tower',     'assets/tiny-swords/buildings/tower.png');
     this.load.image('ts-barracks',  'assets/tiny-swords/buildings/barracks.png');
     this.load.image('ts-monastery', 'assets/tiny-swords/buildings/monastery.png');
+
+    // Custom Indian Architecture building assets
+    this.load.image('in-haveli',    'assets/indian/haveli_trading_post.png');
+    this.load.image('in-gurukul',   'assets/indian/gurukul_library.png');
+    this.load.image('in-temple',    'assets/indian/temple_study_hall.png');
+    this.load.image('in-theatre',   'assets/indian/natyashala_pavilion.png');
+    this.load.image('in-bazaar',    'assets/indian/bazaar_emporium.png');
+    this.load.image('in-palace',    'assets/indian/royal_palace.png');
 
     // Tiny Swords blue (friendly) unit spritesheets - 192x192 per frame
     this.load.spritesheet('ts-blue-warrior-idle', 'assets/tiny-swords/units/blue_warrior_idle.png', { frameWidth: 192, frameHeight: 192 });
@@ -221,7 +229,11 @@ export class BootScene extends Scene {
     // Small delay so player can read the "Enter the Realm" text, then the
     // character creator (which starts WorldScene once appearance is confirmed).
     this.time.delayedCall(600, () => {
-      this.scene.start(this.textures.exists('lpc-body') ? 'CharacterCreatorScene' : 'WorldScene');
+      if (this.registry.get('cinematicCharSelect')) {
+        this.scene.start('CharacterSelectScene');
+      } else {
+        this.scene.start(this.textures.exists('lpc-body') ? 'CharacterCreatorScene' : 'WorldScene');
+      }
     });
   }
 }

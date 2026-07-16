@@ -1,0 +1,162 @@
+[
+  {
+    "id": "computers_basics",
+    "title": "How Computers Work & Internet Basics",
+    "author": "Tech Academy",
+    "category": "Tech",
+    "chapters": [
+      {
+        "title": "Chapter 1: The Binary World",
+        "pages": [
+          "Computers are built on millions of tiny electronic switches called transistors. These switches have only two states: ON or OFF.",
+          "In mathematics, we represent these states as numbers: 1 for ON and 0 for OFF. This base-2 number system is called binary.",
+          "Every letter, number, and picture you see is encoded in binary. For example, the letter 'A' is stored as the binary byte 01000001."
+        ]
+      },
+      {
+        "title": "Chapter 2: The CPU & Memory",
+        "pages": [
+          "The CPU (Central Processing Unit) is the brain of the computer. It executes instructions using the Fetch-Execute cycle.",
+          "First, the CPU fetches an instruction from RAM (Random Access Memory), decodes what it means, and then executes it.",
+          "RAM is temporary storage. It holds active programs. When the computer turns off, all data in RAM is cleared."
+        ]
+      },
+      {
+        "title": "Chapter 3: The Global Network",
+        "pages": [
+          "The Internet connects computers worldwide. Information is broken down into small units called packets.",
+          "Each packet has a header containing the sender and receiver's IP addresses. Routers direct these packets across the network.",
+          "Once all packets arrive at the destination, they are reassembled into the original file or web page."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "coding_logic",
+    "title": "Introduction to Coding & Logic",
+    "author": "Tech Academy",
+    "category": "Tech",
+    "chapters": [
+      {
+        "title": "Chapter 1: Variables and Math",
+        "pages": [
+          "Coding is writing instructions for a computer. We store data in named slots called variables.",
+          "Think of a variable as a labeled box. You can put a value inside: score = 10, name = 'Mentor'.",
+          "You can change the value later. Math operators (+, -, *, /) modify number variables: score = score + 5."
+        ]
+      },
+      {
+        "title": "Chapter 2: Control Flow & Logic",
+        "pages": [
+          "Computers make decisions using 'if' statements. These statements check a conditional expression.",
+          "For example: 'if (gold >= 50) { buyHat(); } else { showWarning(); }'. Only one path is run.",
+          "Boolean logic uses AND (&&), OR (||), and NOT (!) operators to combine multiple conditions."
+        ]
+      },
+      {
+        "title": "Chapter 3: Repeating with Loops",
+        "pages": [
+          "Instead of writing the same instruction ten times, coders use loops to repeat code blocks.",
+          "A 'while' loop runs as long as a condition is true. Be careful to update the condition to avoid infinite loops!",
+          "A 'for' loop runs a specific number of times, typically incrementing a counter variable from 0 to a target limit."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "mental_math",
+    "title": "Mental Arithmetic & Speed Math",
+    "author": "Math Mastery",
+    "category": "Learning",
+    "chapters": [
+      {
+        "title": "Chapter 1: Speed Multiplication",
+        "pages": [
+          "Mental math is the practice of performing math calculations in your head without using a calculator or paper.",
+          "To multiply a two-digit number by 11: add the two digits and place the sum in the middle. E.g., 23 * 11 -> 2 + 3 = 5, result is 253.",
+          "If the sum is 10 or more, carry 1 over to the left digit. E.g., 85 * 11 -> 8 + 5 = 13, result is 935."
+        ]
+      },
+      {
+        "title": "Chapter 2: Division Shortcuts",
+        "pages": [
+          "A number is divisible by 3 if the sum of its digits is divisible by 3. E.g., 168 -> 1 + 6 + 8 = 15 (divisible by 3).",
+          "A number is divisible by 4 if its last two digits form a number divisible by 4. E.g., 1024 -> 24 (divisible by 4).",
+          "A number is divisible by 6 if it is even and divisible by 3. E.g., 312 is even and 3+1+2=6, so it is divisible by 6."
+        ]
+      },
+      {
+        "title": "Chapter 3: Visual Estimation",
+        "pages": [
+          "Estimation helps you quickly check if an answer is reasonable. Round numbers to the nearest ten or hundred first.",
+          "To estimate 392 + 507, calculate 400 + 500 = 900. The exact answer is 899, which is extremely close.",
+          "This mental baseline allows engineers and scientists to detect scale errors instantly."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "earth_climate",
+    "title": "Science of the Earth & Climate",
+    "author": "Eco Studies",
+    "category": "Learning",
+    "chapters": [
+      {
+        "title": "Chapter 1: Tectonic Dynamics",
+        "pages": [
+          "The Earth's crust is not solid. It is divided into large moving slabs called tectonic plates.",
+          "These plates float on the hot mantle below. When plates collide, they form mountains or volcanic arcs.",
+          "When plates slide past each other, friction causes stress to build. The sudden release of this stress causes earthquakes."
+        ]
+      },
+      {
+        "title": "Chapter 2: The Atmosphere",
+        "pages": [
+          "Our atmosphere consists of nitrogen (78%), oxygen (21%), and trace gases. It protects us from cosmic radiation.",
+          "Air rises at the equator and falls at the poles, forming huge circulation cells that drive global wind patterns.",
+          "The greenhouse effect traps solar heat in the lower atmosphere, keeping the Earth warm enough to sustain life."
+        ]
+      },
+      {
+        "title": "Chapter 3: Water Cycles",
+        "pages": [
+          "Water moves constantly between oceans, atmosphere, and land. This continuous loop is the hydrological cycle.",
+          "Solar energy causes evaporation. Water vapor rises, cools, and condenses into clouds.",
+          "Precipitation (rain/snow) returns water to the surface, filling rivers and recharging underground aquifers."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "english_grammar",
+    "title": "English Grammar & Composition",
+    "author": "Language Mechanics",
+    "category": "Language",
+    "chapters": [
+      {
+        "title": "Chapter 1: Sentence Structures",
+        "pages": [
+          "A complete sentence needs a subject and a verb, and must express a complete thought. E.g., 'The player ran.'",
+          "A clause is a group of words with a subject and verb. Independent clauses can stand alone as sentences.",
+          "Dependent clauses cannot stand alone. They must be joined to an independent clause: 'Because the forest was dark, the player ran.'"
+        ]
+      },
+      {
+        "title": "Chapter 2: Active vs. Passive Voice",
+        "pages": [
+          "In the active voice, the subject performs the action. E.g., 'The hero chopped the tree.' This style is direct and clear.",
+          "In the passive voice, the target receives the action. E.g., 'The tree was chopped by the hero.' This style is slower.",
+          "Use the active voice to make your writing feel more dynamic, and save the passive voice for when the actor is unknown."
+        ]
+      },
+      {
+        "title": "Chapter 3: Punctuation Rules",
+        "pages": [
+          "Punctuation adds rhythm and structure. A comma separates items in a list and joins clauses with a conjunction.",
+          "A semicolon connects two closely related independent clauses without a conjunction: 'The forest was dark; the caves were quiet.'",
+          "Never use consecutive commas or run-on sentences. Keep your structures clear for high readability."
+        ]
+      }
+    ]
+  }
+]

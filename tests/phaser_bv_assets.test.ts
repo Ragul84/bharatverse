@@ -10,11 +10,11 @@ import { decoTexture } from '../src/render-phaser/decoration_style';
 describe('asset keys + urls', () => {
   it('builds character keys/urls by archetype', () => {
     expect(characterArtKey('cls-kshatriya')).toBe('bv-art-char-cls-kshatriya');
-    expect(characterArtUrl('cls-kshatriya')).toBe('assets/characters/cls-kshatriya.png');
+    expect(characterArtUrl('cls-kshatriya')).toBe('assets/characters/cls-kshatriya_v3.png');
   });
   it('builds prop keys/urls by name', () => {
     expect(propArtKey('tree')).toBe('bv-art-prop-tree');
-    expect(propArtUrl('rock')).toBe('assets/props/rock.png');
+    expect(propArtUrl('rock')).toBe('assets/props/rock_v3.png');
   });
   it('flags real-art keys vs procedural keys', () => {
     expect(isRealArtKey(characterArtKey('mob'))).toBe(true);
@@ -45,7 +45,7 @@ describe('resolveDecoTexture', () => {
 describe('optionalAssets', () => {
   it('lists one entry per character archetype plus every prop', () => {
     const assets = optionalAssets();
-    expect(assets).toHaveLength(Object.keys(CHAR_PALETTES).length * 3 + PROP_NAMES.length);
+    expect(assets).toHaveLength(Object.keys(CHAR_PALETTES).length * 4 + PROP_NAMES.length);
     // urls all live under assets/
     expect(assets.every(a => a.url.startsWith('assets/'))).toBe(true);
     // keys are unique

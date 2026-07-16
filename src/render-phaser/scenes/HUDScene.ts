@@ -14,14 +14,15 @@
 
 import { Scene } from 'phaser';
 import { Events } from '../index';
+import { QUESTS } from '../../sim/data';
 import { MAP_W, MAP_H, GROUND_MAP, worldToTile, classifyGround, MM_LANDMARKS } from './WorldScene';
 import { DAILY_DEFS, saveDaily, isComplete, isClaimable, type DailyState } from '../daily';
 import {
   HAT_SHOP, PET_SHOP, hatLabel, ownsHat, ownsPet, type CosmeticState,
 } from '../cosmetics';
 import { compositeLpc, lpcReady } from '../lpc_composite';
-import { RESOURCE_DEFS, type ResourceState } from '../resources';
-import { SKILL_DEFS, levelProgress, MAX_LEVEL, type SkillState } from '../skills';
+import { RESOURCE_DEFS, type ResourceState, loadResources, saveResources, loadLocker, saveLocker, type LockerState } from '../resources';
+import { SKILL_DEFS, levelProgress, MAX_LEVEL, type SkillState, addSkillXp, saveSkills } from '../skills';
 
 // Circular minimap (top-right): radius + margin from the screen corner.
 const MM_R = 74;
@@ -113,6 +114,10 @@ export class HUDScene extends Scene {
     world.events.on(Events.HUD_SHOW_MESSAGE, this.showMessage, this);
     world.events.on(Events.SIM_EVENTS, this.onSimEvents, this);
     world.events.on(Events.DAILY_CHANGED, this.onDailyChanged, this);
+    world.events.on(Events.OPEN_STUDY_HALL, () => {
+      const modal = document.getElementById('study-hall-modal');
+      if (modal) modal.style.display = 'block';
+    }, this);
     world.events.on(Events.OPEN_SHOP, () => this.toggleShopPanel(true), this);
     world.events.on(Events.SHOP_CHANGED, () => { if (this.shopPanel) this.buildShopPanel(); }, this);
     world.events.on(Events.OPEN_MARKET, () => this.toggleMarketPanel(true), this);
@@ -128,6 +133,9 @@ export class HUDScene extends Scene {
 
     // Daily-quest button (under the minimap)
     this.buildDailyButton();
+
+    // Initialize Study Hall HTML overlays
+    this.initStudyHallDOM();
   }
 
   /** Circular world-map minimap: fit the whole tile map into a disc, paint
@@ -261,9 +269,49 @@ export class HUDScene extends Scene {
   }
 
   /** Watch the sim event stream for an incoming duel challenge. */
-  private onSimEvents(events: Array<{ type?: string; fromName?: string }>): void {
+  private onSimEvents(events: Array<any>): void {
+    const world = this.registry.get('world') as any;
+    const selfId = world?.playerId;
+
     for (const e of events) {
-      if (e && e.type === 'duelRequest') { this.showDuelPrompt(e.fromName || 'A rival'); return; }
+      if (!e) continue;
+      
+      // Match player-specific events
+      if (e.pid !== undefined && selfId !== undefined && e.pid !== selfId) {
+        continue;
+      }
+
+      if (e.type === 'duelRequest') {
+        this.showDuelPrompt(e.fromName || 'A rival');
+      } else if (e.type === 'levelup') {
+        this.showMessage(`★ LEVEL UP! You reached level ${e.level}! ★`);
+      } else if (e.type === 'xp') {
+        this.showMessage(`+${e.amount} XP gained`);
+      } else if (e.type === 'loot') {
+        this.showMessage(e.text);
+      } else if (e.type === 'questAccepted') {
+        const q = QUESTS[e.questId];
+        if (q) this.showMessage(`Quest Accepted: ${q.name}`);
+      } else if (e.type === 'questDone') {
+        const q = QUESTS[e.questId];
+        if (q) this.showMessage(`Quest Completed: ${q.name}!`);
+      } else if (e.type === 'playerDeath') {
+        const worldScene = this.scene.get('WorldScene') as any;
+        const p = worldScene?.world?.player;
+        if (p && p.pos.z < -30 && p.pos.x >= 0) {
+          const res = loadResources();
+          const lostWood = Math.floor(res.wood * 0.15);
+          const lostOre = Math.floor(res.ore * 0.15);
+          if (lostWood > 0 || lostOre > 0) {
+            res.wood -= lostWood;
+            res.ore -= lostOre;
+            saveResources(res);
+            this.registry.set('resources', res);
+            worldScene.events.emit(Events.RESOURCES_CHANGED);
+            this.showMessage(`Lost in Wilderness: -${lostWood} Wood, -${lostOre} Ore!`);
+          }
+        }
+      }
     }
   }
 
@@ -687,5 +735,455 @@ export class HUDScene extends Scene {
     panel.setScale(0.7);
     this.tweens.add({ targets: panel, scale: 1, duration: 200, ease: 'Back.out' });
     this.skillsPanel = panel;
+  }
+
+  // ---- Study Hall & Book Reader Library implementation -----------------------
+
+  private booksData: any[] = [];
+  private currentBook: any = null;
+  private currentChapterIdx = 0;
+  private currentPageIdx = 0;
+  private currentTheme = 'sepia';
+  private currentFontSize = 18;
+
+  private initStudyHallDOM(): void {
+    const shModal = document.getElementById('study-hall-modal');
+    const brModal = document.getElementById('book-reader-modal');
+    const lockerModal = document.getElementById('library-locker-modal');
+    if (shModal) shModal.style.display = 'none';
+    if (brModal) brModal.style.display = 'none';
+    if (lockerModal) lockerModal.style.display = 'none';
+    
+    document.getElementById('study-hall-close')?.addEventListener('click', () => {
+      if (shModal) shModal.style.display = 'none';
+    });
+    document.getElementById('book-reader-close')?.addEventListener('click', () => {
+      if (brModal) brModal.style.display = 'none';
+    });
+    document.getElementById('library-locker-close')?.addEventListener('click', () => {
+      if (lockerModal) lockerModal.style.display = 'none';
+    });
+    
+    document.getElementById('study-hall-quiz-btn')?.addEventListener('click', () => {
+      this.startFocusedMasteryQuiz();
+    });
+    document.getElementById('study-hall-library-btn')?.addEventListener('click', () => {
+      if (shModal) shModal.style.display = 'none';
+      this.openBookCatalog();
+    });
+    document.getElementById('study-hall-locker-btn')?.addEventListener('click', () => {
+      if (shModal) shModal.style.display = 'none';
+      this.openLocker();
+    });
+
+    // Wire Locker transaction buttons
+    document.getElementById('locker-deposit-wood-1')?.addEventListener('click', () => {
+      this.transferLocker('wood', 1);
+    });
+    document.getElementById('locker-deposit-wood-all')?.addEventListener('click', () => {
+      const res = loadResources();
+      this.transferLocker('wood', res.wood);
+    });
+    document.getElementById('locker-withdraw-wood-1')?.addEventListener('click', () => {
+      this.transferLocker('wood', -1);
+    });
+    document.getElementById('locker-withdraw-wood-all')?.addEventListener('click', () => {
+      const locker = loadLocker();
+      this.transferLocker('wood', -locker.wood);
+    });
+
+    document.getElementById('locker-deposit-ore-1')?.addEventListener('click', () => {
+      this.transferLocker('ore', 1);
+    });
+    document.getElementById('locker-deposit-ore-all')?.addEventListener('click', () => {
+      const res = loadResources();
+      this.transferLocker('ore', res.ore);
+    });
+    document.getElementById('locker-withdraw-ore-1')?.addEventListener('click', () => {
+      this.transferLocker('ore', -1);
+    });
+    document.getElementById('locker-withdraw-ore-all')?.addEventListener('click', () => {
+      const locker = loadLocker();
+      this.transferLocker('ore', -locker.ore);
+    });
+    
+    document.getElementById('book-theme-toggle')?.addEventListener('click', () => {
+      const themes = ['sepia', 'light', 'dark'];
+      const nextIdx = (themes.indexOf(this.currentTheme) + 1) % themes.length;
+      this.currentTheme = themes[nextIdx];
+      const container = document.getElementById('book-pages-container');
+      if (container) container.className = this.currentTheme;
+    });
+    
+    document.getElementById('book-font-inc')?.addEventListener('click', () => {
+      if (this.currentFontSize < 26) {
+        this.currentFontSize += 2;
+        this.applyFontSize();
+      }
+    });
+    document.getElementById('book-font-dec')?.addEventListener('click', () => {
+      if (this.currentFontSize > 14) {
+        this.currentFontSize -= 2;
+        this.applyFontSize();
+      }
+    });
+    
+    document.getElementById('book-toc-toggle')?.addEventListener('click', () => {
+      const sidebar = document.getElementById('book-toc-sidebar');
+      if (sidebar) {
+        if (sidebar.style.transform === 'translateX(0px)') {
+          sidebar.style.transform = 'translateX(-100%)';
+        } else {
+          sidebar.style.transform = 'translateX(0px)';
+        }
+      }
+    });
+    
+    document.getElementById('book-page-prev')?.addEventListener('click', () => {
+      this.turnPage(-1);
+    });
+    document.getElementById('book-page-next')?.addEventListener('click', () => {
+      this.turnPage(1);
+    });
+    
+    window.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Escape') {
+        if (shModal) shModal.style.display = 'none';
+        if (brModal) brModal.style.display = 'none';
+        if (lockerModal) lockerModal.style.display = 'none';
+      }
+      if (brModal && brModal.style.display === 'block') {
+        if (ev.key === 'ArrowLeft') this.turnPage(-1);
+        else if (ev.key === 'ArrowRight') this.turnPage(1);
+      }
+    });
+    
+    fetch('data/books.json')
+      .then(r => r.json())
+      .then(data => {
+        this.booksData = data;
+        this.renderCatalog('all');
+      })
+      .catch(err => console.error('Failed to load books:', err));
+      
+    const filterBtns = document.querySelectorAll('.catalog-filters button');
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', (ev) => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        const target = ev.currentTarget as HTMLButtonElement;
+        target.classList.add('active');
+        const cat = target.getAttribute('data-category') || 'all';
+        this.renderCatalog(cat);
+      });
+    });
+  }
+
+  private applyFontSize(): void {
+    const left = document.getElementById('page-left');
+    const right = document.getElementById('page-right');
+    if (left) left.style.fontSize = `${this.currentFontSize}px`;
+    if (right) right.style.fontSize = `${this.currentFontSize}px`;
+  }
+
+  private renderCatalog(category: string): void {
+    const grid = document.getElementById('book-list-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    
+    const filtered = category === 'all' 
+      ? this.booksData 
+      : this.booksData.filter(b => b.category === category);
+      
+    filtered.forEach(book => {
+      const card = document.createElement('div');
+      card.className = 'window panel';
+      card.style.padding = '16px';
+      card.style.display = 'flex';
+      card.style.flexDirection = 'column';
+      card.style.gap = '12px';
+      card.style.justifyContent = 'space-between';
+      
+      card.innerHTML = `
+        <div>
+          <h4 style="margin: 0; font-family: var(--font-display); color: #fde68a; font-size: 15px; border: none; padding: 0;">${book.title}</h4>
+          <span style="font-size: 12px; color: #a1a1aa;">By ${book.author}</span>
+          <div style="margin-top: 8px; font-size: 11px; color: #fbbf24; text-transform: uppercase; letter-spacing: 0.5px;">${book.category}</div>
+        </div>
+        <button type="button" class="btn" style="width: 100%; font-size: 13px; font-family: var(--font-display);" data-book-id="${book.id}">Read Book</button>
+      `;
+      
+      card.querySelector('button')?.addEventListener('click', () => {
+        this.openBook(book);
+      });
+      
+      grid.appendChild(card);
+    });
+  }
+
+  private openBookCatalog(): void {
+    const brModal = document.getElementById('book-reader-modal');
+    if (brModal) {
+      brModal.style.display = 'block';
+      document.getElementById('book-catalog-view')!.style.display = 'flex';
+      document.getElementById('book-pages-view')!.style.display = 'none';
+      document.getElementById('book-reader-title')!.innerText = 'Reading Room';
+    }
+  }
+
+  private openBook(book: any): void {
+    this.currentBook = book;
+    this.currentChapterIdx = 0;
+    this.currentPageIdx = 0;
+    
+    document.getElementById('book-catalog-view')!.style.display = 'none';
+    document.getElementById('book-pages-view')!.style.display = 'block';
+    document.getElementById('book-reader-title')!.innerText = book.title;
+    
+    const tocList = document.getElementById('book-toc-list');
+    if (tocList) {
+      tocList.innerHTML = '';
+      book.chapters.forEach((ch: any, idx: number) => {
+        const li = document.createElement('li');
+        li.style.cursor = 'pointer';
+        li.style.padding = '6px 8px';
+        li.style.borderRadius = '4px';
+        li.style.transition = 'background 0.2s';
+        li.innerText = ch.title;
+        li.addEventListener('click', () => {
+          this.currentChapterIdx = idx;
+          this.currentPageIdx = 0;
+          this.renderPages();
+          document.getElementById('book-toc-sidebar')!.style.transform = 'translateX(-100%)';
+        });
+        tocList.appendChild(li);
+      });
+    }
+    
+    this.renderPages();
+    this.applyFontSize();
+  }
+
+  private renderPages(): void {
+    if (!this.currentBook) return;
+    const chapters = this.currentBook.chapters;
+    const ch = chapters[this.currentChapterIdx];
+    
+    const tocItems = document.querySelectorAll('#book-toc-list li');
+    tocItems.forEach((item, idx) => {
+      if (idx === this.currentChapterIdx) {
+        (item as HTMLElement).style.background = 'rgba(251, 191, 36, 0.15)';
+        (item as HTMLElement).style.color = '#fbbf24';
+      } else {
+        (item as HTMLElement).style.background = 'transparent';
+        (item as HTMLElement).style.color = '#f8fafc';
+      }
+    });
+    
+    const leftPage = document.getElementById('page-left');
+    const rightPage = document.getElementById('page-right');
+    const indicator = document.getElementById('book-page-indicator');
+    
+    let totalPages = 0;
+    chapters.forEach((c: any) => totalPages += c.pages.length);
+    
+    let currentGlobalPage = 1;
+    for (let i = 0; i < this.currentChapterIdx; i++) {
+      currentGlobalPage += chapters[i].pages.length;
+    }
+    currentGlobalPage += this.currentPageIdx;
+    
+    if (indicator) {
+      indicator.innerText = `Page ${currentGlobalPage} of ${totalPages}`;
+    }
+    
+    const isDualPage = window.innerWidth >= 768;
+    
+    if (leftPage) {
+      leftPage.innerHTML = `
+        <h4 style="font-family: var(--font-display); color: #c8a838; font-size: 14px; margin-top: 0; text-transform: uppercase; border: none; padding: 0;">${ch.title}</h4>
+        <p style="margin-top: 16px;">${ch.pages[this.currentPageIdx] || ''}</p>
+      `;
+    }
+    
+    if (rightPage) {
+      if (isDualPage && this.currentPageIdx + 1 < ch.pages.length) {
+        rightPage.innerHTML = `
+          <h4 style="font-family: var(--font-display); color: #c8a838; font-size: 14px; margin-top: 0; text-transform: uppercase; border: none; padding: 0;">${ch.title}</h4>
+          <p style="margin-top: 16px;">${ch.pages[this.currentPageIdx + 1]}</p>
+        `;
+      } else if (isDualPage && this.currentChapterIdx + 1 < chapters.length) {
+        const nextCh = chapters[this.currentChapterIdx + 1];
+        rightPage.innerHTML = `
+          <h4 style="font-family: var(--font-display); color: #c8a838; font-size: 14px; margin-top: 0; text-transform: uppercase; border: none; padding: 0;">${nextCh.title}</h4>
+          <p style="margin-top: 16px;">${nextCh.pages[0] || ''}</p>
+        `;
+      } else {
+        rightPage.innerHTML = '';
+      }
+    }
+  }
+
+  private turnPage(dir: number): void {
+    if (!this.currentBook) return;
+    const chapters = this.currentBook.chapters;
+    const ch = chapters[this.currentChapterIdx];
+    const isDualPage = window.innerWidth >= 768;
+    const step = isDualPage ? 2 : 1;
+    
+    const animClass = dir > 0 ? 'page-flip-next' : 'page-flip-prev';
+    const leftPage = document.getElementById('page-left');
+    const rightPage = document.getElementById('page-right');
+    if (leftPage) leftPage.classList.add(animClass);
+    if (rightPage) rightPage.classList.add(animClass);
+    
+    setTimeout(() => {
+      if (leftPage) leftPage.classList.remove(animClass);
+      if (rightPage) rightPage.classList.remove(animClass);
+    }, 200);
+
+    if (dir > 0) {
+      if (this.currentPageIdx + step < ch.pages.length) {
+        this.currentPageIdx += step;
+      } else if (this.currentChapterIdx + 1 < chapters.length) {
+        this.currentChapterIdx++;
+        this.currentPageIdx = 0;
+      }
+    } else {
+      if (this.currentPageIdx - step >= 0) {
+        this.currentPageIdx -= step;
+      } else if (this.currentChapterIdx - 1 >= 0) {
+        this.currentChapterIdx--;
+        const prevCh = chapters[this.currentChapterIdx];
+        this.currentPageIdx = Math.max(0, prevCh.pages.length - (prevCh.pages.length % step === 0 ? step : prevCh.pages.length % step));
+      }
+    }
+    this.renderPages();
+  }
+
+  private startFocusedMasteryQuiz(): void {
+    const resources = this.registry.get('resources') as ResourceState | undefined;
+    const skills = this.registry.get('skills') as SkillState | undefined;
+    
+    const woodCount = resources?.wood ?? 0;
+    const oreCount = resources?.ore ?? 0;
+    const worldScene = this.scene.get('WorldScene') as any;
+    const goldCount = worldScene.gold ?? 0;
+    
+    if (woodCount < 5 || oreCount < 5 || goldCount < 20) {
+      this.showMessage('Needs 5 Wood, 5 Ore, and 20 Gold.');
+      return;
+    }
+    
+    if (resources) {
+      resources.wood -= 5;
+      resources.ore -= 5;
+      saveResources(resources);
+      worldScene.events.emit(Events.RESOURCES_CHANGED);
+    }
+    worldScene.gold -= 20;
+    worldScene.events.emit(Events.HUD_UPDATE_MINDCOINS, worldScene.gold);
+    
+    const subjects = ['maths', 'science', 'english', 'history'];
+    const sub = subjects[Math.floor(Math.random() * subjects.length)];
+    
+    const raw = this.registry.get('questions') as any;
+    const arr = Array.isArray(raw) ? raw : raw?.questions ?? [];
+    const filtered = arr.filter((q: any) => q.subject.toLowerCase() === sub);
+    const q = filtered.length ? filtered[Math.floor(Math.random() * filtered.length)] : arr[Math.floor(Math.random() * arr.length)];
+    
+    if (q) {
+      const modal = document.getElementById('study-hall-modal');
+      if (modal) modal.style.display = 'none';
+      
+      this.events.once(Events.QUIZ_CORRECT, () => {
+        this.events.off(Events.QUIZ_WRONG);
+        this.events.off(Events.QUIZ_TIMEOUT);
+        this.scene.resume('WorldScene');
+        this.scene.stop('QuizScene');
+        
+        if (skills) {
+          const skillId = sub === 'maths' ? 'mining' : (sub === 'english' ? 'woodcutting' : 'combat');
+          addSkillXp(skills, skillId, 50);
+          saveSkills(skills);
+          worldScene.events.emit(Events.SKILLS_CHANGED);
+        }
+        this.showMessage('★ Correct! Mastery Upgraded (+50 XP)! ★');
+      });
+      
+      const onWrong = () => {
+        this.events.off(Events.QUIZ_CORRECT);
+        this.scene.resume('WorldScene');
+        this.scene.stop('QuizScene');
+        
+        if (skills) {
+          const skillId = sub === 'maths' ? 'mining' : (sub === 'english' ? 'woodcutting' : 'combat');
+          addSkillXp(skills, skillId, 10);
+          saveSkills(skills);
+          worldScene.events.emit(Events.SKILLS_CHANGED);
+        }
+        this.showMessage('Incorrect. Awarded +10 Mastery XP.');
+      };
+      
+      this.events.once(Events.QUIZ_WRONG, onWrong);
+      this.events.once(Events.QUIZ_TIMEOUT, onWrong);
+      
+      this.scene.launch('QuizScene', { question: q, returnTo: 'HUDScene' });
+      this.scene.pause('WorldScene');
+    }
+  }
+
+  private openLocker(): void {
+    const modal = document.getElementById('library-locker-modal');
+    if (modal) {
+      modal.style.display = 'block';
+      this.refreshLockerUI();
+    }
+  }
+
+  private refreshLockerUI(): void {
+    const res = loadResources();
+    const locker = loadLocker();
+    
+    const carryWood = document.getElementById('locker-carry-wood');
+    const vaultWood = document.getElementById('locker-vault-wood');
+    const carryOre = document.getElementById('locker-carry-ore');
+    const vaultOre = document.getElementById('locker-vault-ore');
+    
+    if (carryWood) carryWood.innerText = String(res.wood);
+    if (vaultWood) vaultWood.innerText = String(locker.wood);
+    if (carryOre) carryOre.innerText = String(res.ore);
+    if (vaultOre) vaultOre.innerText = String(locker.ore);
+  }
+
+  private transferLocker(kind: 'wood' | 'ore', amount: number): void {
+    const res = loadResources();
+    const locker = loadLocker();
+    const worldScene = this.scene.get('WorldScene') as any;
+    
+    if (amount > 0) {
+      // Deposit
+      const toTransfer = Math.min(amount, res[kind]);
+      if (toTransfer > 0) {
+        res[kind] -= toTransfer;
+        locker[kind] += toTransfer;
+        saveResources(res);
+        saveLocker(locker);
+        this.registry.set('resources', res);
+        if (worldScene) worldScene.events.emit(Events.RESOURCES_CHANGED);
+        this.refreshLockerUI();
+      }
+    } else if (amount < 0) {
+      // Withdraw
+      const toTransfer = Math.min(Math.abs(amount), locker[kind]);
+      if (toTransfer > 0) {
+        res[kind] += toTransfer;
+        locker[kind] -= toTransfer;
+        saveResources(res);
+        saveLocker(locker);
+        this.registry.set('resources', res);
+        if (worldScene) worldScene.events.emit(Events.RESOURCES_CHANGED);
+        this.refreshLockerUI();
+      }
+    }
   }
 }

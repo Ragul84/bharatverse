@@ -23,7 +23,7 @@ describe('Ensnare web-root affix', () => {
       }
       expect(applied).toBe(true);
       const a = p.auras.find((x) => x.kind === 'root')!;
-      expect(a.name).toBe('Jaal Bandhan');
+      expect(a.name).toBe('Web Snare');
       expect((sim as any).isRooted(p)).toBe(true);
     } finally {
       tmpl.ensnare!.chance = saved;

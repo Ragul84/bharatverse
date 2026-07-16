@@ -1,4 +1,4 @@
-/**
+﻿/**
  * WorldScene - BharatVerse Open World (Flat Top-Down)
  *
  * Renders a beautiful tile-based world using the Kenney Roguelike RPG Pack
@@ -19,8 +19,11 @@
 import Phaser, { Scene, GameObjects, Input } from 'phaser';
 import { Events } from '../index';
 import { SimBridge, interpPos } from '../sim_bridge';
+import { Atmosphere } from '../atmosphere';
+import { Ambient } from '../ambient';
 import { EntityView } from '../entity_view';
 import { generateCharacterTextures } from '../character_sprites';
+import { addSoftShadow } from '../shadows';
 import { ZONES } from '../../sim/data';
 import { hash2 } from '../../sim/rng';
 import type { IWorld } from '../../world_api';
@@ -37,7 +40,7 @@ import {
 } from '../resources';
 import {
   loadSkills, saveSkills, addSkillXp, levelForXp, gatherBonus,
-  type SkillState,
+  type SkillState, type SkillId,
 } from '../skills';
 
 // ---- Tile constants (roguelikeSheet_transparent.png layout) ----
@@ -420,7 +423,7 @@ function buildTileMap(): { ground: number[][]; objects: (number | null)[][] } {
 const { ground: GROUND_MAP, objects: OBJECT_MAP } = buildTileMap();
 export { GROUND_MAP };
 
-// Sim world bounds (from sim/data.ts — hardcoded here to avoid circular import)
+// Sim world bounds (from sim/data.ts â€” hardcoded here to avoid circular import)
 const SIM_X_MIN = -180;
 const SIM_Z_MIN = -180;
 const SIM_X_MAX =  180;
@@ -453,6 +456,10 @@ export class WorldScene extends Scene {
   private bridge!: SimBridge;
 
   private playerView!: EntityView;
+  private atmosphere!: Atmosphere;
+  private ambient!: Ambient;
+  private waterTiles: GameObjects.Image[] = [];
+  private foliage: GameObjects.Image[] = [];
 
   // Equipped cosmetic pet: a follower sprite that trails the player.
   private petSprite?: GameObjects.Sprite;
@@ -476,8 +483,11 @@ export class WorldScene extends Scene {
   private moveTarget: { x: number; z: number } | null = null;
   private moveMarker!: GameObjects.Graphics;
 
-  // Radial-ish action menu shown when an entity is clicked (Chat / Fight / …).
+  // Radial-ish action menu shown when an entity is clicked (Chat / Fight / â€¦).
   private entityMenu?: GameObjects.Container;
+  private activeZone: 'town' | 'forest' | 'mines' | 'wild' = 'town';
+  private transitioning = false;
+  private portalGraphics: GameObjects.Graphics[] = [];
 
   // Gathering (recall-gated woodcutting + mining) + a unified Gold total.
   private gathering = false;
@@ -509,7 +519,7 @@ export class WorldScene extends Scene {
     generateCharacterTextures(this);
 
     // Zone label
-    this.zoneLabel = this.add.text(width / 2, 16, 'Vidya Nagar', {
+    this.zoneLabel = this.add.text(width / 2, 16, 'Nilgiri Town', {
       fontSize: '14px',
       fontFamily: '"Noto Sans", sans-serif',
       color: '#fde68a',
@@ -528,6 +538,38 @@ export class WorldScene extends Scene {
     this.moveMarker.lineStyle(2, 0x00ff88, 0.9);
     this.moveMarker.strokeCircle(0, 0, 10);
     this.moveMarker.setVisible(false);
+
+    // Camera bounds & initial active zone setup
+    this.setZoneBounds('town');
+
+    // Pulsing Portal Gates
+    this.portalGraphics = [];
+    const portalLocations = [
+      { x: 0, z: 24, color: 0x10b981 }, // Whisperwood Grove (Emerald)
+      { x: -24, z: -20, color: 0x3b82f6 }, // Ironstone Caverns (Blue)
+      { x: 24, z: -20, color: 0xef4444 }, // Wilderness Frontier (Red)
+      { x: 0, z: 50, color: 0xf59e0b }, // Return (Gold)
+      { x: -72, z: -50, color: 0xf59e0b }, // Return (Gold)
+      { x: 62, z: -50, color: 0xf59e0b }, // Return (Gold)
+    ];
+    for (const loc of portalLocations) {
+      const g = this.add.graphics().setDepth(D_ENTITY - 0.1);
+      const px = worldToPixel(loc.x, loc.z);
+      g.lineStyle(4, loc.color, 0.8);
+      g.strokeCircle(px.px, px.py, TILE_SZ * 0.8);
+      g.fillStyle(loc.color, 0.15);
+      g.fillCircle(px.px, px.py, TILE_SZ * 0.8);
+      this.portalGraphics.push(g);
+      
+      this.tweens.add({
+        targets: g,
+        alpha: 0.35,
+        duration: 1000,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut'
+      });
+    }
 
     // Player view
     const pp = worldToPixel(this.world.player.pos.x, this.world.player.pos.z);
@@ -549,11 +591,13 @@ export class WorldScene extends Scene {
     const mapPxW = MAP_W * TILE_SZ;
     const mapPxH = MAP_H * TILE_SZ;
     this.cameras.main.setBounds(0, 0, mapPxW, mapPxH);
-    // The canvas backs the DEVICE pixel grid (width = window×dpr). Frame ~12 tiles
+    // The canvas backs the DEVICE pixel grid (width = windowÃ—dpr). Frame ~12 tiles
     // across for a kintara-style but not-too-distant view; the player can zoom with
     // the mousepad wheel or a touch pinch (see below).
     this.cameras.main.startFollow(this.playerView.container, true, 0.1, 0.1);
     this.cameras.main.setZoom(Phaser.Math.Clamp(this.scale.width / (TILE_SZ * 12), ZOOM_MIN, ZOOM_MAX));
+    this.atmosphere = new Atmosphere(this);
+    this.ambient = new Ambient(this);
 
     // Mousepad / mouse wheel zoom (a laptop two-finger scroll or pinch arrives as
     // a wheel event).
@@ -582,7 +626,7 @@ export class WorldScene extends Scene {
     this.gold = this.world.copper || 0;
     this.events.emit(Events.HUD_UPDATE_MINDCOINS, this.gold);
 
-    // (Gathering no longer quizzes — it's click-and-gather. Recall lives in combat,
+    // (Gathering no longer quizzes â€” it's click-and-gather. Recall lives in combat,
     // the Study Hall, dailies, and the theatre. Combat's quiz is owned by CombatScene.)
 
     // Daily quests: shared state in the registry; HUD claims award Gold here.
@@ -628,7 +672,7 @@ export class WorldScene extends Scene {
     addResource(res, o.kind, -count);
     saveResources(res);
     this.addGold(gold);
-    this.emitMsg(`Sold ${count} ${def.label}  ·  +${gold} Gold`);
+    this.emitMsg(`Sold ${count} ${def.label}  Â·  +${gold} Gold`);
     this.events.emit(Events.RESOURCES_CHANGED);
   }
 
@@ -725,7 +769,8 @@ export class WorldScene extends Scene {
         const cy = r * TILE_SZ + TILE_SZ / 2;
         if (hasTS) {
           if (t === 'water') {
-            this.add.image(cx, cy, 'ts-water').setDisplaySize(TILE_SZ + 2, TILE_SZ + 2).setDepth(D_GROUND);
+            const wt = this.add.image(cx, cy, 'ts-water').setDisplaySize(TILE_SZ + 2, TILE_SZ + 2).setDepth(D_GROUND);
+            this.waterTiles.push(wt);
           } else if (t === 'dirt') {
             this.add.image(cx, cy, 'ts-tilemap-dirt', 10).setDisplaySize(TILE_SZ + 2, TILE_SZ + 2).setDepth(D_GROUND + 1);
           } else {
@@ -762,18 +807,22 @@ export class WorldScene extends Scene {
         const cx = c * TILE_SZ + TILE_SZ / 2;
         const depth = D_ENTITY + baseY;
         if (TREE.has(frame)) {
+          addSoftShadow(this, cx, baseY + 6, TILE_SZ * 1.3, TILE_SZ * 0.5, depth - 0.5, 0.7);
           const key = BUSHES[Math.floor(hash2(c, r, 3) * BUSHES.length)];
           const tree = this.add.image(cx, baseY, key, 0).setOrigin(0.5, 0.85)
             .setDisplaySize(TILE_SZ * 1.4, TILE_SZ * 1.4).setDepth(depth)
             .setInteractive({ useHandCursor: true });
+          this.foliage.push(tree);
           tree.on('pointerdown', () => this.startGather(tree)); // recall-gated woodcutting
         } else if (SMALL.has(frame)) {
           if (hash2(c, r, 9) < 0.5) {
             const key = BUSHES[Math.floor(hash2(c, r, 4) * BUSHES.length)];
-            this.add.image(cx, baseY, key, 0).setOrigin(0.5, 0.85)
+            const bush = this.add.image(cx, baseY, key, 0).setOrigin(0.5, 0.85)
               .setDisplaySize(TILE_SZ * 0.8, TILE_SZ * 0.8).setDepth(depth);
+            this.foliage.push(bush);
           } else {
             const key = ROCKS[Math.floor(hash2(c, r, 6) * ROCKS.length)];
+            addSoftShadow(this, cx, baseY + 4, TILE_SZ * 0.6, TILE_SZ * 0.28, depth - 0.5, 0.6);
             const rock = this.add.image(cx, baseY, key).setOrigin(0.5, 0.9)
               .setDisplaySize(TILE_SZ * 0.7, TILE_SZ * 0.7).setDepth(depth)
               .setInteractive({ useHandCursor: true });
@@ -795,16 +844,17 @@ export class WorldScene extends Scene {
       this.add.image(x, baseY, key).setOrigin(0.5, 1)
         .setDisplaySize(w, h).setDepth(D_ENTITY + baseY);
     };
-    // Village houses (south-west + south-centre). House1 is the Trading Post
+    // Village houses (south-west + south-centre). Haveli is the Trading Post
     // where gathered Wood/Ore is sold for Gold.
-    this.placeBuilding('ts-house1', 18, 37, TILE_SZ * 2, TILE_SZ * 3, 'Trading Post', Events.OPEN_MARKET);
-    // House2 is the Learning Theatre — sit and watch educational videos.
-    this.placeBuilding('ts-house2', 40, 45, TILE_SZ * 2, TILE_SZ * 3, '🎬 Learning Theatre', Events.OPEN_THEATRE);
-    // Town (east): a tower, the big castle and a monastery around the plaza
-    place('ts-tower', 66, 23, TILE_SZ * 2, TILE_SZ * 4);
-    place('ts-castle', 70, 32, TILE_SZ * 5, TILE_SZ * 4);
-    // Monastery doubles as the Cosmetics Emporium — click it to open the shop.
-    this.placeBuilding('ts-monastery', 73, 26, TILE_SZ * 3, TILE_SZ * 3, 'Cosmetics Emporium', Events.OPEN_SHOP);
+    this.placeBuilding('in-haveli', 18, 37, TILE_SZ * 2.2, TILE_SZ * 3, 'Trading Post', Events.OPEN_MARKET);
+    // Natyashala is the Learning Theatre â€” sit and watch educational videos.
+    this.placeBuilding('in-theatre', 40, 45, TILE_SZ * 2.5, TILE_SZ * 3, 'ðŸŽ¬ Learning Theatre', Events.OPEN_THEATRE);
+    // Town (east): Gurukul Library, Temple Study Hall, Cosmetics Emporium, and Palace
+    this.placeBuilding('in-gurukul', 26, 32, TILE_SZ * 2.2, TILE_SZ * 3, 'Gurukul Library', Events.OPEN_STUDY_HALL);
+    this.placeBuilding('in-temple', 66, 23, TILE_SZ * 2.5, TILE_SZ * 4, 'Study Hall', Events.OPEN_STUDY_HALL);
+    place('in-palace', 70, 32, TILE_SZ * 5.5, TILE_SZ * 4.5);
+    // Bazaar Cosmetics Emporium â€” click it to open the shop.
+    this.placeBuilding('in-bazaar', 73, 26, TILE_SZ * 2.5, TILE_SZ * 3, 'Cosmetics Emporium', Events.OPEN_SHOP);
   }
 
   /** A labelled, clickable building that opens a panel (shop / market). */
@@ -837,6 +887,14 @@ export class WorldScene extends Scene {
       this.pinchDist = d;
     } else {
       this.pinchDist = 0;
+    }
+
+    const duel = this.world.duelInfo;
+    if (duel && duel.state === 'active' && !this.inCombat) {
+      const otherPlayer = this.world.entities.get(duel.otherPid);
+      if (otherPlayer) {
+        this.startCombat(otherPlayer);
+      }
     }
 
     if (this.inCombat) return;
@@ -878,20 +936,96 @@ export class WorldScene extends Scene {
     // Combat is now started intentionally (click a mob -> Fight), not by auto-aggro.
 
     // Zone label
+    const currentZone = this.zoneForPos(this.world.player.pos.x, this.world.player.pos.z);
+    if (currentZone !== this.activeZone) {
+      this.transitionToZone(currentZone);
+    }
     this.updateZoneLabel();
+    this.atmosphere.update(pp.px, pp.py);
+    this.ambient.update(this.game.loop.delta);
+    this.updateWaterShimmer();
+    this.updateFoliageSway();
+  }
+
+  /** Gentle per-tile brightness ripple on water so the lake surface shimmers like
+   *  a traveling wave instead of sitting flat. Phase is offset by tile position. */
+  private updateWaterShimmer(): void {
+    if (!this.waterTiles.length) return;
+    const t = this.time.now * 0.001;
+    for (const wt of this.waterTiles) {
+      const phase = wt.y * 0.05 + wt.x * 0.03;
+      const b = 0.9 + 0.1 * Math.sin(t * 1.6 + phase);
+      const g = Math.round(b * 255);
+      wt.setTint((g << 16) | (g << 8) | g);
+    }
+  }
+
+  /** Gentle wind sway: each tree/bush pivots at its base (origin 0.5,0.85) with
+   *  a small phase-offset rotation so the canopy rustles instead of standing rigid. */
+  private updateFoliageSway(): void {
+    if (!this.foliage.length) return;
+    const t = this.time.now * 0.001;
+    for (const f of this.foliage) {
+      const phase = f.x * 0.02 + f.y * 0.02;
+      f.setRotation(Math.sin(t * 1.2 + phase) * 0.025);
+    }
   }
 
   private updateZoneLabel(): void {
-    const p = this.world.player;
-    for (const zone of ZONES) {
-      const dx = p.pos.x - zone.hub.x;
-      const dz = p.pos.z - zone.hub.z;
-      if (Math.sqrt(dx * dx + dz * dz) < zone.hub.radius * 2) {
-        this.zoneLabel.setText(zone.hub.name);
-        return;
-      }
+    if (this.activeZone === 'town') {
+      this.zoneLabel.setText('Nilgiri Town (Safe Hub)');
+    } else if (this.activeZone === 'forest') {
+      this.zoneLabel.setText('Whisperwood Grove (Language)');
+    } else if (this.activeZone === 'mines') {
+      this.zoneLabel.setText('Ironstone Caverns (Mathematics)');
+    } else if (this.activeZone === 'wild') {
+      this.zoneLabel.setText('Wilderness Frontier (Dangerous)');
     }
-    this.zoneLabel.setText('');
+  }
+
+  private setZoneBounds(zone: 'town' | 'forest' | 'mines' | 'wild'): void {
+    this.activeZone = zone;
+    const cam = this.cameras.main;
+    if (zone === 'town') {
+      cam.setBounds(10 * TILE_SZ, 24 * TILE_SZ, 23 * TILE_SZ, 23 * TILE_SZ);
+    } else if (zone === 'forest') {
+      cam.setBounds(44 * TILE_SZ, 4 * TILE_SZ, 32 * TILE_SZ, 27 * TILE_SZ);
+    } else if (zone === 'mines') {
+      cam.setBounds(4 * TILE_SZ, 4 * TILE_SZ, 27 * TILE_SZ, 27 * TILE_SZ);
+    } else if (zone === 'wild') {
+      cam.setBounds(49 * TILE_SZ, 31 * TILE_SZ, 30 * TILE_SZ, 28 * TILE_SZ);
+    }
+  }
+
+  private zoneForPos(x: number, z: number): 'town' | 'forest' | 'mines' | 'wild' {
+    if (z > 40) return 'forest';
+    if (z < -30) {
+      return x < 0 ? 'mines' : 'wild';
+    }
+    return 'town';
+  }
+
+  private transitionToZone(zone: 'town' | 'forest' | 'mines' | 'wild'): void {
+    if (this.transitioning) return;
+    this.transitioning = true;
+    
+    this.cameras.main.fadeOut(250, 0, 0, 0);
+    this.cameras.main.once('camerafadeoutcomplete', () => {
+      this.setZoneBounds(zone);
+      this.updateZoneLabel();
+      
+      const p = this.world.player;
+      const px = worldToPixel(p.pos.x, p.pos.z);
+      if (this.playerView) {
+        this.playerView.container.x = px.px;
+        this.playerView.container.y = px.py;
+      }
+      
+      this.cameras.main.fadeIn(250, 0, 0, 0);
+      this.cameras.main.once('camerafadeincomplete', () => {
+        this.transitioning = false;
+      });
+    });
   }
 
   private steerOffline(up: boolean, down: boolean, left: boolean, right: boolean): void {
@@ -982,13 +1116,46 @@ export class WorldScene extends Scene {
     const acts: Act[] = [];
     if (e.kind === 'mob') {
       acts.push({ label: 'Fight', color: 0xb91c1c, fn: () => this.startCombat(e) });
-      acts.push({ label: 'Inspect', color: 0x3b2a1e, fn: () => this.emitMsg(`${e.name}  ·  Lv ${(e as { level?: number }).level ?? 1}`) });
+      acts.push({ label: 'Inspect', color: 0x3b2a1e, fn: () => this.emitMsg(`${e.name}  Â·  Lv ${(e as { level?: number }).level ?? 1}`) });
     } else if (e.kind === 'npc') {
       acts.push({ label: 'Talk', color: 0x1d4ed8, fn: () => { this.world.targetEntity(id); this.world.interact(); } });
       acts.push({ label: 'Chat', color: 0x3b2a1e, fn: () => this.emitMsg(`You greet ${e.name}.`) });
     } else if (e.kind === 'player') {
-      acts.push({ label: 'Chat', color: 0x1d4ed8, fn: () => this.emitMsg('Namaste!') });
-      acts.push({ label: 'Challenge', color: 0xb91c1c, fn: () => { this.world.duelRequest(id); this.emitMsg(`Challenge sent to ${e.name}.`); } });
+      const targetName = e.name;
+      const friends = this.world.socialInfo?.friends || [];
+      const isFriend = friends.some(f => f.name === targetName);
+      
+      if (isFriend) {
+        acts.push({
+          label: 'Chat',
+          color: 0x1d4ed8,
+          fn: () => {
+            const chatInput = document.getElementById('chat-input') as HTMLInputElement | null;
+            if (chatInput) {
+              chatInput.focus();
+              chatInput.value = `/w ${targetName} `;
+            }
+          }
+        });
+      } else {
+        acts.push({
+          label: 'Add Friend',
+          color: 0x059669,
+          fn: () => {
+            this.world.friendAdd(targetName);
+            this.emitMsg(`Friend request sent to ${targetName}.`);
+          }
+        });
+      }
+      
+      acts.push({
+        label: 'Battle',
+        color: 0xb91c1c,
+        fn: () => {
+          this.world.duelRequest(id);
+          this.emitMsg(`Battle challenge sent to ${targetName}.`);
+        }
+      });
     } else {
       return; // objects have no menu
     }
@@ -1023,11 +1190,13 @@ export class WorldScene extends Scene {
   /** Recall-gated gathering: fell a tree (wood) or mine a rock (ore) by
    *  answering a question correctly. */
   /**
-   * Click-and-gather (kintara-style, engaging — NOT a per-swing quiz): run a short
+   * Click-and-gather (kintara-style, engaging â€” NOT a per-swing quiz): run a short
    * progress cycle, auto-award a material + Mastery XP, then repeat on the same
    * node until the player moves or fights. Recall lives in combat / Study Hall /
    * dailies instead, so gathering stays a relaxing flow.
    */
+  private gatheringQuizActive = false;
+
   private startGather(node: GameObjects.Image, kind: 'wood' | 'ore' = 'wood'): void {
     if (this.inCombat) return;
     this.closeEntityMenu();
@@ -1035,13 +1204,18 @@ export class WorldScene extends Scene {
     this.cancelGather();
     const p = this.world.player;
     const tw = pixelToWorld(node.x, node.y);
-    if (this.offline) p.facing = Math.atan2(tw.x - p.pos.x, tw.z - p.pos.z); // face the node
+    const facing = Math.atan2(tw.x - p.pos.x, tw.z - p.pos.z);
+    p.facing = facing;
+    if (typeof (this.world as any).setMouselookFacing === 'function') {
+      (this.world as any).setMouselookFacing(facing);
+    }
     this.moveTarget = null; // stand and gather
     this.gathering = true;
     this.gatherNode = node;
     this.gatherKind = kind;
     this.gatherBar = this.add.graphics().setDepth(D_UI - 1);
-    this.emitMsg(kind === 'ore' ? 'Mining…' : 'Chopping…');
+    this.emitMsg(kind === 'ore' ? 'Miningâ€¦' : 'Choppingâ€¦');
+    if (this.playerView) this.playerView.setGathering(true, kind);
     this.gatherCycle();
   }
 
@@ -1056,8 +1230,6 @@ export class WorldScene extends Scene {
       onComplete: () => {
         if (!this.gathering) return;
         this.awardGather();
-        this.tweens.add({ targets: node, angle: { from: -6, to: 6 }, duration: 55, yoyo: true, repeat: 2, onComplete: () => node.setAngle(0) });
-        this.gatherCycle(); // auto-continue until interrupted
       },
     });
   }
@@ -1075,22 +1247,112 @@ export class WorldScene extends Scene {
     const ore = this.gatherKind === 'ore';
     const skillId = ore ? 'mining' : 'woodcutting';
     const skills = this.registry.get('skills') as SkillState | undefined;
-    // Higher Mastery = more materials per gather (our "upgraded tool").
     const level = skills ? levelForXp(skills[skillId]) : 1;
-    const amount = 1 + gatherBonus(level);
+    
+    // 10% chance to trigger active recall quiz
+    if (Math.random() < 0.10) {
+      const q = this.pickGatherQuestion(ore ? 'maths' : 'english');
+      if (q) {
+        this.gatheringQuizActive = true;
+        this.cancelGather(); // Pause gathering loop during quiz
+        
+        this.events.once(Events.QUIZ_CORRECT, () => {
+          this.handleGatherQuizResult(true, ore, skillId, level);
+        });
+        const onWrong = () => {
+          this.handleGatherQuizResult(false, ore, skillId, level);
+        };
+        this.events.once(Events.QUIZ_WRONG, onWrong);
+        this.events.once(Events.QUIZ_TIMEOUT, onWrong);
+        
+        this.scene.launch('QuizScene', { question: q, returnTo: 'WorldScene' });
+        this.scene.pause('WorldScene');
+        return;
+      }
+    }
+    
+    this.processGatherAward(1.0, ore, skillId, level);
+  }
+
+  private handleGatherQuizResult(correct: boolean, ore: boolean, skillId: SkillId, level: number): void {
+    this.gatheringQuizActive = false;
+    this.scene.stop('QuizScene');
+    this.events.off(Events.QUIZ_CORRECT);
+    this.events.off(Events.QUIZ_WRONG);
+    this.events.off(Events.QUIZ_TIMEOUT);
+    this.scene.resume('WorldScene');
+    
+    if (correct) {
+      this.processGatherAward(2.0, ore, skillId, level);
+    } else {
+      this.processGatherAward(1.0, ore, skillId, level);
+    }
+  }
+
+  private processGatherAward(multiplier: number, ore: boolean, skillId: SkillId, level: number): void {
+    const baseAmount = 1 + gatherBonus(level);
+    const amount = Math.floor(baseAmount * multiplier);
+    
     const res = this.registry.get('resources') as ResourceState | undefined;
-    if (res) { addResource(res, ore ? 'ore' : 'wood', amount); saveResources(res); this.events.emit(Events.RESOURCES_CHANGED); }
+    if (res) {
+      addResource(res, ore ? 'ore' : 'wood', amount);
+      saveResources(res);
+      this.events.emit(Events.RESOURCES_CHANGED);
+    }
+    
+    const skills = this.registry.get('skills') as SkillState | undefined;
     if (skills) {
-      const leveled = addSkillXp(skills, skillId, 10);
+      const xpAwarded = 10 * multiplier;
+      const leveled = addSkillXp(skills, skillId, xpAwarded);
       saveSkills(skills);
       this.events.emit(Events.SKILLS_CHANGED);
       if (leveled) this.emitMsg(`${ore ? 'Mining' : 'Woodcutting'} Lv ${levelForXp(skills[skillId])}!`);
     }
-    if (!ore) this.bumpDaily('chop'); // trees count toward the "chop" daily
-    this.floatWorldText(this.gatherNode, `+${amount} ${ore ? 'Ore' : 'Wood'}`, '#fde047');
+    
+    if (!ore) this.bumpDaily('chop');
+    
+    const node = this.gatherNode;
+    if (node) {
+      this.floatWorldText(node, `+${amount} ${ore ? 'Ore' : 'Wood'}`, multiplier > 1 ? '#00ff88' : '#fde047');
+      this.tweens.add({
+        targets: node,
+        angle: { from: -6, to: 6 },
+        duration: 55,
+        yoyo: true,
+        repeat: 2,
+        onComplete: () => node.setAngle(0)
+      });
+      this.spawnChips(node.x, node.y, ore ? 0xbdc3c7 : 0x8b5a2b);
+    }
+    
+    // Auto-continue gathering if not interrupted
+    if (!this.gatheringQuizActive && this.gathering && this.gatherNode) {
+      this.gatherCycle();
+    }
   }
 
-  /** Stop any in-progress gathering (movement, combat, or clicking elsewhere). */
+  private spawnChips(x: number, y: number, color: number): void {
+    for (let i = 0; i < 8; i++) {
+      const p = this.add.graphics().setDepth(D_ENTITY + 1);
+      p.fillStyle(color, 0.95);
+      p.fillRect(-2, -2, 4, 4);
+      p.setPosition(x, y - 10);
+      
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 50 + Math.random() * 80;
+      
+      this.tweens.add({
+        targets: p,
+        x: x + Math.cos(angle) * (20 + Math.random() * 30),
+        y: y + 20 + Math.random() * 20,
+        alpha: 0,
+        duration: 400 + Math.random() * 400,
+        ease: 'Quad.easeOut',
+        onComplete: () => p.destroy()
+      });
+    }
+  }
+
   private cancelGather(): void {
     this.gatherTween?.stop();
     this.gatherTween = undefined;
@@ -1098,12 +1360,15 @@ export class WorldScene extends Scene {
     this.gatherBar = undefined;
     this.gathering = false;
     this.gatherNode = undefined;
+    if (this.playerView) this.playerView.setGathering(false);
   }
 
-  private pickGatherQuestion(): Question | null {
+  private pickGatherQuestion(subject: 'maths' | 'english'): Question | null {
     const raw = this.registry.get('questions') as Question[] | { questions: Question[] } | undefined;
     const arr = Array.isArray(raw) ? raw : raw?.questions ?? [];
-    return arr.length ? arr[Math.floor(Math.random() * arr.length)] : null;
+    const filtered = arr.filter(q => q.subject.toLowerCase() === subject);
+    const pool = filtered.length ? filtered : arr;
+    return pool.length ? pool[Math.floor(Math.random() * pool.length)] : null;
   }
 
   private addGold(n: number): void {

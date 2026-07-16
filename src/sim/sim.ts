@@ -1567,6 +1567,7 @@ export class Sim {
       if (!p.dead) {
         this.updatePlayerMovement(p, meta);
         this.updateDoorTriggers(p);
+        this.updatePortalTriggers(p);
         this.updateCasting(p, meta);
         this.updatePlayerAutoAttack(p, meta);
         this.updateRegen(p, meta);
@@ -6965,9 +6966,17 @@ export class Sim {
     if (!p.dead) return;
     if (this.arenaMatches.has(p.id)) return;
     p.dead = false;
-    // dying in a dungeon sends you to the graveyard of the zone its door is
-    // in; dying outdoors, to your current zone's graveyard
+
+    // Wilderness Frontier death penalty: deduct 15% Gold (copper) if died in the Wilderness Frontier (z < -30, x >= 0)
     const dungeon = dungeonAt(p.pos.x);
+    if (!dungeon && p.pos.z < -30 && p.pos.x >= 0) {
+      const lostGold = Math.floor(meta.copper * 0.15);
+      if (lostGold > 0) {
+        meta.copper -= lostGold;
+        this.emit({ type: 'loot', text: `You died in the Wilderness and lost ${formatMoney(lostGold)}!`, pid: meta.entityId });
+      }
+    }
+
     const graveyard = zoneAt(dungeon ? dungeon.doorPos.z : p.pos.z).graveyard;
     p.pos = this.groundPos(graveyard.x, graveyard.z);
     p.prevPos = { ...p.pos };
@@ -9564,6 +9573,52 @@ export class Sim {
         return;
       }
     }
+  }
+
+  private updatePortalTriggers(p: Entity): void {
+    if (p.kind !== 'player') return;
+    const d = 2.5;
+    
+    // Town to Whisperwood Grove (North)
+    if (Math.hypot(p.pos.x - 0, p.pos.z - 24) < d) {
+      this.warpEntity(p, 0, 54);
+      return;
+    }
+    // Town to Caverns (Southwest)
+    if (Math.hypot(p.pos.x - (-24), p.pos.z - (-20)) < d) {
+      this.warpEntity(p, -72, -46);
+      return;
+    }
+    // Town to Wilderness (Southeast)
+    if (Math.hypot(p.pos.x - 24, p.pos.z - (-20)) < d) {
+      this.warpEntity(p, 62, -46);
+      return;
+    }
+    
+    // Return: Whisperwood Grove to Town
+    if (Math.hypot(p.pos.x - 0, p.pos.z - 50) < d) {
+      this.warpEntity(p, 0, 20);
+      return;
+    }
+    // Return: Caverns to Town
+    if (Math.hypot(p.pos.x - (-72), p.pos.z - (-50)) < d) {
+      this.warpEntity(p, -20, -18);
+      return;
+    }
+    // Return: Wilderness to Town
+    if (Math.hypot(p.pos.x - 62, p.pos.z - (-50)) < d) {
+      this.warpEntity(p, 20, -18);
+      return;
+    }
+  }
+
+  private warpEntity(e: Entity, x: number, z: number): void {
+    const p = this.groundPos(x, z);
+    e.pos = p;
+    e.prevPos = { ...p };
+    this.grid.update(e);
+    this.playerGrid.update(e);
+    this.emit({ type: 'teleport', pid: e.id, x, z });
   }
 
   enterDungeon(dungeonId: string, pid?: number): void {

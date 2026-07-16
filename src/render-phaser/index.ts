@@ -1,4 +1,4 @@
-/**
+﻿/**
  * BharatVerse - Phaser 3 Game Entry Point
  * Mobile-first 2D renderer (replaces Three.js 3D renderer)
  *
@@ -17,6 +17,7 @@ import { WorldScene } from './scenes/WorldScene';
 import { CombatScene } from './scenes/CombatScene';
 import { QuizScene } from './scenes/QuizScene';
 import { HUDScene } from './scenes/HUDScene';
+import { CharacterSelectScene } from './scenes/CharacterSelectScene';
 import { TheatreScene } from './scenes/TheatreScene';
 
 /** Base logical resolution - scales to fill device screen. Higher than the
@@ -81,6 +82,9 @@ export const Events = {
   // Learning Theatre building -> open the video overlay.
   OPEN_THEATRE: 'theatre:open',
 
+  // Study Hall: open Study Hall options panel
+  OPEN_STUDY_HALL: 'study_hall:open',
+
   // Subject Mastery: WorldScene/Combat grant XP -> SKILLS_CHANGED so the HUD
   // skills panel refreshes.
   SKILLS_CHANGED: 'skills:changed',
@@ -93,7 +97,7 @@ export const Events = {
  */
 /**
  * Phaser rasterises Text into a bitmap at `style.resolution` (default 1) and then
- * the browser upscales that bitmap to the device's real pixels — on any scaled or
+ * the browser upscales that bitmap to the device's real pixels â€” on any scaled or
  * hi-DPI display (Windows 125%/150%, retina) that upscale is what makes text look
  * blurry. Default every Text to the device pixel ratio so the bitmap is rendered
  * at native resolution and stays crisp. Done once, globally, before any Text.
@@ -125,8 +129,8 @@ export function createPhaserGame(parentElement: HTMLElement): Phaser.Game {
   const forceCanvas = import.meta.env.DEV && typeof location !== 'undefined' && location.search.includes('canvas2d');
   // Render at the DEVICE's real pixels, not CSS pixels. On a scaled/hi-DPI display
   // (e.g. 150% Windows = devicePixelRatio 1.62) the browser blows a CSS-sized
-  // canvas up to the real pixel grid — rendering *below* screen resolution, which
-  // looks blurry no matter the smoothing. So we size the game to window×DPR and
+  // canvas up to the real pixel grid â€” rendering *below* screen resolution, which
+  // looks blurry no matter the smoothing. So we size the game to windowÃ—DPR and
   // display it at the CSS size: the backing store then matches the screen 1:1.
   const dpr = Math.min(3, Math.max(1, (typeof window !== 'undefined' && window.devicePixelRatio) || 1));
   const winW = typeof window !== 'undefined' ? window.innerWidth : GAME_WIDTH;
@@ -157,6 +161,7 @@ export function createPhaserGame(parentElement: HTMLElement): Phaser.Game {
       CombatScene,
       QuizScene,
       HUDScene,
+      CharacterSelectScene,
       TheatreScene,
     ],
     // Crisp pixel-art rendering: the world (Kenney 16px tiles) and characters
@@ -169,8 +174,8 @@ export function createPhaserGame(parentElement: HTMLElement): Phaser.Game {
 
   const game = new Phaser.Game(config);
   game.registry.set('dpr', dpr);
-  // Keep the backing store at device pixels (game size = window×dpr) while the
-  // canvas DISPLAYS at CSS size — so it maps 1:1 to the screen and stays sharp.
+  // Keep the backing store at device pixels (game size = windowÃ—dpr) while the
+  // canvas DISPLAYS at CSS size â€” so it maps 1:1 to the screen and stays sharp.
   // Also force nearest-neighbor for any residual scaling (crisp pixel art).
   const fitDevicePixels = (): void => {
     const c = game.canvas;

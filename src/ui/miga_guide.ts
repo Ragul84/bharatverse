@@ -77,7 +77,7 @@ export class MIGAGuide {
 
   showQuestComplete(questName: string, xpGained: number) {
     this.show(
-      `Quest complete: "${questName}"! +${xpGained} XP earned. Guru Shukracharya is proud of you, warrior!`,
+      `Quest complete: "${questName}"! +${xpGained} XP earned. Elder Nambi is proud of you, warrior!`,
       'quest', 6000,
     );
   }

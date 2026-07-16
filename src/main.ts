@@ -1,4 +1,4 @@
-import { Sim } from './sim/sim';
+﻿import { Sim } from './sim/sim';
 import { Renderer } from './render/renderer';
 import { Input } from './game/input';
 import { Keybinds } from './game/keybinds';
@@ -31,7 +31,7 @@ import { portraitChipHtml, hydratePortraits } from './ui/portrait_chip';
 import { playerPortraitDataUrl } from './render/characters/portrait';
 import { createPerfMonitor } from './game/perf';
 import { updateFollowCameraYaw, wrapAngle } from './game/camera_follow';
-// ── BharatVerse: Knowledge Combat Layer ───────────────────────────────────────
+// â”€â”€ BharatVerse: Knowledge Combat Layer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 import { KnowledgeModal } from './ui/knowledge_modal';
 import { MIGAGuide } from './ui/miga_guide';
 import {
@@ -68,7 +68,7 @@ let homepageMusicStarted = false;
 let homepageMusicMuted = readHomepageMusicMuted();
 let removeHomepageMusicGestureListeners: (() => void) | null = null;
 
-// ── BharatVerse: Knowledge combat global state ─────────────────────────────────
+// â”€â”€ BharatVerse: Knowledge combat global state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 let bvKnowledgeModal: KnowledgeModal | null = null;
 let bvMIGA: MIGAGuide | null = null;
 let bvCombo = 0;           // current answer streak
@@ -100,7 +100,7 @@ async function bvTriggerKnowledgeCheck(
         bvCombo = Math.max(0, bvCombo + result.comboIncrement);
 
         const tier = getComboTierLabel(bvCombo);
-        if (tier) console.info(`[BharatVerse] ${tier} ×${bvCombo}`);
+        if (tier) console.info(`[BharatVerse] ${tier} Ã—${bvCombo}`);
 
         if (!result.correct && bvMIGA) {
           void bvMIGA.showWrongAnswer(q.question, chosen, q.correct, q.explanation);
@@ -110,7 +110,7 @@ async function bvTriggerKnowledgeCheck(
       };
     });
   } catch {
-    // Network error — pass through (never block combat)
+    // Network error â€” pass through (never block combat)
     return 1;
   }
 }
@@ -208,7 +208,7 @@ function userFacingApiError(err: unknown): string {
   if (normalized === 'connection to the server was lost.') return t('loading.connectionLost');
   if (normalized === 'rejected by server') return t('loading.connectionRejected');
   // NOTE: protocol/transport diagnostics ('bad auth message', 'authentication timed out',
-  // etc.) are intentionally NOT translated — they are developer/diagnostic errors and must
+  // etc.) are intentionally NOT translated â€” they are developer/diagnostic errors and must
   // stay English so browser logs and support reports match the server source.
   // Moderation kicks and the login brute-force throttle (server/admin.ts, server/main.ts).
   if (normalized === 'this account is suspended.') return tServer('moderation.suspended');
@@ -222,7 +222,7 @@ function userFacingApiError(err: unknown): string {
 // --- Cloudflare Turnstile (bot gate on the login/register form) ---------------
 // The site key is injected at build time; when it is empty (local/offline dev or
 // a build without the env var) the widget never renders and the token is '', so
-// the server — which also skips verification without its secret — lets requests
+// the server â€” which also skips verification without its secret â€” lets requests
 // through unchanged. The api.js <script> is in index.html.
 const TURNSTILE_SITEKEY = String(import.meta.env.VITE_TURNSTILE_SITEKEY ?? '');
 
@@ -281,7 +281,7 @@ function formatFooterVersion(version: string): string {
 function syncBuildInfo(): void {
   const el = document.getElementById('game-version');
   if (!el) return;
-  el.textContent = `v${formatFooterVersion(__APP_VERSION__)} · build ${__APP_BUILD_ID__}`;
+  el.textContent = `v${formatFooterVersion(__APP_VERSION__)} Â· build ${__APP_BUILD_ID__}`;
   el.title = t('meta.builtOn', { date: __APP_BUILD_DATE__ });
 }
 
@@ -517,6 +517,7 @@ function setLoadingProgress(done: number, total: number): void {
 }
 
 function hideLoadingScreen(): void {
+  stopLoadingTips();
   const el = $('#loading-screen');
   if (!el.classList.contains('visible')) return;
   el.classList.add('fade');
@@ -526,11 +527,95 @@ function hideLoadingScreen(): void {
   }, LOADING_FADE_MS);
 }
 
+// ---------------------------------------------------------------------------
+// Premium UI: Loading Tips + Particle Dust
+// ---------------------------------------------------------------------------
+
+const LOADING_TIPS = [
+  '<strong>Tip:</strong> Answering quiz questions correctly deals double damage and earns bonus XP.',
+  '<strong>Tip:</strong> Chop trees and mine ore to craft powerful gear. Every 10th harvest triggers a bonus quiz.',
+  '<strong>Tip:</strong> Challenge other players to PvP quiz duels by clicking their nameplate.',
+  '<strong>Tip:</strong> Join a guild to tackle raid dungeons and unlock exclusive class abilities.',
+  '<strong>Tip:</strong> Your class shapes how you fight - Warriors excel at taking hits, Mages at burst damage.',
+  '<strong>Tip:</strong> Add friends to unlock whisper chat and coordinate quiz battles together.',
+  '<strong>Tip:</strong> Open your Spellbook (P) to see all your class abilities and their quiz bonuses.',
+];
+
+let _tipTimer: number | null = null;
+
+function initLoadingScreenEffects(): void {
+  // Particle dust
+  const particleContainer = document.querySelector<HTMLElement>('#loading-screen .ls-particles');
+  if (particleContainer) {
+    for (let i = 0; i < 20; i++) {
+      const p = document.createElement('div');
+      p.className = 'ls-particle';
+      const x = Math.random() * 100;
+      const y = 40 + Math.random() * 60;
+      const size = 1.5 + Math.random() * 3;
+      const dur = 4 + Math.random() * 6;
+      const delay = Math.random() * 8;
+      const dy = -(40 + Math.random() * 80);
+      const dx = (Math.random() - 0.5) * 60;
+      const op = 0.2 + Math.random() * 0.4;
+      p.style.cssText = `--p-x:${x}%;--p-y:${y}%;--p-size:${size}px;--p-dur:${dur.toFixed(1)}s;--p-delay:${delay.toFixed(1)}s;--p-dy:${dy}px;--p-dx:${dx}px;--p-op:${op.toFixed(2)};`;
+      particleContainer.appendChild(p);
+    }
+  }
+  // Rotating tips
+  const tipEl = document.querySelector<HTMLElement>('#ls-tip');
+  if (tipEl) {
+    let idx = Math.floor(Math.random() * LOADING_TIPS.length);
+    const showTip = () => {
+      tipEl.innerHTML = LOADING_TIPS[idx % LOADING_TIPS.length];
+      tipEl.style.animation = 'none';
+      void tipEl.offsetHeight; // force reflow to restart animation
+      tipEl.style.animation = '';
+      idx++;
+    };
+    showTip();
+    _tipTimer = window.setInterval(showTip, 8000);
+  }
+}
+
+function stopLoadingTips(): void {
+  if (_tipTimer !== null) { clearInterval(_tipTimer); _tipTimer = null; }
+}
+
+// ---------------------------------------------------------------------------
+// Premium UI: Live Online Player Count
+// ---------------------------------------------------------------------------
+
+function initOnlineCount(): void {
+  const countEl = document.querySelector<HTMLElement>('#bv-online-count');
+  if (!countEl) return;
+  const refresh = async () => {
+    try {
+      const res = await fetch('/api/status', { method: 'GET' });
+      if (!res.ok) return;
+      const data = await res.json() as { onlinePlayers?: number; online?: number; players?: number };
+      const count = data.onlinePlayers ?? data.online ?? data.players ?? null;
+      if (typeof count === 'number') {
+        countEl.textContent = count.toLocaleString();
+      }
+    } catch { /* network error - silent */ }
+  };
+  void refresh();
+  setInterval(refresh, 30_000);
+}
+
+// Make Demo Play button visible on landing page
+function initDemoButton(): void {
+  const btn = document.querySelector<HTMLElement>('#btn-demo-login');
+  if (btn) btn.style.removeProperty('display');
+}
+
+
 // Resolve only after the browser has actually painted. The scene build
 // (new Renderer/new Hud) runs fully synchronously and blocks the main thread,
 // so without a real paint first the loading screen never shows on warm loads
-// (cached assets ⇒ assetsReady resolves on a microtask) and entry looks frozen.
-// Two rAFs guarantee a paint happened between them — same idiom used to cut to
+// (cached assets â‡’ assetsReady resolves on a microtask) and entry looks frozen.
+// Two rAFs guarantee a paint happened between them â€” same idiom used to cut to
 // the game on the first rendered frame below.
 function nextPaint(): Promise<void> {
   return new Promise((resolve) => {
@@ -594,7 +679,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
   if (document.activeElement instanceof HTMLElement) {
     document.activeElement.blur();
   }
-  // Paint the loading screen before anything can block — assetsReady may resolve
+  // Paint the loading screen before anything can block â€” assetsReady may resolve
   // immediately when assets are already cached, and the scene build is synchronous.
   await nextPaint();
   // Skip 3D assets preloading since we are in 2D Phaser mode
@@ -627,7 +712,9 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
   phaserContainer.style.display = 'block';
 
   // Import and initialize Phaser game
-  phaserGame = createPhaserGame(phaserContainer);
+  // Reuse the game instance if the cinematic character-select already created
+  // it (online flow); otherwise create it fresh (offline / legacy path).
+  if (!phaserGame) phaserGame = createPhaserGame(phaserContainer);
   // Dev-only handle for E2E/screenshot tooling (never referenced by game logic).
   if (import.meta.env.DEV) (window as unknown as { __game?: unknown }).__game = phaserGame;
 
@@ -645,6 +732,11 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
   // alpha so the renderer can lerp between ticks instead of snapping at 20Hz.
   const simBridge = new SimBridge();
   phaserGame.registry.set('simBridge', simBridge);
+  // The cinematic select scene already created + booted the Phaser game; clear
+  // the select flag and jump straight into WorldScene (BootScene will not
+  // re-run, so we must start the world scene explicitly here).
+  phaserGame.registry.set('cinematicCharSelect', false);
+  if (phaserGame.scene.keys['WorldScene']) phaserGame.scene.start('WorldScene');
 
   // Background simulation/network loop
   let simLast = performance.now();
@@ -705,7 +797,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
     fatalOverlay(t('loading.rendererFailed', { error: technicalErrorMessage(err) }));
     return;
   }
-  // ── BharatVerse: Initialize knowledge combat UI ─────────────────────────────
+  // â”€â”€ BharatVerse: Initialize knowledge combat UI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   bvMIGA = new MIGAGuide();
   bvKnowledgeModal = new KnowledgeModal((answer, timeTaken) => {
     // This callback is overridden per-question in bvTriggerKnowledgeCheck
@@ -716,7 +808,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
   bvCombo = 0;
   bvAttackCount = 0;
   bvLastTargetId = null;
-  // ───────────────────────────────────────────────────────────────────────────
+  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 
   // Offline only: expose the dev "2v2 Fiesta vs Bots" practice toggle to the HUD.
@@ -767,7 +859,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
     onTab: () => world.tabTarget(),
     onTargetFriendly: () => world.targetNearestFriendly(),
     onCycleFriendly: () => world.friendlyTabTarget(),
-    // slot 0 (key 1) is Attack for every class — auto-attack without needing
+    // slot 0 (key 1) is Attack for every class â€” auto-attack without needing
     // right-click; keys and clicks share the Hud's remappable slot layout
     onAbility: (slot) => hud.castSlot(slot),
     onInputIntent: (kind) => perf.markInputIntent(kind),
@@ -875,7 +967,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
       return;
     }
     // Interface & Comfort booleans: each toggles a body class (CSS does the rest)
-    // or flips a live subsystem flag. No sim involvement — purely presentational.
+    // or flips a live subsystem flag. No sim involvement â€” purely presentational.
     if (key === 'reduceMotion') {
       document.body.classList.toggle('reduce-motion', settings.set('reduceMotion', !!value));
       return;
@@ -993,7 +1085,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
 
   function clickMovePathTo(target: { x: number; z: number }): { x: number; z: number }[] {
     // ignoreFences: the player can hop fences, so route straight over them
-    // instead of around — resolveMove fires the jump as we reach the rail.
+    // instead of around â€” resolveMove fires the jump as we reach the rail.
     // swim: the player can swim, so let the route cross/enter water.
     return findPlayerPath(world.cfg.seed, world.player.pos, target, undefined, true, true);
   }
@@ -1066,7 +1158,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
       return;
     }
     // Ground attack-move: latch onto the nearest hostile within range, converting
-    // it into a chase (entityId set → resolveMove reroutes toward it each tick).
+    // it into a chase (entityId set â†’ resolveMove reroutes toward it each tick).
     if (input.clickMoveEntityId === null) {
       const p = world.player;
       const activePvpOpponents = activePvpOpponentIds(world);
@@ -1104,7 +1196,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
   }
 
   // The player can't move toward a click-to-move destination while rooted/stunned
-  // — surface that on the marker so the freeze reads as crowd control, not a bug.
+  // â€” surface that on the marker so the freeze reads as crowd control, not a bug.
   function playerImmobilized(): boolean {
     return world.player.auras.some((a) => IMMOBILE_AURA_KINDS.has(a.kind));
   }
@@ -1203,7 +1295,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
       orbiting: input.leftDown && input.isCameraDragActive(),
     });
     input.camYaw = next.camYaw;
-    lastInterpFacing = next.lastInterpFacing; // track through mouselook too — no snap on release
+    lastInterpFacing = next.lastInterpFacing; // track through mouselook too â€” no snap on release
   }
 
   // Resolve this step's movement input, folding in click-to-move (#95). Returns
@@ -1273,7 +1365,7 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
           // can turn at close range.
           mi.forward = clickMoveShouldWalk(smoothFacing, step.facing);
           // The path can route over fences (the player jumps them), so hop when
-          // one is just ahead along our heading — the sim only jumps while
+          // one is just ahead along our heading â€” the sim only jumps while
           // grounded, so setting this every frame near a fence is safe. Once we
           // give up on jumping and reroute around, stop auto-hopping.
           if (mi.forward && !clickMoveReroutedAround) {
@@ -1458,26 +1550,6 @@ async function startGame(world: IWorld, offlineSim: Sim | null, online: ClientWo
 }
 
 // ---------------------------------------------------------------------------
-// Offline flow
-// ---------------------------------------------------------------------------
-
-// Offline names go straight into innerHTML paths (quest $N text, char window
-// title), so enforce the server's character-name rule client-side too:
-// strip anything outside [A-Za-z' -], then require /^[A-Za-z][A-Za-z' -]{1,15}$/.
-function sanitizeOfflineName(raw: string): string {
-  const stripped = raw.replace(/[^A-Za-z' -]/g, '').replace(/^[^A-Za-z]+/, '').slice(0, 16);
-  return /^[A-Za-z][A-Za-z' -]{1,15}$/.test(stripped) ? stripped : 'Adventurer';
-}
-
-async function startOffline(playerClass: PlayerClass, name: string, skin = 0): Promise<void> {
-  if (!(await prepareWorldEntry())) return;
-  enterLoadingState(t('loading.world'));
-  const sim = new Sim({ seed: WORLD_SEED, playerClass, playerName: name });
-  sim.setPlayerSkin(sim.playerId, skin);
-  void startGame(sim, sim, null);
-}
-
-// ---------------------------------------------------------------------------
 // Online flow: login -> character select -> world
 // ---------------------------------------------------------------------------
 
@@ -1486,8 +1558,8 @@ const api = new Api();
 let activeTransitionTimeout: number | null = null;
 let activeTransitionCleanup: (() => void) | null = null;
 let characterPreview: CharacterPreview | null = null;
+let selectedCharacter: CharacterSummary | null = null;
 let authModeApply: ((mode: 'login' | 'register') => void) | null = null;
-let offlineSkin = 0; // chosen appearance skin for the offline quick-start character
 let onlineSkin = 0; // chosen appearance skin for new online characters
 
 /** Fill a skin-picker row with one option per available skin, each showing an
@@ -1498,7 +1570,7 @@ function renderSkinPicker(rowId: string, cls: PlayerClass, current: number, onPi
   row.innerHTML = '';
   const count = skinCount(`player_${cls}`);
   const picker = row.closest('.skin-picker') as HTMLElement | null;
-  if (count <= 1) { // only the default exists — nothing to pick
+  if (count <= 1) { // only the default exists â€” nothing to pick
     if (picker) picker.style.display = 'none';
     return;
   }
@@ -1539,7 +1611,7 @@ function renderSkinPicker(rowId: string, cls: PlayerClass, current: number, onPi
 /** Give each class button a small portrait preview of that class (run once
  *  character assets are ready so portraits render synchronously). */
 function decorateClassChips(): void {
-  document.querySelectorAll<HTMLElement>('#charcreate-panel .mini-class, #offline-select .mini-class').forEach((li) => {
+  document.querySelectorAll<HTMLElement>('#charcreate-panel .mini-class').forEach((li) => {
     if (li.querySelector('.mini-class-portrait')) return;
     const cls = li.dataset.class as PlayerClass;
     const key = li.dataset.i18n;
@@ -1567,16 +1639,6 @@ function selectedSkin(rowId: string, fallback: number): number {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
-/** Reset to the default skin and (re)render the offline picker for a class. */
-function refreshOfflineSkins(cls: PlayerClass): void {
-  offlineSkin = 0;
-  characterPreview?.setSkin(0);
-  renderSkinPicker('#offline-skin-row', cls, 0, (i) => {
-    offlineSkin = i;
-    characterPreview?.setSkin(i);
-  });
-}
-
 /** Reset to the default skin and (re)render the online creation picker for a class. */
 function refreshOnlineSkins(cls: PlayerClass): void {
   onlineSkin = 0;
@@ -1588,14 +1650,19 @@ function refreshOnlineSkins(cls: PlayerClass): void {
 }
 
 function updatePreviewContainer(panelId: string): void {
-  if (!characterPreview) return;
-  const containerId =
-    panelId === '#charselect-panel' ? '#online-preview-container'
-    : panelId === '#charcreate-panel' ? '#charcreate-preview-container'
-    : '#offline-preview-container';
+  const containerId = panelId === '#charselect-panel'
+    ? '#online-preview-container'
+    : '#charcreate-preview-container';
   const container = $(containerId);
   if (!container) return;
-  characterPreview.setContainer(container);
+
+  if (!characterPreview) {
+    const canvas = document.createElement('canvas');
+    canvas.id = 'char-preview-canvas-main';
+    characterPreview = new CharacterPreview(container, canvas);
+  } else {
+    characterPreview.setContainer(container);
+  }
 
   if (panelId === '#charselect-panel') {
     // The selected roster row drives the showcase (class + that character's chroma).
@@ -1606,15 +1673,11 @@ function updatePreviewContainer(panelId: string): void {
     return;
   }
 
-  const selSelector = panelId === '#charcreate-panel'
-    ? '#charcreate-panel .mini-class.sel'
-    : '#offline-select .mini-class.sel';
-  const selEl = document.querySelector(selSelector) as HTMLElement | null;
+  const selEl = document.querySelector('#charcreate-panel .mini-class.sel') as HTMLElement | null;
   if (selEl) {
     const cls = selEl.dataset.class as PlayerClass;
     characterPreview.setClass(cls);
-    if (panelId === '#charcreate-panel') refreshOnlineSkins(cls);
-    else refreshOfflineSkins(cls);
+    refreshOnlineSkins(cls);
   }
 }
 
@@ -1682,7 +1745,7 @@ function switchMainView(targetId: string): void {
     if (backdrop) backdrop.classList.toggle('trailer-off', !onPlayPage);
 
     if (targetId === '#hero-view') {
-      const activePlayPanel = ['#charselect-panel', '#charcreate-panel', '#offline-select'].find(id => {
+      const activePlayPanel = ['#charselect-panel', '#charcreate-panel'].find(id => {
         const el = $(id);
         return el && !el.hasAttribute('hidden');
       });
@@ -1725,7 +1788,7 @@ function show(el: string): void {
 
   const logoImg = $('#title-logo');
   if (logoImg) {
-    const shouldHideLogo = el === '#charselect-panel' || el === '#charcreate-panel' || el === '#offline-select';
+    const shouldHideLogo = el === '#charselect-panel' || el === '#charcreate-panel';
     logoImg.toggleAttribute('hidden', shouldHideLogo);
   }
 
@@ -1746,7 +1809,7 @@ function show(el: string): void {
     }
   }
 
-  const panels = ['#mode-select', '#login-panel', '#realm-panel', '#charselect-panel', '#charcreate-panel', '#offline-select'];
+  const panels = ['#mode-select', '#login-panel', '#realm-panel', '#charselect-panel', '#charcreate-panel'];
   document.body.dataset.startPanel = el.slice(1);
 
   // Find currently visible panel
@@ -1757,7 +1820,7 @@ function show(el: string): void {
     for (const id of panels) {
       $(id).toggleAttribute('hidden', id !== el);
     }
-    if (el === '#charselect-panel' || el === '#charcreate-panel' || el === '#offline-select') {
+    if (el === '#charselect-panel' || el === '#charcreate-panel') {
       updatePreviewContainer(el);
     }
     return;
@@ -1780,7 +1843,7 @@ function show(el: string): void {
   if (isReducedMotion) {
     fromPanel.toggleAttribute('hidden', true);
     toPanel.toggleAttribute('hidden', false);
-    if (el === '#charselect-panel' || el === '#charcreate-panel' || el === '#offline-select') {
+    if (el === '#charselect-panel' || el === '#charcreate-panel') {
       updatePreviewContainer(el);
     }
     return;
@@ -1804,7 +1867,7 @@ function show(el: string): void {
     // Set initial state for fade-in
     toPanel.classList.add('panel-transition', 'panel-fade-in-start');
     toPanel.toggleAttribute('hidden', false);
-    if (el === '#charselect-panel' || el === '#charcreate-panel' || el === '#offline-select') {
+    if (el === '#charselect-panel' || el === '#charcreate-panel') {
       updatePreviewContainer(el);
     }
 
@@ -1857,6 +1920,9 @@ async function enterRealmFlow(): Promise<void> {
   const remembered = localStorage.getItem(LAST_REALM_KEY);
   const auto = dir.realms.find((r) => r.name === remembered);
   if (auto) { selectRealm(auto); return; }
+  // Online-only, single-world game: skip the WoW-style realm list entirely and go
+  // straight to characters (kintara-style) when there's just one realm.
+  if (dir.realms.length === 1) { selectRealm(dir.realms[0]); return; }
   showRealmList(dir);
 }
 
@@ -1922,8 +1988,53 @@ function selectRealm(entry: import('./net/online').RealmEntry): void {
   api.setRealm(entry.url);
   api.realm = entry.name;
   localStorage.setItem(LAST_REALM_KEY, entry.name);
-  show('#charselect-panel');
-  void refreshCharacters();
+  void openCinematicCharSelect();
+}
+// Boot the Phaser game into the cinematic CharacterSelectScene, reusing the
+// game instance if startGame already created it. The scene owns NO auth logic:
+// every network call is delegated through charSelectApi, wired here from the
+// real api / enterWorld / validateCharacterName, so the authoritative auth
+// path is unchanged.
+function openCinematicCharSelect(): void {
+  mountGameUi();
+  document.body.classList.add('game-active');
+  // Hide the entire homepage shell (topbar, footer, DOM char-select panels) so
+  // only the cinematic Phaser scene is visible.
+  const startScreen = document.getElementById('start-screen');
+  if (startScreen) startScreen.style.display = 'none';
+  const canvasEl = document.getElementById('game-canvas');
+  if (canvasEl) canvasEl.style.display = 'none';
+  const uiEl = document.getElementById('ui');
+  if (uiEl) uiEl.style.display = 'none';
+  let phaserContainer = document.getElementById('phaser-game-container');
+  if (!phaserContainer) {
+    phaserContainer = document.createElement('div');
+    phaserContainer.id = 'phaser-game-container';
+    phaserContainer.style.position = 'fixed';
+    phaserContainer.style.left = '0';
+    phaserContainer.style.top = '0';
+    phaserContainer.style.width = '100vw';
+    phaserContainer.style.height = '100vh';
+    phaserContainer.style.zIndex = '10';
+    document.body.appendChild(phaserContainer);
+  }
+  phaserContainer.style.display = 'block';
+  const alreadyBooted = !!phaserGame;
+  if (!phaserGame) phaserGame = createPhaserGame(phaserContainer);
+  phaserGame.registry.set('cinematicCharSelect', true);
+  phaserGame.registry.set('charSelectApi', {
+    list: () => api.characters(),
+    create: (name: string, cls: PlayerClass, skin: number) => api.createCharacter(name, cls, skin),
+    del: (id: number, name: string) => api.deleteCharacter(id, name),
+    enter: (c: CharacterSummary) => { void enterWorld(c); },
+    validateName: (name: string) => validateCharacterName(name),
+    errorText: (err: unknown) => userFacingApiError(err),
+  } as import('./render-phaser/scenes/CharacterSelectScene').CharSelectApi);
+  // On first boot, BootScene preloads assets then routes to the select scene
+  // via the cinematicCharSelect flag above. Starting the scene now would
+  // interrupt that preload and leave textures missing; only jump straight in
+  // if the game was already booted (e.g. returning from the world later).
+  if (alreadyBooted) phaserGame.scene.start('CharacterSelectScene');
 }
 
 // --- Inline realm switcher (dropdown on the character-select screen) ----------
@@ -2036,7 +2147,7 @@ async function refreshCharacters(): Promise<void> {
     if (api.realm) $('#charselect-realm').textContent = api.realm;
     listEl.innerHTML = '';
     if (chars.length === 0) {
-      // No characters on this realm — drop straight into the create screen.
+      // No characters on this realm â€” drop straight into the create screen.
       listEl.innerHTML = `<li class="char-list-message">${escapeHtml(t('character.noneYet'))}</li>`;
       show('#charcreate-panel');
       return;
@@ -2058,7 +2169,7 @@ async function refreshCharacters(): Promise<void> {
         </div>
         ${c.forceRename
           ? `<input class="rename-input" placeholder="${escapeHtml(t('character.newNamePlaceholder'))}" maxlength="16" /><span class="char-actions"><button class="btn btn-danger delete-char-btn" ${c.online ? 'disabled' : ''}>${escapeHtml(t('character.delete'))}</button><button class="btn rename-btn">${escapeHtml(t('character.rename'))}</button></span>`
-          : `<span class="char-actions"><button class="btn btn-danger delete-char-btn" ${c.online ? 'disabled' : ''}>${escapeHtml(t('character.delete'))}</button><button class="btn enter-world-btn" ${c.online ? 'disabled' : ''}>${escapeHtml(t('auth.enterWorld'))}</button></span>`}`;
+          : `<span class="char-actions"><button class="btn btn-danger delete-char-btn" ${c.online ? 'disabled' : ''}>${escapeHtml(t('character.delete'))}</button></span>`}`;
 
       row.querySelector('.delete-char-btn')!.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -2077,11 +2188,6 @@ async function refreshCharacters(): Promise<void> {
             $('#charselect-error').textContent = userFacingApiError(err);
           }
         });
-      } else {
-        row.querySelector('.enter-world-btn')!.addEventListener('click', (e) => {
-          e.stopPropagation();
-          void enterWorld(c, e.currentTarget as HTMLButtonElement);
-        });
       }
 
       const selectRow = () => {
@@ -2093,8 +2199,15 @@ async function refreshCharacters(): Promise<void> {
 
         row.classList.add('sel');
         row.setAttribute('aria-selected', 'true');
+        selectedCharacter = c;
         renderClassDetails('charselect-class-details', c.class);
         characterPreview?.setSkin(c.skin ?? 0);
+
+        // Update the Enter World CTA button state on the right
+        const btnEnter = $('#btn-enter-world-cs') as HTMLButtonElement | null;
+        if (btnEnter) {
+          btnEnter.disabled = c.online || c.forceRename;
+        }
       };
 
       row.addEventListener('click', selectRow);
@@ -2102,6 +2215,14 @@ async function refreshCharacters(): Promise<void> {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           selectRow();
+        }
+      });
+
+      // Double-click to instantly enter the world
+      row.addEventListener('dblclick', () => {
+        if (!c.forceRename && !c.online) {
+          const btnEnter = $('#btn-enter-world-cs') as HTMLButtonElement | null;
+          void enterWorld(c, btnEnter ?? undefined);
         }
       });
 
@@ -2115,10 +2236,20 @@ async function refreshCharacters(): Promise<void> {
     if (firstRow) {
       firstRow.click();
     } else {
+      selectedCharacter = null;
       renderClassDetails('charselect-class-details', 'kshatriya');
+      const btnEnter = $('#btn-enter-world-cs') as HTMLButtonElement | null;
+      if (btnEnter) {
+        btnEnter.disabled = true;
+      }
     }
   } catch (err) {
     listEl.innerHTML = `<li class="char-list-message char-list-error">${escapeHtml(userFacingApiError(err))}</li>`;
+    selectedCharacter = null;
+    const btnEnter = $('#btn-enter-world-cs') as HTMLButtonElement | null;
+    if (btnEnter) {
+      btnEnter.disabled = true;
+    }
   }
 }
 
@@ -2452,46 +2583,22 @@ function renderClassDetails(panelId: string, className: PlayerClass): void {
   panel.classList.add('visible');
 
   const performUpdate = () => {
+    // Minimal, kintara-style educational card: the class name + a one-line
+    // learning identity (both already localized). No WoW RPG stat bars, armor,
+    // weapons, resource, or "TANK/MELEE DPS" role badges â€” those don't belong in
+    // an educational MMO.
     panel.innerHTML = `
       <div class="class-details-content fade-out">
         <div class="class-details-header">
-          <div class="class-details-header-text">
-            <h3 class="class-details-name">${escapeHtml(classLabel)}</h3>
-            <span class="class-details-role role-${details.roleType}">${escapeHtml(roleLabel)}</span>
-          </div>
+          <h3 class="class-details-name">${escapeHtml(classLabel)}</h3>
         </div>
         <p class="class-details-lore">${escapeHtml(classDisplayDescription(className))}</p>
-        <div class="class-details-grid">
-          <div class="class-details-stats-col">
-            <h4 class="details-section-title">${escapeHtml(t('classDetails.sections.startingStats'))}</h4>
-            ${statBarsHtml}
-          </div>
-          <div class="class-details-gear-col">
-            <h4 class="details-section-title">${escapeHtml(t('classDetails.sections.equipment'))}</h4>
-            <div class="details-gear-row"><strong>${escapeHtml(t('classDetails.labels.resource'))}:</strong> <span class="badge badge-resource resource-${classDef.resourceType}">${escapeHtml(resourceLabel)}</span></div>
-            <div class="details-gear-row"><strong>${escapeHtml(t('classDetails.labels.armor'))}:</strong> <span class="badge">${escapeHtml(armorLabel)}</span></div>
-            <div class="details-gear-row"><strong>${escapeHtml(t('classDetails.labels.weapons'))}:</strong> <span class="badge">${escapeHtml(weaponsLabel)}</span></div>
-          </div>
-          <div class="details-spells-section">
-            <h4 class="details-section-title">${escapeHtml(t('classDetails.sections.signatureAbilities'))}</h4>
-            <ul class="details-spells-list">
-              ${spellsHtml}
-            </ul>
-          </div>
-        </div>
       </div>
     `;
-    
-    // Announce update to screen readers
-    panel.setAttribute('aria-label', t('classDetails.aria', {
-      className: classLabel,
-      role: roleLabel,
-      str: classDef.baseStats.str,
-      agi: classDef.baseStats.agi,
-      sta: classDef.baseStats.sta,
-      int: classDef.baseStats.int,
-      spi: classDef.baseStats.spi,
-    }));
+
+    // Announce update to screen readers (name carries the identity; the lore <p>
+    // is read as content).
+    panel.setAttribute('aria-label', classLabel);
 
     const contentWrapper = panel.querySelector('.class-details-content') as HTMLElement | null;
     if (contentWrapper) {
@@ -2643,16 +2750,11 @@ function refreshLocalizedDynamicShell(): void {
     }
     return;
   }
-  const offlineSelected = document.querySelector('#offline-select .mini-class.sel') as HTMLElement | null;
-  if (activePanel === 'offline-select' && offlineSelected) {
-    currentlyRenderedClass['offline-class-details'] = null;
-    renderClassDetails('offline-class-details', offlineSelected.dataset.class as PlayerClass);
-  }
 }
 
 async function loadProjectStats(): Promise<void> {
-  // Realm status now lives in the realm dropdown — both in the trigger sub-line
-  // and inside the Online option — so update every instance by class.
+  // Realm status now lives in the realm dropdown â€” both in the trigger sub-line
+  // and inside the Online option â€” so update every instance by class.
   const accountEls = document.querySelectorAll<HTMLElement>('.js-stat-accounts');
   if (!accountEls.length) return;
   const setAll = (els: NodeListOf<HTMLElement>, text: string): void => {
@@ -2695,7 +2797,7 @@ async function loadProjectStats(): Promise<void> {
     if (cached) {
       setAll(accountEls, String(cached.accounts_created));
     } else {
-      setAll(accountEls, '–');
+      setAll(accountEls, 'â€“');
     }
   }
 }
@@ -2732,7 +2834,7 @@ async function loadHighscores(): Promise<void> {
     + `<span class="hs-xp">${t('game.leaderboard.lifetimeXp')}</span></div>`;
   const body = rows.map((r) => {
     const cls = CLASSES[r.cls];
-    const star = r.prestigeRank > 0 ? `<span class="hs-prestige" title="${t('game.prestige.rank')} ${r.prestigeRank}">★${r.prestigeRank}</span>` : '';
+    const star = r.prestigeRank > 0 ? `<span class="hs-prestige" title="${t('game.prestige.rank')} ${r.prestigeRank}">â˜…${r.prestigeRank}</span>` : '';
     return `<div class="hs-row${r.rank <= 3 ? ' hs-top' : ''}">`
       + `<span class="hs-rank">${r.rank}</span>`
       + `<span class="hs-name"${cls ? ` title="${esc(classDisplayName(r.cls))}"` : ''}>${star}${esc(r.name)}</span>`
@@ -2744,15 +2846,15 @@ async function loadHighscores(): Promise<void> {
   host.innerHTML = head + body;
 }
 
-// Minimal, safe Markdown → HTML for GitHub release notes. The input is escaped
+// Minimal, safe Markdown â†’ HTML for GitHub release notes. The input is escaped
 // FIRST, so every regex below operates on inert text; the only markup we emit is
-// our own whitelisted tags. Deliberately tiny (no tables/images/blockquotes) —
+// our own whitelisted tags. Deliberately tiny (no tables/images/blockquotes) â€”
 // enough to make patch notes readable without pulling in a markdown dependency.
 function renderReleaseBody(md: string): string {
   const esc = (s: string): string => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
   const inline = (s: string): string =>
     esc(s)
-      // [text](url) — only http(s) links survive; anything else renders as text.
+      // [text](url) â€” only http(s) links survive; anything else renders as text.
       .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (_m, text, url) =>
         `<a href="${url}" target="_blank" rel="noopener noreferrer">${text}</a>`)
       .replace(/`([^`]+)`/g, '<code>$1</code>')
@@ -2766,7 +2868,7 @@ function renderReleaseBody(md: string): string {
     const bullet = /^\s*[-*]\s+(.*)$/.exec(line);
     if (heading) {
       closeList();
-      const level = Math.min(3, heading[1].length); // collapse h1-h6 → h1-h3
+      const level = Math.min(3, heading[1].length); // collapse h1-h6 â†’ h1-h3
       out.push(`<h${level}>${inline(heading[2])}</h${level}>`);
     } else if (bullet) {
       if (!inList) { out.push('<ul>'); inList = true; }
@@ -2921,71 +3023,15 @@ function wireStartScreens(): void {
 
   // mode select
   const onlineBtn = $('#btn-online');
-  const offlineBtn = $('#btn-offline');
-  const btnStartOffline = $('#btn-start-offline') as HTMLButtonElement;
-  const offlineNameInput = $('#char-name') as HTMLInputElement;
-  const offlineError = $('#offline-error');
   
   const handleOnlineSelect = () => show('#login-panel');
 
-  const handleOfflineStart = (cls: PlayerClass) => {
-    const rawName = offlineNameInput.value.trim();
-    if (!rawName) {
-      offlineError.textContent = t('errors.characterNameRequired');
-      offlineNameInput.classList.add('user-invalid-fallback');
-      offlineNameInput.setAttribute('aria-invalid', 'true');
-      offlineNameInput.focus();
-      return;
-    }
-    if (!validateCharacterName(rawName)) {
-      offlineError.textContent = t('errors.characterNameInvalid');
-      offlineNameInput.classList.add('user-invalid-fallback');
-      offlineNameInput.setAttribute('aria-invalid', 'true');
-      offlineNameInput.focus();
-      return;
-    }
-
-    offlineError.textContent = '';
-    offlineNameInput.classList.remove('user-invalid-fallback');
-    offlineNameInput.removeAttribute('aria-invalid');
-
-    audio.init();
-    music.init();
-    sfx.init();
-    const name = sanitizeOfflineName(rawName);
-    void startOffline(cls, name, selectedSkin('#offline-skin-row', offlineSkin));
-  };
-
-  const handleOfflineSelect = () => {
-    show('#offline-select');
-    
-    // Select kshatriya by default and render details
-    const kshatriyaCard = document.querySelector('#offline-select .mini-class[data-class="kshatriya"]') as HTMLElement | null;
-    if (kshatriyaCard) {
-      document.querySelectorAll('#offline-select .mini-class').forEach((c) => {
-        c.classList.remove('sel');
-        c.setAttribute('aria-pressed', 'false');
-      });
-      kshatriyaCard.classList.add('sel');
-      kshatriyaCard.setAttribute('aria-pressed', 'true');
-      renderClassDetails('offline-class-details', 'kshatriya');
-      btnStartOffline.removeAttribute('disabled');
-      refreshOfflineSkins('kshatriya');
-    }
-  };
-
   onlineBtn.addEventListener('click', handleOnlineSelect);
   onlineBtn.addEventListener('keydown', (e) => handleKeyboardActivation(e as KeyboardEvent, handleOnlineSelect));
-  
-  offlineBtn.addEventListener('click', handleOfflineSelect);
-  offlineBtn.addEventListener('keydown', (e) => handleKeyboardActivation(e as KeyboardEvent, handleOfflineSelect));
 
-  // Wire new Kintara launcher buttons
-  const playOfflineBtn = $('#btn-play-offline');
+  // Online-only launcher: the single "Enter the Realm" button opens the login flow.
+  // (Offline / practice mode was retired â€” BharatVerse is online-only, like kintara.gg.)
   const playOnlineBtn = $('#btn-play-online');
-  if (playOfflineBtn) {
-    playOfflineBtn.addEventListener('click', handleOfflineSelect);
-  }
   if (playOnlineBtn) {
     playOnlineBtn.addEventListener('click', handleOnlineSelect);
   }
@@ -3104,127 +3150,10 @@ function wireStartScreens(): void {
       if (isMenuOpen() && !serverSelect.contains(e.target as Node)) closeServerMenu();
     });
 
-    btnPlay.addEventListener('click', () => {
-      if (serverMode === 'offline') handleOfflineSelect();
-      else handleOnlineSelect();
-    });
+    btnPlay.addEventListener('click', () => handleOnlineSelect());
 
     applyServerMode('online');
   }
-
-  btnStartOffline.addEventListener('click', () => {
-    const selCard = document.querySelector('#offline-select .mini-class.sel') as HTMLElement | null;
-    if (selCard) {
-      handleOfflineStart(selCard.dataset.class as PlayerClass);
-    } else {
-      offlineError.textContent = t('errors.selectClass');
-    }
-  });
-
-  // offline class chips
-  document.querySelectorAll('#offline-select .mini-class').forEach((card) => {
-    const handleClassSelect = () => {
-      if (hoverTimeouts['offline-class-details'] !== null) {
-        window.clearTimeout(hoverTimeouts['offline-class-details']);
-        hoverTimeouts['offline-class-details'] = null;
-      }
-      if (revertTimeouts['offline-class-details'] !== null) {
-        window.clearTimeout(revertTimeouts['offline-class-details']);
-        revertTimeouts['offline-class-details'] = null;
-      }
-      document.querySelectorAll('#offline-select .mini-class').forEach((c) => {
-        c.classList.remove('sel');
-        c.setAttribute('aria-pressed', 'false');
-      });
-      card.classList.add('sel');
-      card.setAttribute('aria-pressed', 'true');
-      
-      const cls = (card as HTMLElement).dataset.class as PlayerClass;
-      renderClassDetails('offline-class-details', cls);
-      btnStartOffline.removeAttribute('disabled');
-      refreshOfflineSkins(cls);
-    };
-    card.addEventListener('click', handleClassSelect);
-    card.addEventListener('keydown', (e) => handleKeyboardActivation(e as KeyboardEvent, handleClassSelect));
-    
-    // A11y focus updates details
-    card.addEventListener('focus', () => {
-      if (revertTimeouts['offline-class-details'] !== null) {
-        window.clearTimeout(revertTimeouts['offline-class-details']);
-        revertTimeouts['offline-class-details'] = null;
-      }
-      if (hoverTimeouts['offline-class-details'] !== null) {
-        window.clearTimeout(hoverTimeouts['offline-class-details']);
-        hoverTimeouts['offline-class-details'] = null;
-      }
-      const cls = (card as HTMLElement).dataset.class as PlayerClass;
-      renderClassDetails('offline-class-details', cls);
-    });
-
-    // Hover updates details with 50ms debounce
-    card.addEventListener('mouseenter', () => {
-      if (revertTimeouts['offline-class-details'] !== null) {
-        window.clearTimeout(revertTimeouts['offline-class-details']);
-        revertTimeouts['offline-class-details'] = null;
-      }
-      if (hoverTimeouts['offline-class-details'] !== null) {
-        window.clearTimeout(hoverTimeouts['offline-class-details']);
-      }
-      const cls = (card as HTMLElement).dataset.class as PlayerClass;
-      hoverTimeouts['offline-class-details'] = window.setTimeout(() => {
-        renderClassDetails('offline-class-details', cls);
-        hoverTimeouts['offline-class-details'] = null;
-      }, 50);
-    });
-
-    // Mouseleave reverts to currently selected class details with a 100ms debounce
-    card.addEventListener('mouseleave', () => {
-      if (hoverTimeouts['offline-class-details'] !== null) {
-        window.clearTimeout(hoverTimeouts['offline-class-details']);
-        hoverTimeouts['offline-class-details'] = null;
-      }
-      if (revertTimeouts['offline-class-details'] !== null) {
-        window.clearTimeout(revertTimeouts['offline-class-details']);
-      }
-      revertTimeouts['offline-class-details'] = window.setTimeout(() => {
-        const selCard = document.querySelector('#offline-select .mini-class.sel') as HTMLElement | null;
-        if (selCard) {
-          const cls = selCard.dataset.class as PlayerClass;
-          renderClassDetails('offline-class-details', cls);
-        }
-        revertTimeouts['offline-class-details'] = null;
-      }, 100);
-    });
-
-    // Blur reverts to currently selected class details with a 100ms debounce (matches mouseleave)
-    card.addEventListener('blur', () => {
-      if (hoverTimeouts['offline-class-details'] !== null) {
-        window.clearTimeout(hoverTimeouts['offline-class-details']);
-        hoverTimeouts['offline-class-details'] = null;
-      }
-      if (revertTimeouts['offline-class-details'] !== null) {
-        window.clearTimeout(revertTimeouts['offline-class-details']);
-      }
-      revertTimeouts['offline-class-details'] = window.setTimeout(() => {
-        const selCard = document.querySelector('#offline-select .mini-class.sel') as HTMLElement | null;
-        if (selCard) {
-          const cls = selCard.dataset.class as PlayerClass;
-          renderClassDetails('offline-class-details', cls);
-        }
-        revertTimeouts['offline-class-details'] = null;
-      }, 100);
-    });
-  });
-
-  const offlineBackBtn = $('#btn-offline-back');
-  const handleOfflineBack = () => {
-    show('#mode-select');
-    offlineError.textContent = '';
-    offlineNameInput.value = '';
-    offlineNameInput.classList.remove('user-invalid-fallback');
-    offlineNameInput.removeAttribute('aria-invalid');
-  };
-  offlineBackBtn.addEventListener('click', handleOfflineBack);
 
   // login
   const doAuth = async (mode: 'login' | 'register') => {
@@ -3240,13 +3169,13 @@ function wireStartScreens(): void {
       if (mode === 'login') await api.login(username, password, token);
       else await api.register(username, password, token);
     } catch (err) {
-      // Auth itself failed (bad credentials, taken username, Turnstile reject…).
+      // Auth itself failed (bad credentials, taken username, Turnstile rejectâ€¦).
       // The token is single-use, so refresh the widget for the next attempt.
       loginError(userFacingApiError(err));
       resetTurnstile();
       return;
     }
-    // Auth succeeded — a later realm-entry error is NOT a verification failure,
+    // Auth succeeded â€” a later realm-entry error is NOT a verification failure,
     // so don't reset the widget or let the user re-submit the (now duplicate) auth.
     try {
       $('#charselect-user').textContent = api.username ?? '';
@@ -3338,11 +3267,50 @@ function wireStartScreens(): void {
     show('#mode-select');
   });
   $('#btn-realm-back').addEventListener('click', () => show('#mode-select'));
+
+  const startDemoPlay = async () => {
+    const rand = Math.random().toString(36).substring(2, 10);
+    const guestUser = `guest_${rand}`;
+    const guestPass = 'demoplay123';
+    loginError('Creating demo account...');
+    const token = turnstileToken() || '';
+    try {
+      await api.register(guestUser, guestPass, token);
+    } catch (err) {
+      loginError(userFacingApiError(err));
+      resetTurnstile();
+      return;
+    }
+    try {
+      $('#charselect-user').textContent = api.username ?? '';
+      await enterRealmFlow();
+    } catch (err) {
+      loginError(userFacingApiError(err));
+    }
+  };
+
+  const btnDemoLogin = $('#btn-demo-login');
+  if (btnDemoLogin) {
+    btnDemoLogin.addEventListener('click', (e) => {
+      e.preventDefault();
+      void startDemoPlay();
+    });
+  }
   // Change Realm is now an inline dropdown on the character-select screen.
   $('#btn-change-realm').addEventListener('click', (e) => {
     e.stopPropagation();
     toggleRealmDropdown();
   });
+  // Wire Enter World CTA button on the right
+  const btnEnterWorldCs = $('#btn-enter-world-cs') as HTMLButtonElement | null;
+  if (btnEnterWorldCs) {
+    btnEnterWorldCs.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (selectedCharacter) {
+        void enterWorld(selectedCharacter, btnEnterWorldCs);
+      }
+    });
+  }
   // New Character opens the dedicated create screen; create's Back returns here.
   $('#btn-new-character').addEventListener('click', () => show('#charcreate-panel'));
   $('#btn-charcreate-back').addEventListener('click', () => show('#charselect-panel'));
@@ -3489,19 +3457,16 @@ function wireStartScreens(): void {
     }
   });
 
-  // Wire dynamic validation clearing on typing
-  [offlineNameInput, newCharNameInput].forEach((input) => {
-    const errorEl = input.id === 'char-name' ? offlineError : charselectError;
-    input.addEventListener('input', () => {
-      errorEl.textContent = '';
-      if (input.classList.contains('user-invalid-fallback') || input.hasAttribute('aria-invalid')) {
-        const val = input.value.trim();
-        if (!val || validateCharacterName(val)) {
-          input.classList.remove('user-invalid-fallback');
-          input.removeAttribute('aria-invalid');
-        }
+  // Wire dynamic validation clearing on typing (online character-name field)
+  newCharNameInput.addEventListener('input', () => {
+    charselectError.textContent = '';
+    if (newCharNameInput.classList.contains('user-invalid-fallback') || newCharNameInput.hasAttribute('aria-invalid')) {
+      const val = newCharNameInput.value.trim();
+      if (!val || validateCharacterName(val)) {
+        newCharNameInput.classList.remove('user-invalid-fallback');
+        newCharNameInput.removeAttribute('aria-invalid');
       }
-    });
+    }
   });
 
   $('#btn-create-char').addEventListener('click', async () => {
@@ -3756,3 +3721,7 @@ function fadeOutHomepageMusic(durationMs = 1600): void {
 
 wireStartScreens();
 initHomepageMusic();
+initLoadingScreenEffects();
+initOnlineCount();
+initDemoButton();
+

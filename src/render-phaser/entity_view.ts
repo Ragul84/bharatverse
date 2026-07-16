@@ -1,10 +1,11 @@
-/**
+﻿/**
  * EntityView - in-world visual for one entity.
  * Now uses Tiny Swords animated sprite sheets for smooth 8-frame animations.
  * Falls back to procedural textures if spritesheet hasn't loaded.
  */
 
 import { GameObjects, Scene } from 'phaser';
+import { ensureSoftShadow } from './shadows';
 import type { Entity } from '../sim/types';
 import * as L from './entity_view_logic';
 import { archetypeFor } from './character_archetype';
@@ -41,13 +42,13 @@ function tsSpriteKey(e: Entity, moving: boolean): { tex: string; anim: string } 
   }
   if (e.kind === 'player') {
     const cls = (e as { class?: string }).class ?? '';
-    // Kshatriya / warrior → Blue Warrior
+    // Kshatriya / warrior â†’ Blue Warrior
     if (cls === 'kshatriya' || cls === 'warrior') {
       return moving
         ? { tex: 'ts-blue-warrior-run',  anim: 'ts-blue-warrior-run'  }
         : { tex: 'ts-blue-warrior-idle', anim: 'ts-blue-warrior-idle' };
     }
-    // Archers / hunters / vaishya → Blue Archer
+    // Archers / hunters / vaishya â†’ Blue Archer
     if (cls === 'vaishya' || cls === 'hunter' || cls === 'rogue') {
       return moving
         ? { tex: 'ts-blue-archer-run',  anim: 'ts-blue-archer-run'  }
@@ -70,7 +71,7 @@ function tsSpriteKey(e: Entity, moving: boolean): { tex: string; anim: string } 
 export class EntityView {
   readonly container: GameObjects.Container;
   private body: GameObjects.Sprite;
-  private readonly shadow: GameObjects.Graphics;
+  private readonly shadow: GameObjects.Image;
   private readonly hpBg: GameObjects.Rectangle;
   private readonly hpFill: GameObjects.Rectangle;
   private readonly resBg: GameObjects.Rectangle;
@@ -90,6 +91,8 @@ export class EntityView {
   private mobSheet?: MobSheet;
   // Humanoid mob rendered as a rugged bandit (LPC human, no hostile red tint).
   private isBandit = false;
+  private isGathering = false;
+  private gatheringKind?: 'wood' | 'ore';
 
   // Walk-animation gating: the sim only writes vx/vz when airborne, so ground
   // walking is detected from actual position change over a short time window.
@@ -155,10 +158,10 @@ export class EntityView {
       }
     }
 
-    // Drop shadow
-    this.shadow = scene.add.graphics();
-    this.shadow.fillStyle(0x000000, 0.3);
-    this.shadow.fillEllipse(0, 2, 28, 10);
+    // Drop shadow: a soft, feathered ground shadow so the sprite reads as
+    // planted on the terrain rather than floating above it.
+    this.shadow = scene.add.image(0, 2, ensureSoftShadow(scene))
+      .setOrigin(0.5, 0.5).setDisplaySize(34, 14).setAlpha(0.8);
 
     // Name + bars
     this.name = scene.add.text(0, -56, '', {
@@ -200,7 +203,7 @@ export class EntityView {
     const moving = !e.dead && (now - this.lastMoveMs) < 160;
 
     if (this.mobSheet) {
-      // Real creature art — animate the walk cycle; no red tint needed.
+      // Real creature art â€” animate the walk cycle; no red tint needed.
       this.body.setFrame(mobFrame(this.mobSheet, e, moving, this.body.scene.time.now));
       this.body.setFlipX(mobFlipX(this.mobSheet, e)); // side-view mobs face their heading
       if (e.dead) { this.body.setTint(0x888888); this.shadow.setVisible(false); }
@@ -258,10 +261,24 @@ export class EntityView {
     this.container.setAlpha(e.dead ? 0.55 : 1);
   }
 
+  setGathering(active: boolean, kind?: 'wood' | 'ore'): void {
+    this.isGathering = active;
+    this.gatheringKind = kind;
+  }
+
   /** LPC frame for the entity's 4-direction facing + walk cycle (rows 8-11). */
   private lpcFrame(e: Entity, moving: boolean): number {
     const vx = Math.sin(e.facing), vz = Math.cos(e.facing);
     let row: number;
+    
+    if (this.isGathering) {
+      // LPC Slash rows: 12 (Up), 13 (Left), 14 (Down), 15 (Right)
+      if (Math.abs(vx) > Math.abs(vz)) row = vx > 0 ? 15 : 13;
+      else row = vz >= 0 ? 14 : 12;
+      const col = Math.floor(this.body.scene.time.now / 150) % 6; // 6 frames for Slash
+      return row * 13 + col;
+    }
+
     if (Math.abs(vx) > Math.abs(vz)) row = vx > 0 ? 11 : 9; // right : left
     else row = vz >= 0 ? 10 : 8;                            // down : up
     const col = moving ? 1 + (Math.floor(this.body.scene.time.now / 110) % 8) : 0; // 0 = idle

@@ -13,26 +13,26 @@ export const LAKE = { x: -92, z: 88, radius: 30 };
 
 export const ZONE1_ZONE: ZoneDef = {
   id: 'gangapur_nagari',
-  name: 'Gangapur Nagari',
+  name: 'Kaveri Valley',
   zMin: -180,
   zMax: 180,
   levelRange: [1, 7],
   biome: 'vale',
-  hub: { x: 0, z: 0, radius: TOWN_RADIUS, name: 'Vidya Nagar' },
+  hub: { x: 0, z: 0, radius: TOWN_RADIUS, name: 'Nilgiri Town' },
   graveyard: GRAVEYARD_POS,
   lakes: [LAKE],
   pois: [
-    { x: 0, z: -3, label: 'Vidya Nagar' },
+    { x: 0, z: -3, label: 'Nilgiri Town' },
     { x: -2, z: 70, label: 'Timberfang Wolf Run' },
     { x: 65, z: 0, label: 'Tuskgore Boar Meadow' },
-    { x: -88, z: 82, label: 'Ganga Lake' },
+    { x: -88, z: 82, label: 'Nilgiri Lake' },
     { x: -60, z: 4, label: 'Webwood Spider Forest' },
     { x: -84, z: -64, label: 'Copper Dig' },
     { x: 76, z: -76, label: 'Vale Bandit Camp' },
-    { x: 80, z: 80, label: 'Fallen Mandir' },
-    { x: 40, z: 140, label: 'Prakriti Glade' },
+    { x: 80, z: 80, label: 'Ruined Sanctuary' },
+    { x: 40, z: 140, label: 'Elysian Glade' },
   ],
-  welcome: 'Find Guru Shukracharya in Vidya Nagar — he has wisdom and quests for you.',
+  welcome: 'Find Elder Nambi in Nilgiri Town — he has wisdom and quests for you.',
   welcomeQuestId: 'q_wolves',
 };
 

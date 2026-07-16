@@ -11,7 +11,7 @@
 import type { AdminTranslations } from './i18n.en';
 
 export const en: AdminTranslations = {
-  "app.title": "World of ClaudeCraft - Admin",
+  "app.title": "BharatVerse - Admin",
   "auth.username": "Username",
   "auth.password": "Password",
   "auth.signIn": "Sign in",
@@ -233,7 +233,7 @@ export const en: AdminTranslations = {
 };
 
 export const es: AdminTranslations = {
-  "app.title": "World of ClaudeCraft - Administración",
+  "app.title": "BharatVerse - Administración",
   "auth.username": "Usuario",
   "auth.password": "Contraseña",
   "auth.signIn": "Iniciar sesión",
@@ -455,7 +455,7 @@ export const es: AdminTranslations = {
 };
 
 export const es_ES: AdminTranslations = {
-  "app.title": "World of ClaudeCraft - Administración",
+  "app.title": "BharatVerse - Administración",
   "auth.username": "Usuario",
   "auth.password": "Contraseña",
   "auth.signIn": "Iniciar sesión",
@@ -677,7 +677,7 @@ export const es_ES: AdminTranslations = {
 };
 
 export const fr_FR: AdminTranslations = {
-  "app.title": "World of ClaudeCraft - Admin",
+  "app.title": "BharatVerse - Admin",
   "auth.username": "Nom d'utilisateur",
   "auth.password": "Mot de passe",
   "auth.signIn": "Se connecter",
@@ -899,7 +899,7 @@ export const fr_FR: AdminTranslations = {
 };
 
 export const fr_CA: AdminTranslations = {
-  "app.title": "World of ClaudeCraft - Administration",
+  "app.title": "BharatVerse - Administration",
   "auth.username": "Nom d'utilisateur",
   "auth.password": "Mot de passe",
   "auth.signIn": "Se connecter",
@@ -1121,7 +1121,7 @@ export const fr_CA: AdminTranslations = {
 };
 
 export const en_CA: AdminTranslations = {
-  "app.title": "World of ClaudeCraft - Admin",
+  "app.title": "BharatVerse - Admin",
   "auth.username": "Username",
   "auth.password": "Password",
   "auth.signIn": "Sign in",
@@ -1343,7 +1343,7 @@ export const en_CA: AdminTranslations = {
 };
 
 export const it_IT: AdminTranslations = {
-  "app.title": "World of ClaudeCraft - Admin",
+  "app.title": "BharatVerse - Admin",
   "auth.username": "Nome utente",
   "auth.password": "Password",
   "auth.signIn": "Accedi",
@@ -1565,7 +1565,7 @@ export const it_IT: AdminTranslations = {
 };
 
 export const de_DE: AdminTranslations = {
-  "app.title": "World of ClaudeCraft - Admin",
+  "app.title": "BharatVerse - Admin",
   "auth.username": "Benutzername",
   "auth.password": "Passwort",
   "auth.signIn": "Anmelden",
@@ -1787,7 +1787,7 @@ export const de_DE: AdminTranslations = {
 };
 
 export const zh_CN: AdminTranslations = {
-  "app.title": "World of ClaudeCraft - 管理后台",
+  "app.title": "BharatVerse - 管理后台",
   "auth.username": "用户名",
   "auth.password": "密码",
   "auth.signIn": "登录",
@@ -2009,7 +2009,7 @@ export const zh_CN: AdminTranslations = {
 };
 
 export const zh_TW: AdminTranslations = {
-  "app.title": "World of ClaudeCraft - 管理後台",
+  "app.title": "BharatVerse - 管理後台",
   "auth.username": "使用者名稱",
   "auth.password": "密碼",
   "auth.signIn": "登入",
@@ -2231,7 +2231,7 @@ export const zh_TW: AdminTranslations = {
 };
 
 export const ko_KR: AdminTranslations = {
-  "app.title": "World of ClaudeCraft - 관리자",
+  "app.title": "BharatVerse - 관리자",
   "auth.username": "사용자명",
   "auth.password": "비밀번호",
   "auth.signIn": "로그인",
@@ -2453,7 +2453,7 @@ export const ko_KR: AdminTranslations = {
 };
 
 export const ja_JP: AdminTranslations = {
-  "app.title": "World of ClaudeCraft - 管理",
+  "app.title": "BharatVerse - 管理",
   "auth.username": "ユーザー名",
   "auth.password": "パスワード",
   "auth.signIn": "サインイン",
@@ -2675,7 +2675,7 @@ export const ja_JP: AdminTranslations = {
 };
 
 export const pt_BR: AdminTranslations = {
-  "app.title": "World of ClaudeCraft - Admin",
+  "app.title": "BharatVerse - Admin",
   "auth.username": "Usuário",
   "auth.password": "Senha",
   "auth.signIn": "Entrar",
@@ -2897,7 +2897,7 @@ export const pt_BR: AdminTranslations = {
 };
 
 export const ru_RU: AdminTranslations = {
-  "app.title": "World of ClaudeCraft — Админ",
+  "app.title": "BharatVerse — Админ",
   "auth.username": "Имя пользователя",
   "auth.password": "Пароль",
   "auth.signIn": "Войти",
@@ -3152,7 +3152,7 @@ export const pending: Record<string, readonly string[]> = {
 };
 
 export const en_XA: AdminTranslations = {
-  "app.title": "[Ŵóŕļð óƒ ÇļáúðéÇŕáƒţ - Áðɱíñ]",
+  "app.title": "[ƁĥáŕáţƲéŕšé - Áðɱíñ]",
   "auth.username": "[Úšéŕñáɱé]",
   "auth.password": "[Þáššŵóŕð]",
   "auth.signIn": "[Šíĝñ íñ]",

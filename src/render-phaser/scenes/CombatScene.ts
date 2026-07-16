@@ -121,11 +121,24 @@ export class CombatScene extends Scene {
     bg.fillGradientStyle(0x3b2a63, 0x3b2a63, 0x1a3a24, 0x1a3a24, 1);
     bg.fillRect(0, 0, width, height);
     const groundTop = Math.round(height * 0.50);
+    // Twinkling stars + distant hills so the sky isn't a flat gradient.
+    for (let i = 0; i < 36; i++) {
+      const st = this.add.circle(Math.random() * width, Math.random() * groundTop * 0.7,
+        Math.random() < 0.2 ? 2 : 1, 0xfef9c3, 0.85).setDepth(0);
+      this.tweens.add({ targets: st, alpha: 0.15, duration: 900 + Math.random() * 1500, yoyo: true, repeat: -1, delay: Math.random() * 1400 });
+    }
+    this.add.ellipse(width * 0.24, groundTop + 6, width * 0.9, height * 0.26, 0x241134, 0.9).setDepth(0);
+    this.add.ellipse(width * 0.8, groundTop + 10, width * 0.8, height * 0.22, 0x1c0f2c, 0.95).setDepth(0);
     if (this.textures.exists('ts-tilemap-grass')) {
       this.add.tileSprite(0, groundTop, width, height - groundTop, 'ts-tilemap-grass', 10)
         .setOrigin(0, 0).setDepth(1);
     } else {
       this.add.rectangle(cx, (groundTop + height) / 2, width, height - groundTop, 0x2f6b34).setDepth(1);
+    }
+    // Edge foliage framing the battlefield.
+    if (this.textures.exists('ts-bush2')) {
+      this.add.image(width * 0.06, groundTop + 12, 'ts-bush2', 0).setScale(0.9).setDepth(1).setTint(0xb9c49a);
+      this.add.image(width * 0.95, groundTop + 20, 'ts-bush1', 0).setScale(0.9).setDepth(1).setTint(0xb9c49a);
     }
 
     const enemyY = Math.round(height * 0.34);

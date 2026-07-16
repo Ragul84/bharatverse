@@ -135,3 +135,14 @@ Archive actions (one-time):
   the procedural placeholders seen in the live screenshots. Held the 9 classic
   player-class sprites (warrior/mage/...) since those templateIds may be retired in
   the WP3 re-theme -- generating them now risks throwaway art. CREDITS.md updated.
+- Multi-Realm and Kintara-Inspired Feature Rework:
+  - Partitioned the 80x60 overworld map into 4 camera-bounded zones: Nilgiri Town (safe hub), Whisperwood Grove (safe woodcutting), Ironstone Caverns (safe mining), and Wilderness Frontier (dangerous combat).
+  - Integrated visual portal circle gates and server-authoritative warps inside the simulation tick (`sim.ts`).
+  - Added traditional Southern Indian architecture assets (Haveli, Gurukul Library, temple Study Hall, Natyashala Pavilion, Bazaar Cosmetics stall, fort) in Nilgiri Town.
+  - Implemented the Natyashala Theatre scene containing seated avatars and an auto-playing YouTube iframe overlay with fullscreen controls.
+  - Designed the Study Hall options menu (Focused Mastery Quiz vs Reading Room).
+  - Integrated the Book Reader modal inside `HUDScene` loading from `public/data/books.json` with multi-theme support (cream/sepia/dark), font sizing, page-flip animations, and Table of Contents side-drawers.
+  - Created the 10% woodcutting/mining quiz trigger, preventing action blockades on incorrect answers.
+  - Wired player-to-player clicks (Add Friend, Whisper Chat, and Battle PvP Combat Quiz duels).
+  - Added level-up, quest-progress, and loot floating text alerts on the HUD screen.
+

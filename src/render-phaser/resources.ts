@@ -45,3 +45,23 @@ export function saveResources(s: ResourceState): void {
 export function addResource(s: ResourceState, kind: ResourceId, n: number): void {
   s[kind] = Math.max(0, s[kind] + n);
 }
+
+export interface LockerState {
+  wood: number;
+  ore: number;
+}
+
+export function loadLocker(): LockerState {
+  try {
+    const raw = localStorage.getItem('bv_locker');
+    if (raw) {
+      const s = JSON.parse(raw) as Partial<LockerState>;
+      return { wood: s.wood ?? 0, ore: s.ore ?? 0 };
+    }
+  } catch { /* ignore */ }
+  return { wood: 0, ore: 0 };
+}
+
+export function saveLocker(s: LockerState): void {
+  try { localStorage.setItem('bv_locker', JSON.stringify(s)); } catch { /* ignore */ }
+}
