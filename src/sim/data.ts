@@ -234,7 +234,7 @@ export const QUEST_ORDER: string[] = [
 
 // Camps spawn in array order, each drawing world-gen RNG, so an entry inserted
 // before others shifts their spawn positions. New rare-elite camps
-// (ZONE1_CHAPEL_CAMPS) and the Eastbrook rare Grix are appended LAST so every
+// (ZONE1_CHAPEL_CAMPS) and the Unity City rare Grix are appended LAST so every
 // existing zone camp keeps its exact draw order (determinism).
 export const CAMPS: CampDef[] = [
   ...ZONE1_CAMPS,

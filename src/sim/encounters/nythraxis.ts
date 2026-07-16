@@ -1479,7 +1479,7 @@ export function summonQuestMob(
 export function emitQuestMobDialogue(ctx: SimContext, templateId: string, entityId: number): void {
   const text =
     templateId === 'fallen_captain_aldren'
-      ? 'Fallen Captain Aldren yells, "None shall disturb the king\'s rest! For Thornpeak!"'
+      ? 'Fallen Captain Aldren yells, "None shall disturb the king\'s rest! For Summit!"'
       : templateId === 'corrupted_priest_malric'
         ? 'Corrupted Priest Malric yells, "Death shall never claim my king! The ritual must endure!"'
         : templateId === 'deathstalker_voss'

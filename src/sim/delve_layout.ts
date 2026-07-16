@@ -15,7 +15,7 @@ export type DelveModuleId =
   | 'reliquary_bell_niche'
   | 'reliquary_saintless_hall'
   | 'reliquary_finale'
-  // The Drowned Litany (Mirefen Marsh, delve index 1). Each module is an
+  // The Drowned Litany (Emerald Backwaters, delve index 1). Each module is an
   // irregular marsh-ruin shape carved from the shared rectangular footprint by
   // interior obstacles only (stubs/pillars/tombs/clutter): crescent,
   // island_cluster, ring, sinkhole, fan, y_split, asymmetric_apse.
@@ -155,7 +155,7 @@ export const RELIQUARY_FINALE_LAYOUT: DungeonLayout = {
 };
 
 // ---------------------------------------------------------------------------
-// The Drowned Litany (Mirefen Marsh): compatibility layouts only.
+// The Drowned Litany (Emerald Backwaters): compatibility layouts only.
 // Real room shape lives in delve_litany_layout.ts.
 // ---------------------------------------------------------------------------
 
@@ -178,7 +178,7 @@ export const DELVE_MODULE_LAYOUTS: Record<DelveModuleId, DungeonLayout> = {
   reliquary_bell_niche: RELIQUARY_BELL_NICHE_LAYOUT,
   reliquary_saintless_hall: RELIQUARY_SAINTLESS_HALL_LAYOUT,
   reliquary_finale: RELIQUARY_FINALE_LAYOUT,
-  // The Drowned Litany (Mirefen Marsh): distinct irregular marsh-ruin shapes.
+  // The Drowned Litany (Emerald Backwaters): distinct irregular marsh-ruin shapes.
   litany_sluice: LITANY_SLUICE_LAYOUT, // crescent: curved banked channel
   litany_ledger: LITANY_LEDGER_LAYOUT, // island_cluster: scattered ledges + channels
   litany_ring: LITANY_RING_LAYOUT, // ring: sealed central mass, loop around it

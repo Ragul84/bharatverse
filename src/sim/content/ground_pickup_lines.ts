@@ -27,7 +27,7 @@ export const GROUND_PICKUP_LINES: Record<string, GroundPickupLines> = {
   },
   fen_muster_order: {
     deny: 'The wax seal holds until the order is yours to claim.',
-    enough: 'You already have the Fenbridge muster order.',
+    enough: 'You already have the Backwater Landing muster order.',
   },
   lost_caravan_goods: {
     deny: "You aren't authorized to salvage these goods yet.",
@@ -46,8 +46,8 @@ export const GROUND_PICKUP_LINES: Record<string, GroundPickupLines> = {
     enough: 'You already recovered enough alien wreckage.',
   },
   highwatch_summons: {
-    deny: 'The summons are sealed with Highwatch wax.',
-    enough: 'You already have the Highwatch summons.',
+    deny: 'The summons are sealed with Summit Watch wax.',
+    enough: 'You already have the Summit Watch summons.',
   },
   ogre_war_totem: {
     deny: 'The totem is planted too firmly to uproot.',

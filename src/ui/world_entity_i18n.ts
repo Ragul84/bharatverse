@@ -87,7 +87,7 @@ const MOB_IDS = [
   'reliquary_saintless_effigy',
   'deacon_varric',
   'acolyte_tessa',
-  // Drowned Litany delve mobs (Mirefen Marsh)
+  // Drowned Litany delve mobs (Emerald Backwaters)
   'drowned_cantor',
   'reedbound_acolyte',
   'deepfen_spearjaw',
@@ -100,7 +100,7 @@ const MOB_IDS = [
   'edda_reedhand',
   'tolling_bell',
   'vale_cup_ball',
-  // Thornpeak Heights world boss + its summoned adds
+  // Summit Frontier world boss + its summoned adds
   'thunzharr_waking_peak',
   'thunzharr_stormling',
 ] as const;
@@ -124,21 +124,21 @@ const NPC_IDS = [
   'scout_maren_highwatch',
   'quartermaster_bree',
   'armorer_hode',
-  'heroic_quartermaster', // Heroic Marks vendor (Highwatch, zone 3)
-  'fury', // Honor Quartermaster and WARFARE vendor (Eastbrook, zone 1)
+  'heroic_quartermaster', // Heroic Marks vendor (Summit Watch, zone 3)
+  'fury', // Honor Quartermaster and WARFARE vendor (Unity City, zone 1)
   'loremaster_caddis',
-  'auctioneer_voss', // second World Market auctioneer (Highwatch, zone 3)
-  'bursar_fernando', // Gilded Strongbox banker (Eastbrook, zone 1)
-  'bursar_petra_vell', // Gilded Strongbox banker (Fenbridge, zone 2)
-  'bursar_aldous_crane', // Gilded Strongbox banker (Highwatch, zone 3)
+  'auctioneer_voss', // second World Market auctioneer (Summit Watch, zone 3)
+  'bursar_fernando', // Gilded Strongbox banker (Unity City, zone 1)
+  'bursar_petra_vell', // Gilded Strongbox banker (Backwater Landing, zone 2)
+  'bursar_aldous_crane', // Gilded Strongbox banker (Summit Watch, zone 3)
   'brother_aldric_raid', // dynamically-spawned raid turn-in NPC (Crypt of Nythraxis)
   'brother_halven', // Collapsed Reliquary delve board NPC
   'brother_halven_marsh', // Drowned Litany delve board NPC (same character, marsh camp)
   'spirit_healer', // the graveyard angel (spawned at every graveyard + dungeon entry)
   'groundskeeper_bram', // Vale Cup queue master at the Sowfield gate (docs/prd/vale-cup.md)
-  'chronicler_saul', // Book of Deeds Chronicler (Eastbrook, zone 1)
-  'chronicler_osric_fenn', // Book of Deeds Chronicler (Fenbridge, zone 2)
-  'chronicler_edda_hartwell', // Book of Deeds Chronicler (Highwatch, zone 3)
+  'chronicler_saul', // Book of Deeds Chronicler (Unity City, zone 1)
+  'chronicler_osric_fenn', // Book of Deeds Chronicler (Backwater Landing, zone 2)
+  'chronicler_edda_hartwell', // Book of Deeds Chronicler (Summit Watch, zone 3)
 ] as const;
 
 const QUEST_IDS = [

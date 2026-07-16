@@ -32,7 +32,7 @@ export const WELCOME_LETTER: LetterDef = {
   body:
     'Traveler,\n\n' +
     'The Ravenpost has opened its perches across the vale. Seek the raven ' +
-    'pillars in Eastbrook, Fenbridge and Highwatch: from any of them you may ' +
+    'pillars in Unity City, Backwater Landing and Summit Watch: from any of them you may ' +
     'send letters, coin and goods to other adventurers, and collect whatever ' +
     'the ravens bring you.\n\n' +
     'Enclosed is a small courtesy for your first stamp.\n\n' +

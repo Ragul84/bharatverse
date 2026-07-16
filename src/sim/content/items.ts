@@ -609,7 +609,7 @@ export const BASE_ITEMS: Record<string, ItemDef> = {
   // #1127's crafting action existed to consume them). `kind: 'junk'`, same
   // generic-material shape as bone_fragments/linen_scrap/spider_leg below:
   // not gathered from a dedicated node yet (see gathering.ts NODE_HARVEST_TABLE).
-  // Sold by Quartermaster Bree at the Highwatch hub (zone3.ts) so every hub
+  // Sold by Quartermaster Bree at the Summit Watch hub (zone3.ts) so every hub
   // recipe has a live reagent source; buyValue is the trade-goods staple
   // markup already used in this file (4x sellValue, travelers_knapsack's
   // exact ratio, with linen_pouch and spring_water close by at 4.17x), not
@@ -792,7 +792,7 @@ export const BASE_ITEMS: Record<string, ItemDef> = {
     buyValue: 40,
   },
   // --- battle elixir: a temporary stat buff on use (classic flask/elixir staple).
-  // Drops from the Mirefen brutes; +Stamina helps anyone push deeper into the marsh.
+  // Drops from the Backwater brutes; +Stamina helps anyone push deeper into the marsh.
   elixir_of_the_bear: {
     id: 'elixir_of_the_bear',
     name: 'Elixir of the Bear',
@@ -894,7 +894,7 @@ export const BASE_ITEMS: Record<string, ItemDef> = {
   // --- Smith Haldren's stock (common/white, levels 3-7) ---
   eastbrook_arming_sword: {
     id: 'eastbrook_arming_sword',
-    name: 'Eastbrook Arming Sword',
+    name: 'Unity City Arming Sword',
     kind: 'weapon',
     slot: 'mainhand',
     quality: 'common',
@@ -935,7 +935,7 @@ export const BASE_ITEMS: Record<string, ItemDef> = {
   },
   eastbrook_chain_vest: {
     id: 'eastbrook_chain_vest',
-    name: 'Eastbrook Chainmail Vest',
+    name: 'Unity City Chainmail Vest',
     kind: 'armor',
     armorType: 'mail',
     slot: 'chest',
@@ -979,7 +979,7 @@ export const BASE_ITEMS: Record<string, ItemDef> = {
   },
   eastbrook_wool_trousers: {
     id: 'eastbrook_wool_trousers',
-    name: 'Eastbrook Wool Trousers',
+    name: 'Unity City Wool Trousers',
     kind: 'armor',
     armorType: 'cloth',
     slot: 'legs',
@@ -1376,7 +1376,7 @@ export const BASE_ITEMS: Record<string, ItemDef> = {
   // --- Quartermaster's Consignment ---------------------------------------
   // A standing line of practical adventuring gear. The Merchant keeps eight
   // pieces stocked on the World Market (see seedHouseListings); four more are
-  // looted from threats around the Vale. All uncommon, Eastbrook-tier (~L5-9),
+  // looted from threats around the Vale. All uncommon, Unity City-tier (~L5-9),
   // filling the helmet/shoulder/waist/gloves slots the early game leaves thin.
   roadwardens_helm: {
     id: 'roadwardens_helm',
@@ -1513,7 +1513,7 @@ export const BASE_ITEMS: Record<string, ItemDef> = {
   // --- Crossroads Outfitters ----------------------------------------------
   // A travelling caravan quartermaster's standing stock, filling the slots the
   // Quartermaster's Consignment left thin: mainhand weapons plus chest, legs and
-  // feet. All uncommon, Eastbrook-tier (~L8-12); most are unrestricted so any
+  // feet. All uncommon, Unity City-tier (~L8-12); most are unrestricted so any
   // melee adventurer can outfit a full set. The Merchant keeps eight on the
   // World Market (see seedHouseListings); four more drop around the Vale.
   crossroads_saber: {

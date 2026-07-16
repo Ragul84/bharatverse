@@ -1811,7 +1811,7 @@ export class Sim {
     // RULE (matched on this exact literal shape).
     this.emit({
       type: 'log',
-      text: `${template.name} rises over Thornpeak Heights!`,
+      text: `${template.name} rises over Summit Frontier!`,
       color: '#ffd100',
     });
     return mob.id;

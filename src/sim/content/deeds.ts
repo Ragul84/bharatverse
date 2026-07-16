@@ -365,7 +365,7 @@ export const DEEDS: Record<string, DeedDef> = {
   dgn_nythraxis: {
     id: 'dgn_nythraxis',
     name: 'Scourge No More',
-    desc: 'Defeat Nythraxis, Scourge of Thornpeak, beyond the sealed royal door.',
+    desc: 'Defeat Nythraxis, Scourge of Summit, beyond the sealed royal door.',
     category: 'dungeon',
     renown: 25,
     trigger: { kind: 'dungeonClears', dungeonId: 'nythraxis_boss_arena', count: 1 },
@@ -373,7 +373,7 @@ export const DEEDS: Record<string, DeedDef> = {
   dgn_nythraxis_heroic: {
     id: 'dgn_nythraxis_heroic',
     name: 'Heroic: Scourge No More',
-    desc: 'Defeat Nythraxis, Scourge of Thornpeak, on Heroic difficulty.',
+    desc: 'Defeat Nythraxis, Scourge of Summit, on Heroic difficulty.',
     category: 'dungeon',
     renown: 25,
     trigger: {
@@ -527,7 +527,7 @@ export const DEEDS: Record<string, DeedDef> = {
   dgn_nythraxis_deathless: {
     id: 'dgn_nythraxis_deathless',
     name: 'None More Deathless',
-    desc: 'Defeat Nythraxis, Scourge of Thornpeak, on Heroic difficulty without a single raider dying.',
+    desc: 'Defeat Nythraxis, Scourge of Summit, on Heroic difficulty without a single raider dying.',
     category: 'dungeon',
     renown: 50,
     trigger: { kind: 'manual' },
@@ -667,7 +667,7 @@ export const DEEDS: Record<string, DeedDef> = {
   chr_vale_chapter_i: {
     id: 'chr_vale_chapter_i',
     name: 'Vale Chronicle, Chapter I',
-    desc: "Finish the first chapter of Saul's chronicle: Eastbrook's opening errands, the lay of the Vale, and a first taste of its trades.",
+    desc: "Finish the first chapter of Saul's chronicle: Unity City's opening errands, the lay of the Vale, and a first taste of its trades.",
     category: 'chronicle',
     renown: 5,
     trigger: {
@@ -713,7 +713,7 @@ export const DEEDS: Record<string, DeedDef> = {
   chr_vale_gatherer: {
     id: 'chr_vale_gatherer',
     name: 'Living off the Land',
-    desc: 'Harvest an ore vein, a wood stand, and an herb patch in Eastbrook Vale.',
+    desc: 'Harvest an ore vein, a wood stand, and an herb patch in Unity Vale.',
     category: 'chronicle',
     renown: 5,
     trigger: {
@@ -728,7 +728,7 @@ export const DEEDS: Record<string, DeedDef> = {
   chr_vale_first_cast: {
     id: 'chr_vale_first_cast',
     name: 'Something in Mirror Lake',
-    desc: 'Catch a fish from the waters of Eastbrook Vale.',
+    desc: 'Catch a fish from the waters of Unity Vale.',
     category: 'chronicle',
     renown: 5,
     trigger: { kind: 'visit', markId: 'fish:eastbrook_vale' },
@@ -752,7 +752,7 @@ export const DEEDS: Record<string, DeedDef> = {
   chr_vale_rares: {
     id: 'chr_vale_rares',
     name: 'Terrors of the Vale',
-    desc: 'Slay the five named terrors of Eastbrook Vale: Old Greyjaw, Mogger, Grix the Tunnelking, Captain Verlan, and Wraithbinder Maldrec.',
+    desc: 'Slay the five named terrors of Unity Vale: Old Greyjaw, Mogger, Grix the Tunnelking, Captain Verlan, and Wraithbinder Maldrec.',
     category: 'chronicle',
     renown: 10,
     trigger: {
@@ -769,7 +769,7 @@ export const DEEDS: Record<string, DeedDef> = {
   chr_marsh_chapter_i: {
     id: 'chr_marsh_chapter_i',
     name: 'Marsh Chronicle, Chapter I',
-    desc: "Finish the first chapter of Osric Fenn's chronicle: answer the Fenbridge muster, secure the causeway, and learn the shape of the fen.",
+    desc: "Finish the first chapter of Osric Fenn's chronicle: answer the Backwater Landing muster, secure the causeway, and learn the shape of the fen.",
     category: 'chronicle',
     renown: 5,
     trigger: {
@@ -807,7 +807,7 @@ export const DEEDS: Record<string, DeedDef> = {
   },
   chr_marsh_chapter_iii: {
     id: 'chr_marsh_chapter_iii',
-    name: 'Chronicle of the Mirefen',
+    name: 'Chronicle of the Backwater',
     desc: "See the fen's whole story through: the cult camp broken, the Fogbinder silenced in the Sunken Bastion, and every named terror of the mist laid low.",
     category: 'chronicle',
     renown: 25,
@@ -832,12 +832,12 @@ export const DEEDS: Record<string, DeedDef> = {
         'q_mistcaller',
       ],
     },
-    reward: { kind: 'title', text: 'of the Mirefen' },
+    reward: { kind: 'title', text: 'of the Backwater' },
   },
   chr_marsh_gatherer: {
     id: 'chr_marsh_gatherer',
-    name: 'Fenbridge Foraging',
-    desc: 'Harvest an ore vein, a wood stand, and an herb patch in Mirefen Marsh.',
+    name: 'Backwater Landing Foraging',
+    desc: 'Harvest an ore vein, a wood stand, and an herb patch in Emerald Backwaters.',
     category: 'chronicle',
     renown: 5,
     trigger: {
@@ -868,7 +868,7 @@ export const DEEDS: Record<string, DeedDef> = {
   chr_marsh_rares: {
     id: 'chr_marsh_rares',
     name: 'Named in the Mist',
-    desc: 'Slay the three named terrors of Mirefen Marsh: Mirejaw the Ravenous, Sloomtooth the Drowned, and Sister Nhalia.',
+    desc: 'Slay the three named terrors of Emerald Backwaters: Mirejaw the Ravenous, Sloomtooth the Drowned, and Sister Nhalia.',
     category: 'chronicle',
     renown: 10,
     trigger: {
@@ -883,7 +883,7 @@ export const DEEDS: Record<string, DeedDef> = {
   chr_peaks_chapter_i: {
     id: 'chr_peaks_chapter_i',
     name: 'Peaks Chronicle, Chapter I',
-    desc: "Finish the first chapter of Zenzie's chronicle: clear the ridge road, empty the burrows, and learn every path Highwatch guards.",
+    desc: "Finish the first chapter of Zenzie's chronicle: clear the ridge road, empty the burrows, and learn every path Summit Watch guards.",
     category: 'chronicle',
     renown: 5,
     trigger: {
@@ -926,7 +926,7 @@ export const DEEDS: Record<string, DeedDef> = {
   },
   chr_peaks_chapter_iii: {
     id: 'chr_peaks_chapter_iii',
-    name: 'Chronicle of Thornpeak',
+    name: 'Chronicle of Summit',
     desc: "See the mountain's whole story through: the Wyrmcult broken, the Sanctum silenced, the Waking Peak felled, and every named terror of the crags laid low.",
     category: 'chronicle',
     renown: 50,
@@ -954,12 +954,12 @@ export const DEEDS: Record<string, DeedDef> = {
         'q_gravewyrm',
       ],
     },
-    reward: { kind: 'title', text: 'of Thornpeak' },
+    reward: { kind: 'title', text: 'of Summit' },
   },
   chr_peaks_sparring: {
     id: 'chr_peaks_sparring',
     name: 'Wall Drills',
-    desc: 'Deal 1,000 total damage to the training dummy above Highwatch.',
+    desc: 'Deal 1,000 total damage to the training dummy above Summit Watch.',
     category: 'chronicle',
     renown: 5,
     trigger: { kind: 'stat', stat: 'dummyDamage', count: 1000 },
@@ -991,7 +991,7 @@ export const DEEDS: Record<string, DeedDef> = {
   chr_peaks_rares: {
     id: 'chr_peaks_rares',
     name: 'Names Cut into the Crag',
-    desc: 'Slay the four named terrors of Thornpeak Heights: the Ironvein Foreman, Brutok Skullsmasher, Voskar the Emberwing, and Marrowlord Varkas.',
+    desc: 'Slay the four named terrors of Summit Frontier: the Ironvein Foreman, Brutok Skullsmasher, Voskar the Emberwing, and Marrowlord Varkas.',
     category: 'chronicle',
     renown: 10,
     trigger: {
@@ -1612,7 +1612,7 @@ export const DEEDS: Record<string, DeedDef> = {
   soc_meet_bursar: {
     id: 'soc_meet_bursar',
     name: 'In Fernando We Trust',
-    desc: 'Pay your respects to Bursar Fernando, keeper of the Gilded Strongbox in Eastbrook.',
+    desc: 'Pay your respects to Bursar Fernando, keeper of the Gilded Strongbox in Unity City.',
     category: 'social',
     renown: 5,
     trigger: { kind: 'visit', markId: 'npc:bursar_fernando' },
@@ -1652,7 +1652,7 @@ export const DEEDS: Record<string, DeedDef> = {
   exp_long_road_north: {
     id: 'exp_long_road_north',
     name: 'The Long Road North',
-    desc: 'Visit all three hub settlements: Eastbrook, Fenbridge, and Highwatch.',
+    desc: 'Visit all three hub settlements: Unity City, Backwater Landing, and Summit Watch.',
     category: 'exploration',
     renown: 5,
     trigger: {
@@ -1667,7 +1667,7 @@ export const DEEDS: Record<string, DeedDef> = {
   exp_vale_wayfarer: {
     id: 'exp_vale_wayfarer',
     name: 'Wayfarer of the Vale',
-    desc: 'Visit all eleven named places of Eastbrook Vale.',
+    desc: 'Visit all eleven named places of Unity Vale.',
     category: 'exploration',
     renown: 10,
     trigger: {
@@ -1690,7 +1690,7 @@ export const DEEDS: Record<string, DeedDef> = {
   exp_marsh_wayfarer: {
     id: 'exp_marsh_wayfarer',
     name: 'Wayfarer of the Marsh',
-    desc: 'Visit all eight named places of Mirefen Marsh.',
+    desc: 'Visit all eight named places of Emerald Backwaters.',
     category: 'exploration',
     renown: 10,
     trigger: {
@@ -1710,7 +1710,7 @@ export const DEEDS: Record<string, DeedDef> = {
   exp_peaks_wayfarer: {
     id: 'exp_peaks_wayfarer',
     name: 'Wayfarer of the Heights',
-    desc: 'Visit all ten named places of Thornpeak Heights.',
+    desc: 'Visit all ten named places of Summit Frontier.',
     category: 'exploration',
     renown: 10,
     trigger: {
@@ -1932,7 +1932,7 @@ export const DEEDS: Record<string, DeedDef> = {
   prog_callused_hands: {
     id: 'prog_callused_hands',
     name: 'Callused Hands',
-    desc: "Complete A Trade for Every Hand and earn your first callus in Eastbrook's trades.",
+    desc: "Complete A Trade for Every Hand and earn your first callus in Unity City's trades.",
     category: 'progression',
     renown: 5,
     trigger: { kind: 'quest', questId: 'q_prof_intro' },
@@ -1940,13 +1940,13 @@ export const DEEDS: Record<string, DeedDef> = {
   // Reagent sourcing: every hub recipe requires one of the six tier 4/5
   // reagents (thorium_ore, arcanite_bar, ashwood_log, elderwood_log,
   // goldleaf_herb, sunpetal_herb), sold by Quartermaster Bree at the
-  // Highwatch hub (zone3.ts), so this deed (and feat_book_complete through
+  // Summit Watch hub (zone3.ts), so this deed (and feat_book_complete through
   // it) is completable in live play. The vendor-to-craft-to-grant chain is
   // pinned by tests/professions_crafting_hub.test.ts.
   prog_tools_of_the_trade: {
     id: 'prog_tools_of_the_trade',
     name: 'Tools of the Trade',
-    desc: 'Complete a station-bound craft at the Highwatch crafting hub.',
+    desc: 'Complete a station-bound craft at the Summit Watch crafting hub.',
     category: 'progression',
     renown: 10,
     trigger: { kind: 'stat', stat: 'hubCraftsPerformed', count: 1 },
@@ -1962,7 +1962,7 @@ export const DEEDS: Record<string, DeedDef> = {
   chr_marsh_first_cast: {
     id: 'chr_marsh_first_cast',
     name: 'Eels in the Reeds',
-    desc: 'Catch a fish from the waters of Mirefen Marsh.',
+    desc: 'Catch a fish from the waters of Emerald Backwaters.',
     category: 'chronicle',
     renown: 5,
     trigger: { kind: 'visit', markId: 'fish:mirefen_marsh' },

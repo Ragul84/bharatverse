@@ -2,7 +2,7 @@ import { litanyModuleHazards } from '../../delve_litany_layout';
 import type { DelveDef, DelveModuleDef } from '../../types';
 
 // =============================================================================
-// The Drowned Litany - Mirefen Marsh delve beneath Fenbridge (delve index 1).
+// The Drowned Litany - Emerald Backwaters delve beneath Backwater Landing (delve index 1).
 //
 // Phase 1 (MVP skeleton): a fully enterable and completable second delve that
 // reuses the existing delve loop (kill_boss + the finale lockpick chest) and the
@@ -203,9 +203,9 @@ export const DROWNED_LITANY_DELVE: DelveDef = {
   minLevel: 12,
   suggestedPlayers: 2,
   maxPlayers: 2,
-  // Northern edge of Mirefen Marsh (zone z 180..540; hub at z=300), north of
+  // Northern edge of Emerald Backwaters (zone z 180..540; hub at z=300), north of
   // the Troll Mounds and clear of their camps, short of the steep rise toward
-  // Thornpeak Heights. Matches Brother Halven's marsh camp.
+  // Summit Frontier. Matches Brother Halven's marsh camp.
   doorPos: { x: -95, z: 505 },
   modules: [
     'litany_sluice',

@@ -11,7 +11,7 @@ export const GATHER_NODE_TYPES: readonly GatherNodeType[] = ['ore', 'wood', 'her
 // levelRange midpoint (eastbrook_vale [1,7] -> 4; mirefen_marsh, zone2's
 // levelRange [6,13] -> 10), not a live lookup: see types.ts GatherNodeDef.
 export const GATHER_NODES: GatherNodeDef[] = [
-  // Eastbrook Vale (eastbrook_vale), ore around the Copper Dig outcrops (the
+  // Unity Vale (eastbrook_vale), ore around the Copper Dig outcrops (the
   // zone's mine-themed POI, zone1.ts pois); moved here from Boar Meadow (a
   // wolf/boar mob area with no mining flavor and no discoverable landmark)
   // so q_prof_intro's ore veins actually sit somewhere players can find them.
@@ -40,7 +40,7 @@ export const GATHER_NODES: GatherNodeDef[] = [
     level: 4,
   },
 
-  // Eastbrook Vale, wood stands around Webwood
+  // Unity Vale, wood stands around Webwood
   {
     id: 'wood_eastbrook_1',
     zoneId: 'eastbrook_vale',
@@ -63,7 +63,7 @@ export const GATHER_NODES: GatherNodeDef[] = [
     level: 4,
   },
 
-  // Eastbrook Vale, herb patches near Mirror Lake
+  // Unity Vale, herb patches near Mirror Lake
   {
     id: 'herb_eastbrook_1',
     zoneId: 'eastbrook_vale',
@@ -86,7 +86,7 @@ export const GATHER_NODES: GatherNodeDef[] = [
     level: 4,
   },
 
-  // Mirefen Marsh (mirefen_marsh)
+  // Emerald Backwaters (mirefen_marsh)
   { id: 'ore_mirefen_1', zoneId: 'mirefen_marsh', type: 'ore', pos: { x: 40, z: 340 }, level: 10 },
   { id: 'ore_mirefen_2', zoneId: 'mirefen_marsh', type: 'ore', pos: { x: -30, z: 360 }, level: 10 },
   { id: 'ore_mirefen_3', zoneId: 'mirefen_marsh', type: 'ore', pos: { x: 35, z: 345 }, level: 10 },
@@ -135,11 +135,11 @@ export const GATHER_NODES: GatherNodeDef[] = [
     level: 10,
   },
 
-  // Thornpeak Heights (thornpeak_heights) had no gather nodes at all, forcing
+  // Summit Frontier (thornpeak_heights) had no gather nodes at all, forcing
   // higher-level players back down to zone 1 for every mining/logging/herb
   // trip. Ore sits by Deeprock Burrows (the zone's mine-themed POI, guarded by
   // the deeprock_kobold camp, matching the eastbrook_vale ore-vs-tunnel_rat
-  // precedent); wood sits near The Glimmermere and herb near Highwatch.
+  // precedent); wood sits near The Glimmermere and herb near Summit Watch.
   {
     id: 'ore_thornpeak_1',
     zoneId: 'thornpeak_heights',

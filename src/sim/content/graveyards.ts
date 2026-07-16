@@ -26,13 +26,13 @@ export interface GraveyardDef {
 // across all three zones), so every visible graveyard on the map gets an angel and
 // no overworld death is ever far from one.
 export const OVERWORLD_GRAVEYARDS: GraveyardDef[] = [
-  // Eastbrook Vale (zone 1)
-  { id: 'gy_eastbrook', name: 'Eastbrook Rest', x: -14, z: -14 },
+  // Unity Vale (zone 1)
+  { id: 'gy_eastbrook', name: 'Unity City Rest', x: -14, z: -14 },
   { id: 'gy_vale_chapel', name: 'Vale Chapel Yard', x: 4, z: -56 },
-  // Mirefen Marsh (zone 2)
-  { id: 'gy_fenbridge', name: 'Fenbridge Barrow', x: -18, z: 286 },
-  // Thornpeak Heights (zone 3)
-  { id: 'gy_thornpeak', name: 'Thornpeak Cairns', x: 15, z: 645 },
+  // Emerald Backwaters (zone 2)
+  { id: 'gy_fenbridge', name: 'Backwater Landing Barrow', x: -18, z: 286 },
+  // Summit Frontier (zone 3)
+  { id: 'gy_thornpeak', name: 'Summit Cairns', x: 15, z: 645 },
   { id: 'gy_thornpeak_east', name: 'East Ridge Graves', x: 141, z: 712 },
   { id: 'gy_thornpeak_south', name: 'Sanctum Approach Graves', x: 138, z: 838 },
   { id: 'gy_thornpeak_west', name: 'West Spire Graves', x: -139, z: 787 },

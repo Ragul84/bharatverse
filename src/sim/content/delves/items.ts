@@ -119,7 +119,7 @@ export const DELVE_ITEMS: Record<string, ItemDef> = {
     sellValue: 540,
     requiredClass: MAG,
   },
-  // --- The Drowned Litany (Mirefen Marsh delve) ---
+  // --- The Drowned Litany (Emerald Backwaters delve) ---
   siltguard_helm: {
     id: 'siltguard_helm',
     name: 'Siltguard Helm',

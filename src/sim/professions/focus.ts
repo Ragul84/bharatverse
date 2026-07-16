@@ -80,7 +80,7 @@ export function applyFocusTierBonus(
 // "In town" (#1143 scope note): there is no built-out town/crafting-station
 // system yet (that is an unfiled epic; see #1152 Tier 6). Every zone already
 // carries a `hub` settlement circle (`ZoneDef.hub`: x/z/radius/name, e.g.
-// Eastbrook/Fenbridge/Highwatch), the same footprint the world generator
+// Unity City/Backwater Landing/Summit Watch), the same footprint the world generator
 // flattens into a plateau and the road/prop generation treats as town. That
 // hub circle IS the town-tag stand-in this feature uses: a lightweight
 // zone-tag check, not a real crafting-station build-out.

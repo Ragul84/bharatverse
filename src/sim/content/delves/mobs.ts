@@ -133,7 +133,7 @@ export const DELVE_MOBS: Record<string, MobTemplate> = {
   },
 
   // =========================================================================
-  // The Drowned Litany (Mirefen Marsh delve, index 1). Fenbridge cult of the
+  // The Drowned Litany (Emerald Backwaters delve, index 1). Backwater Landing cult of the
   // Gravecallers; flood-cult cantors + marsh predators. Levels 12-14.
   // Abilities are MVP-simple here; richer telegraphs land in a later phase.
   // =========================================================================
@@ -226,7 +226,7 @@ export const DELVE_MOBS: Record<string, MobTemplate> = {
   },
   mirefen_widowling: {
     id: 'mirefen_widowling',
-    name: 'Mirefen Widowling',
+    name: 'Backwater Widowling',
     minLevel: 12,
     maxLevel: 13,
     family: 'beast',
@@ -367,7 +367,7 @@ export const DELVE_MOBS: Record<string, MobTemplate> = {
     color: 0x4f6b74,
   },
 
-  // --- Companion (friendly, no loot): Edda Reedhand, Fenbridge lantern-bearer ---
+  // --- Companion (friendly, no loot): Edda Reedhand, Backwater Landing lantern-bearer ---
   edda_reedhand: {
     id: 'edda_reedhand',
     name: 'Edda Reedhand',

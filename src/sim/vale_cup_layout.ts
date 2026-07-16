@@ -1,11 +1,11 @@
-// The Sowfield, Eastbrook's boarball ground, as plain numbers. Like
+// The Sowfield, Unity City's boarball ground, as plain numbers. Like
 // dungeon_layout.ts this module is the single source of truth for FOUR
 // consumers that must never drift: the terrain flatten arm (src/sim/world.ts),
 // the movement/camera colliders (src/sim/colliders.ts staticWorldColliders),
 // the ball's analytic wall reflection (src/sim/social/vale_cup.ts), and the
 // render dressing (src/render/vale_cup_stadium.ts).
 //
-// All coordinates are WORLD coordinates in southern Eastbrook Vale (zone 1).
+// All coordinates are WORLD coordinates in southern Unity Vale (zone 1).
 // The site is the measured empty basin between the Copper Dig (west), the
 // Bandit Camp (east), Reliquary Hill (north), and the world-rim ramp that
 // starts at z = -150 (docs/prd/vale-cup.md has the survey). Compass: +z is

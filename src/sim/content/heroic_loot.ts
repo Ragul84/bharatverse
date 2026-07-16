@@ -368,7 +368,7 @@ export const HEROIC_ITEMS: Record<string, ItemDef> = {
     sellValue: 9500,
     requiredClass: HEAL_MAIL,
   },
-  // ================= Heroic Nythraxis, Scourge of Thornpeak (raid) =================
+  // ================= Heroic Nythraxis, Scourge of Summit (raid) =================
   scepter_of_the_deathless_court: {
     id: 'scepter_of_the_deathless_court',
     name: 'Scepter of the Deathless Court',

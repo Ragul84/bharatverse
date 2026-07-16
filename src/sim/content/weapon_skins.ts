@@ -184,7 +184,7 @@ export const WEAPON_SKINS: Record<string, WeaponSkinDef> = {
     season: 1,
   },
 
-  // ── Hoarfrost (Epic): carved and grown from Thornpeak glacier ──
+  // ── Hoarfrost (Epic): carved and grown from Summit glacier ──
   ice_fang_sword: {
     id: 'ice_fang_sword',
     collection: S1.hoarfrost,
@@ -243,7 +243,7 @@ export const WEAPON_SKINS: Record<string, WeaponSkinDef> = {
     season: 1,
   },
 
-  // ── Fallen Star (Legendary): worked from the Mirefen crater ──
+  // ── Fallen Star (Legendary): worked from the Backwater crater ──
   solheim_sword: {
     id: 'solheim_sword',
     collection: S1.fallenStar,

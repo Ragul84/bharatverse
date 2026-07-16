@@ -548,7 +548,7 @@ export const DUNGEON_MOBS: Record<string, MobTemplate> = {
   // in zone3.ts and spawnNythraxisAldric in sim.ts), not a mob.
   nythraxis_scourge_of_thornpeak: {
     id: 'nythraxis_scourge_of_thornpeak',
-    name: 'Nythraxis, Scourge of Thornpeak',
+    name: 'Nythraxis, Scourge of Summit',
     minLevel: 20,
     maxLevel: 20,
     family: 'undead',
@@ -742,7 +742,7 @@ export const DUNGEON_DEFS: Record<string, DungeonDef> = {
     interior: 'crypt',
     suggestedPlayers: 1,
     enterText: 'You cross the threshold of the Abandoned Crypt.',
-    leaveText: 'You return to the cold air of Thornpeak.',
+    leaveText: 'You return to the cold air of Summit.',
   },
   nythraxis_boss_arena: {
     id: 'nythraxis_boss_arena',
@@ -765,6 +765,6 @@ export const DUNGEON_DEFS: Record<string, DungeonDef> = {
     interior: 'nythraxis',
     suggestedPlayers: 10,
     enterText: 'You pass through the sealed royal door.',
-    leaveText: 'You return to the cold air of Thornpeak.',
+    leaveText: 'You return to the cold air of Summit.',
   },
 };

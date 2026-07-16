@@ -10,7 +10,7 @@ export interface MailboxDef {
 }
 
 export const MAILBOXES: MailboxDef[] = [
-  { x: 7, z: -8 }, // Eastbrook, by the square south of the well
-  { x: 6, z: 294 }, // Fenbridge, at the boardwalk mouth
-  { x: 6, z: 654 }, // Highwatch, beside the gate path
+  { x: 7, z: -8 }, // Unity City, by the square south of the well
+  { x: 6, z: 294 }, // Backwater Landing, at the boardwalk mouth
+  { x: 6, z: 654 }, // Summit Watch, beside the gate path
 ];

@@ -1,4 +1,4 @@
-// Zone 1 — Eastbrook Vale (levels 1-7). The starter zone: town of Eastbrook,
+// Zone 1 — Unity Vale (levels 1-7). The starter zone: town of Unity City,
 // wolves and boars, the bandit camp, and Brother Aldric's Gravecaller chain
 // leading to the Hollow Crypt.
 
@@ -20,16 +20,16 @@ export const LAKE = { x: -92, z: 88, radius: 30 };
 
 export const ZONE1_ZONE: ZoneDef = {
   id: 'eastbrook_vale',
-  name: 'Eastbrook Vale',
+  name: 'Unity Vale',
   zMin: -180,
   zMax: 180,
   levelRange: [1, 7],
   biome: 'vale',
-  hub: { x: 0, z: 0, radius: TOWN_RADIUS, name: 'Eastbrook' },
+  hub: { x: 0, z: 0, radius: TOWN_RADIUS, name: 'Unity City' },
   graveyard: GRAVEYARD_POS,
   lakes: [LAKE],
   pois: [
-    { x: 0, z: -3, label: 'Eastbrook', id: 'eastbrook' },
+    { x: 0, z: -3, label: 'Unity City', id: 'eastbrook' },
     { x: -2, z: 70, label: 'Wolf Run', id: 'wolf_run' },
     { x: 65, z: 0, label: 'Boar Meadow', id: 'boar_meadow' },
     { x: -88, z: 82, label: 'Mirror Lake', id: 'mirror_lake' },
@@ -717,7 +717,7 @@ export const ZONE1_QUESTS: Record<string, QuestDef> = {
     name: 'A Trade for Every Hand',
     giverNpcId: 'foreman_odell',
     turnInNpcId: 'foreman_odell',
-    text: "Every soul in Eastbrook works a trade besides the sword, $N. There's ore veins in the rocks around the Copper Dig, southwest of town, so go swing a pick and bring me 5 chunks. Mine them yourself, mind; I'll know the difference.",
+    text: "Every soul in Unity City works a trade besides the sword, $N. There's ore veins in the rocks around the Copper Dig, southwest of town, so go swing a pick and bring me 5 chunks. Mine them yourself, mind; I'll know the difference.",
     completionText:
       "See? Ore in your pack and callus on your hands. Keep at the mining, logging, and herb-picking as you travel the roads, and when you're back in town, mind the Town Focus board by the market and the crafting bench nearby. There's a fair trade waiting in all of it, if you want it.",
     objectives: [{ type: 'collect', itemId: 'chunk_of_ore', count: 5, label: 'Chunk of Ore' }],
@@ -730,7 +730,7 @@ export const ZONE1_QUESTS: Record<string, QuestDef> = {
     name: 'Wolves at the Door',
     giverNpcId: 'marshal_redbrook',
     turnInNpcId: 'marshal_redbrook',
-    text: 'The forest wolves grow bold, snapping at travelers on the north road. Thin their numbers, $N. Slay 8 Forest Wolves and Eastbrook will breathe easier.',
+    text: 'The forest wolves grow bold, snapping at travelers on the north road. Thin their numbers, $N. Slay 8 Forest Wolves and Unity City will breathe easier.',
     completionText: 'Fine work. The road feels safer already.',
     objectives: [
       { type: 'kill', targetMobId: 'forest_wolf', count: 8, label: 'Forest Wolf slain' },
@@ -842,7 +842,7 @@ export const ZONE1_QUESTS: Record<string, QuestDef> = {
     name: 'Stolen Supplies',
     giverNpcId: 'trader_wilkes',
     turnInNpcId: 'trader_wilkes',
-    text: 'Those bandits hit my last wagon and made off with four crates of goods — tools, salt, good Eastbrook linen. The crates are stacked around their camp in the southeast hills. Steal them back for me, would you?',
+    text: 'Those bandits hit my last wagon and made off with four crates of goods — tools, salt, good Unity City linen. The crates are stacked around their camp in the southeast hills. Steal them back for me, would you?',
     completionText: 'My crates! Barely a scratch on them. You are a wonder.',
     objectives: [
       { type: 'collect', itemId: 'supply_crate', count: 4, label: 'Stolen Supply Crate' },
@@ -875,7 +875,7 @@ export const ZONE1_QUESTS: Record<string, QuestDef> = {
     turnInNpcId: 'brother_aldric',
     text: 'If the Gravecallers raised our dead, I must know whose graves they robbed. The chapel sexton kept a burial ledger, and the wind has scattered its pages across the chapel yard. Gather 3 of them for me, $N — the dead deserve to be called by their names.',
     completionText:
-      "These poor souls... and look here. Sexton Marrow — the chapel's own living caretaker — his grave the first disturbed. Morthen began with the very man who buried Eastbrook's dead.",
+      "These poor souls... and look here. Sexton Marrow — the chapel's own living caretaker — his grave the first disturbed. Morthen began with the very man who buried Unity City's dead.",
     objectives: [
       {
         type: 'collect',
@@ -929,7 +929,7 @@ export const ZONE1_QUESTS: Record<string, QuestDef> = {
     turnInNpcId: 'brother_aldric',
     text: "Morthen the Gravecaller waits at the bottom of the Hollow Crypt, ringed by the elite dead he has raised. He is far beyond any one hero — take four companions, no fewer. End him, and the Vale's dead will finally sleep.",
     completionText:
-      'The whispering has stopped. You have done what the whole Vale could not, $N — the dead sleep, and Eastbrook owes you everything it has.',
+      'The whispering has stopped. You have done what the whole Vale could not, $N — the dead sleep, and Unity City owes you everything it has.',
     objectives: [
       { type: 'kill', targetMobId: 'morthen', count: 1, label: 'Morthen the Gravecaller slain' },
     ],
@@ -1002,7 +1002,7 @@ export const ZONE1_QUESTS: Record<string, QuestDef> = {
     turnInNpcId: 'marshal_redbrook',
     text: 'The bandits answer to one man: Gorrak the Ruthless. Cut off the head and the body will scatter. He skulks at the heart of their camp. End him, $N.',
     completionText:
-      'Gorrak is dead? Then the Vale is free of his shadow. You have done Eastbrook a great service.',
+      'Gorrak is dead? Then the Vale is free of his shadow. You have done Unity City a great service.',
     objectives: [
       { type: 'kill', targetMobId: 'gorrak', count: 1, label: 'Gorrak the Ruthless slain' },
     ],
@@ -1018,7 +1018,7 @@ export const ZONE1_QUESTS: Record<string, QuestDef> = {
     turnInNpcId: 'marshal_redbrook',
     text: 'Mogger has split carts, flattened fences, and killed enough livestock to empty half the Vale. Do not face him alone. Take two strong companions into the eastern meadow and put the brute down for good.',
     completionText:
-      "Mogger dead at last. Eastbrook's fields are safer, and you leave the Vale with one more tale worth retelling.",
+      "Mogger dead at last. Unity City's fields are safer, and you leave the Vale with one more tale worth retelling.",
     objectives: [{ type: 'kill', targetMobId: 'mogger', count: 1, label: 'Mogger slain' }],
     xpReward: 1200,
     copperReward: 900,
@@ -1047,7 +1047,7 @@ export const ZONE1_QUESTS: Record<string, QuestDef> = {
     name: 'A Craft to Call Your Own',
     giverNpcId: 'marshal_redbrook',
     turnInNpcId: 'marshal_redbrook',
-    text: 'Every artisan of Eastbrook eventually settles on one craft to call their own. Prove yourself with a single deed, $N, and declare your path.',
+    text: 'Every artisan of Unity City eventually settles on one craft to call their own. Prove yourself with a single deed, $N, and declare your path.',
     completionText: 'Your path is chosen; walk it well.',
     objectives: [
       { type: 'kill', targetMobId: 'forest_wolf', count: 1, label: 'Forest Wolf slain' },

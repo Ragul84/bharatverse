@@ -391,11 +391,11 @@ export const CRAFT_THROTTLE_MAX_PER_WINDOW = 10;
 // Location: rather than build a fourth, brand-new town (out of scope per the
 // issue's own notes: "Scope (which zone, what the hub includes) needs
 // maintainer confirmation... Independent of the wheel mechanics"), this reuses
-// Thornpeak Heights' existing Highwatch hub (content/zone3.ts ZONE3_ZONE.hub):
+// Summit Frontier' existing Summit Watch hub (content/zone3.ts ZONE3_ZONE.hub):
 // zone3's levelRange tops out at exactly 20 (`[13, 20]`), so "the level-20
-// zone" already exists and Highwatch is its town center. Importing the hub
+// zone" already exists and Summit Watch is its town center. Importing the hub
 // circle directly (rather than re-typing its coordinates) keeps this content
-// from silently drifting if Highwatch's hub ever moves.
+// from silently drifting if Summit Watch's hub ever moves.
 export const CRAFTING_HUB_ZONE_ID = ZONE3_ZONE.id;
 export const CRAFTING_HUB_POS: { readonly x: number; readonly z: number } = {
   x: ZONE3_ZONE.hub.x,

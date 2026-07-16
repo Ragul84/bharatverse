@@ -51,7 +51,7 @@ export interface WorldBossDef {
 }
 
 // The world bosses of the live world. One per entry; the scheduler tracks each
-// independently. Thunzharr rises at Stormcrag in Thornpeak Heights.
+// independently. Thunzharr rises at Stormcrag in Summit Frontier.
 export const WORLD_BOSSES: readonly WorldBossDef[] = [
   {
     templateId: 'thunzharr_waking_peak',

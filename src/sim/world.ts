@@ -140,7 +140,7 @@ export const TERRACE_TREAD = 0.6;
 // Fraction of the smooth rise kept as a linear talus apron under the first
 // band. Without it, any rise below TERRACE_TREAD * TERRACE_STEP terraces to
 // exactly 0 and the foot of every wall becomes a dead-flat plain, erasing
-// placed landmarks that lean on that rise (the Mirefen impact site sits
+// placed landmarks that lean on that rise (the Backwater impact site sits
 // against a 3.1yd wall base; tests/impact_site.test.ts pins it).
 export const TERRACE_APRON = 0.5;
 
@@ -314,7 +314,7 @@ function applyEditLayer(x: number, z: number, h0: number): number {
   return h;
 }
 
-// The Sowfield boarball ground (docs/prd/vale-cup.md): the southern Eastbrook
+// The Sowfield boarball ground (docs/prd/vale-cup.md): the southern Unity City
 // basin leveled into a crisp rectangular plateau with a smoothstep apron ring.
 // Blend weight of the flatten at (x, z): 1 inside the rectangle, easing to 0
 // over SOWFIELD_FLAT.falloff yards outside it. Height stamps are circles-only,
@@ -524,7 +524,7 @@ export function terrainHeight(x: number, z: number, seed: number): number {
   // Raise the world rim so the player naturally stays in bounds. Like the zone
   // ridges, the rise is steeper than the climb limit everywhere (guarded by
   // tests/terrain_walls.test.ts); it starts where it always did (30yd inside,
-  // the Mirefen impact site leans on that wall base) but peaks before the
+  // the Backwater impact site leans on that wall base) but peaks before the
   // boundary so the whole climb happens in-world.
   const rimX = smoothstep(WORLD_MAX_X - 30, WORLD_MAX_X - 6, Math.abs(x));
   const rimS = smoothstep(w.minZ + 30, w.minZ + 6, z);

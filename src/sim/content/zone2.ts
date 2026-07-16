@@ -1,4 +1,4 @@
-// Zone 2 — Mirefen Marsh (levels 6-13). Brother Aldric follows the
+// Zone 2 — Emerald Backwaters (levels 6-13). Brother Aldric follows the
 // Gravecaller trail north of the causeway: drowned dead rise from the fen,
 // trolls dig into barrow-mounds, and Vael the Fogbinder waits in the
 // Sunken Bastion.
@@ -19,16 +19,16 @@ export const DEEPFEN_SHALLOWS_LAKE = { x: -110, z: 310, radius: 35 };
 
 export const ZONE2_ZONE: ZoneDef = {
   id: 'mirefen_marsh',
-  name: 'Mirefen Marsh',
+  name: 'Emerald Backwaters',
   zMin: 180,
   zMax: 540,
   levelRange: [6, 13],
   biome: 'marsh',
-  hub: { x: 0, z: 300, radius: 20, name: 'Fenbridge' },
+  hub: { x: 0, z: 300, radius: 20, name: 'Backwater Landing' },
   graveyard: { x: -18, z: 286 },
   lakes: [DEEPFEN_SHALLOWS_LAKE, { x: 60, z: 380, radius: 25 }, { x: -40, z: 450, radius: 20 }],
   pois: [
-    { x: 0, z: 300, label: 'Fenbridge', id: 'fenbridge' },
+    { x: 0, z: 300, label: 'Backwater Landing', id: 'fenbridge' },
     { x: -40, z: 230, label: 'Prowler Reeds', id: 'prowler_reeds' },
     { x: -105, z: 300, label: 'Deepfen Shallows', id: 'deepfen_shallows' },
     { x: 80, z: 315, label: 'Widow Thicket', id: 'widow_thicket' },
@@ -37,10 +37,10 @@ export const ZONE2_ZONE: ZoneDef = {
     { x: 0, z: 485, label: 'Gravecaller Encampment', id: 'gravecaller_encampment' },
     { x: 45, z: 515, label: 'The Sunken Bastion', id: 'the_sunken_bastion' },
   ],
-  welcome: 'Report to Warden Fenwick at the Fenbridge gate.',
+  welcome: 'Report to Warden Fenwick at the Backwater Landing gate.',
 };
 
-// Causeway north from Eastbrook to Fenbridge, then spokes to each hub.
+// Causeway north from Unity City to Backwater Landing, then spokes to each hub.
 // The Drowned Chapel spoke rounds the lake at (60,380) along its western
 // shore via Widow Thicket — the whole polyline stays clear of the lake carve
 // so the road never dips under the waterline (tests/progression.test.ts
@@ -51,7 +51,7 @@ export const ZONE2_ROADS: { x: number; z: number }[][] = [
     { x: 0, z: 180 },
     { x: -8, z: 240 },
     { x: 0, z: 300 },
-  ], // Eastbrook -> Fenbridge
+  ], // Unity City -> Backwater Landing
   [
     { x: 4, z: 308 },
     { x: 45, z: 336 },
@@ -233,7 +233,7 @@ export const ZONE2_MOBS: Record<string, MobTemplate> = {
   },
   mire_widow: {
     id: 'mire_widow',
-    name: 'Mirefen Widow',
+    name: 'Backwater Widow',
     minLevel: 8,
     maxLevel: 10,
     family: 'spider',
@@ -318,7 +318,7 @@ export const ZONE2_MOBS: Record<string, MobTemplate> = {
   },
   fen_troll: {
     id: 'fen_troll',
-    name: 'Mirefen Troll',
+    name: 'Backwater Troll',
     minLevel: 10,
     maxLevel: 12,
     family: 'troll',
@@ -589,14 +589,14 @@ export const ZONE2_MOBS: Record<string, MobTemplate> = {
 };
 
 // ---------------------------------------------------------------------------
-// NPCs (Fenbridge hub)
+// NPCs (Backwater Landing hub)
 // ---------------------------------------------------------------------------
 
 export const ZONE2_NPCS: Record<string, NpcDef> = {
   warden_fenwick: {
     id: 'warden_fenwick',
     name: 'Warden Fenwick',
-    title: 'Warden of Fenbridge',
+    title: 'Warden of Backwater Landing',
     pos: { x: 3, z: 304 },
     facing: Math.PI,
     color: 0x7e5109,
@@ -657,7 +657,7 @@ export const ZONE2_NPCS: Record<string, NpcDef> = {
       'simple_fishing_pole',
     ],
     greeting:
-      'Dry boots, dry bread, dry powder — at Fenbridge you get two of the three on a good day.',
+      'Dry boots, dry bread, dry powder — at Backwater Landing you get two of the three on a good day.',
   },
   herbalist_yara: {
     id: 'herbalist_yara',
@@ -716,14 +716,14 @@ export const ZONE2_NPCS: Record<string, NpcDef> = {
 export const ZONE2_QUESTS: Record<string, QuestDef> = {
   q_fenbridge_muster: {
     id: 'q_fenbridge_muster',
-    name: 'Muster at Fenbridge',
+    name: 'Muster at Backwater Landing',
     giverNpcId: 'brother_aldric',
     turnInNpcId: 'warden_fenwick',
-    text: "Morthen's writings named a master in the northern marsh — a 'Fogbinder.' Now Warden Fenwick has sounded the muster horn at Fenbridge, and I do not believe in coincidence, $N. Take the causeway north, pull the muster order from the gatepost, and present it to the Warden.",
+    text: "Morthen's writings named a master in the northern marsh — a 'Fogbinder.' Now Warden Fenwick has sounded the muster horn at Backwater Landing, and I do not believe in coincidence, $N. Take the causeway north, pull the muster order from the gatepost, and present it to the Warden.",
     completionText:
       "Aldric's seal, is it? Then you'll do. The fen has been swallowing my patrols whole, and I need every blade that floats.",
     objectives: [
-      { type: 'collect', itemId: 'fen_muster_order', count: 1, label: 'Fenbridge Muster Order' },
+      { type: 'collect', itemId: 'fen_muster_order', count: 1, label: 'Backwater Landing Muster Order' },
     ],
     xpReward: 300,
     copperReward: 200,
@@ -749,7 +749,7 @@ export const ZONE2_QUESTS: Record<string, QuestDef> = {
     name: 'Pelts for the Causeway',
     giverNpcId: 'provisioner_hale',
     turnInNpcId: 'provisioner_hale',
-    text: 'Every plank of that causeway rests on pilings wrapped in oiled prowler hide — the only thing the rot will not chew through. My stock is gone and the south spans are already sinking. Bring me 8 unspoiled pelts, $N, before we are all wading to Eastbrook.',
+    text: 'Every plank of that causeway rests on pilings wrapped in oiled prowler hide — the only thing the rot will not chew through. My stock is gone and the south spans are already sinking. Bring me 8 unspoiled pelts, $N, before we are all wading to Unity City.',
     completionText: 'Good thick pelts, these. The causeway will outlast the both of us now.',
     objectives: [
       { type: 'collect', itemId: 'mire_prowler_pelt', count: 8, label: 'Mire Prowler Pelt' },
@@ -763,7 +763,7 @@ export const ZONE2_QUESTS: Record<string, QuestDef> = {
     name: 'The Lost Caravan',
     giverNpcId: 'provisioner_hale',
     turnInNpcId: 'provisioner_hale',
-    text: 'A caravan out of Eastbrook went into the mist three days back and never rang the gate bell. The wreck is strewn the whole length of the causeway — crates, casks, the lot, sinking slow. Salvage 5 loads of goods before the marsh finishes the job.',
+    text: 'A caravan out of Unity City went into the mist three days back and never rang the gate bell. The wreck is strewn the whole length of the causeway — crates, casks, the lot, sinking slow. Salvage 5 loads of goods before the marsh finishes the job.',
     completionText:
       'Waterlogged, but whole. Poor drivers... the fen keeps what it catches, $N. Remember that.',
     objectives: [
@@ -779,9 +779,9 @@ export const ZONE2_QUESTS: Record<string, QuestDef> = {
     name: 'The Codfather',
     giverNpcId: 'provisioner_hale',
     turnInNpcId: 'provisioner_hale',
-    text: "The Codfather isn't just a fish, $N, he's a cold-blooded killer. Old-timers swear he eats Mire Prowlers for breakfast, and even the Mirefen Widows won't spin their webs near the Deepfen Shallows out of sheer terror. He rules those waters. Grab a fishing pole, drag that old devil out of his waters, and I will admit you have joined the family.",
+    text: "The Codfather isn't just a fish, $N, he's a cold-blooded killer. Old-timers swear he eats Mire Prowlers for breakfast, and even the Backwater Widows won't spin their webs near the Deepfen Shallows out of sheer terror. He rules those waters. Grab a fishing pole, drag that old devil out of his waters, and I will admit you have joined the family.",
     completionText:
-      'By the damp saints... The Codfather himself. Look at those whiskers. Fenbridge will eat stories off this catch for a year, $N.',
+      'By the damp saints... The Codfather himself. Look at those whiskers. Backwater Landing will eat stories off this catch for a year, $N.',
     objectives: [{ type: 'collect', itemId: 'the_codfather', count: 1, label: 'The Codfather' }],
     xpReward: 950,
     copperReward: 450,
@@ -811,7 +811,7 @@ export const ZONE2_QUESTS: Record<string, QuestDef> = {
     turnInNpcId: 'brother_aldric_fen',
     text: "Fenwick's wardens say the fish-men dredge idols from the lake bottom and clutch them like holy relics. If those idols are what I fear, I must see them with my own eyes. Take 5 from the Deepfen snappers — they will not part with them kindly.",
     completionText:
-      'Gravecaller work — older than Morthen, older than me. The sect did not begin in Eastbrook, $N. It began here, and the lake has been keeping its secrets.',
+      'Gravecaller work — older than Morthen, older than me. The sect did not begin in Unity City, $N. It began here, and the lake has been keeping its secrets.',
     objectives: [
       { type: 'collect', itemId: 'waterlogged_idol', count: 5, label: 'Waterlogged Idol' },
     ],
@@ -871,7 +871,7 @@ export const ZONE2_QUESTS: Record<string, QuestDef> = {
     completionText:
       'Whole sacs, every one. You have steadier hands than half the surgeons in the south, $N.',
     objectives: [
-      { type: 'kill', targetMobId: 'mire_widow', count: 10, label: 'Mirefen Widow slain' },
+      { type: 'kill', targetMobId: 'mire_widow', count: 10, label: 'Backwater Widow slain' },
       { type: 'collect', itemId: 'widow_venom_sac', count: 6, label: 'Widow Venom Sac' },
     ],
     xpReward: 1200,
@@ -888,7 +888,7 @@ export const ZONE2_QUESTS: Record<string, QuestDef> = {
     completionText:
       'Dead? Truly dead? Then the thicket is just trees again. The Light bless your blade, $N.',
     objectives: [
-      { type: 'kill', targetMobId: 'mire_widow', count: 8, label: 'Mirefen Widow slain' },
+      { type: 'kill', targetMobId: 'mire_widow', count: 8, label: 'Backwater Widow slain' },
       {
         type: 'kill',
         targetMobId: 'mirefen_broodmother',
@@ -953,14 +953,14 @@ export const ZONE2_QUESTS: Record<string, QuestDef> = {
   },
   q_trolls: {
     id: 'q_trolls',
-    name: 'Mounds of the Mirefen',
+    name: 'Mounds of the Backwater',
     giverNpcId: 'warden_fenwick',
     turnInNpcId: 'warden_fenwick',
-    text: 'The Mirefen trolls have torn open the old barrow-mounds east of the far lake — burial mounds, $N, older than any kingdom of men. Whatever gold they think is down there, what they are letting OUT is worse. Drive them off the mounds: 12 trolls dead ought to do it.',
+    text: 'The Backwater trolls have torn open the old barrow-mounds east of the far lake — burial mounds, $N, older than any kingdom of men. Whatever gold they think is down there, what they are letting OUT is worse. Drive them off the mounds: 12 trolls dead ought to do it.',
     completionText:
       "Trolls don't dig without a reason. Someone told them where to dig — and I'd wager my gate it wears a grey robe.",
     objectives: [
-      { type: 'kill', targetMobId: 'fen_troll', count: 12, label: 'Mirefen Troll slain' },
+      { type: 'kill', targetMobId: 'fen_troll', count: 12, label: 'Backwater Troll slain' },
     ],
     xpReward: 1600,
     copperReward: 600,
@@ -976,7 +976,7 @@ export const ZONE2_QUESTS: Record<string, QuestDef> = {
     completionText:
       'Same maker as the banners in the cult camp. The trolls are hired shovels, nothing more. Good work, $N.',
     objectives: [
-      { type: 'collect', itemId: 'troll_fetish', count: 8, label: 'Mirefen Troll Fetish' },
+      { type: 'collect', itemId: 'troll_fetish', count: 8, label: 'Backwater Troll Fetish' },
     ],
     xpReward: 1650,
     copperReward: 600,
@@ -994,7 +994,7 @@ export const ZONE2_QUESTS: Record<string, QuestDef> = {
     turnInNpcId: 'provisioner_hale',
     text: "There's one troll the others won't dig beside — Grubjaw, the Glutton. He ate my last two pack-mules, harness and all, and my insurance man drowned years ago. He prowls the far eastern mounds, $N. Bring me his tusk and I will outfit you proper.",
     completionText:
-      'That tusk is long as my forearm! The mules are avenged, and Fenbridge owes you a round.',
+      'That tusk is long as my forearm! The mules are avenged, and Backwater Landing owes you a round.',
     objectives: [{ type: 'collect', itemId: 'grubjaw_tusk', count: 1, label: "Grubjaw's Tusk" }],
     xpReward: 1700,
     copperReward: 700,
@@ -1163,7 +1163,7 @@ export const ZONE2_QUEST_ORDER = [
 ];
 
 // ---------------------------------------------------------------------------
-// World layout. Fenbridge sits at (0,300); +z north (deeper fen), +x west
+// World layout. Backwater Landing sits at (0,300); +z north (deeper fen), +x west
 // (east is -x — see the zone1 layout note).
 // ---------------------------------------------------------------------------
 
@@ -1175,7 +1175,7 @@ export const ZONE2_CAMPS: CampDef[] = [
   { mobId: 'deepfen_murloc', center: { x: -82, z: 273 }, radius: 15, count: 8 },
   { mobId: 'deepfen_murloc', center: { x: -120, z: 350 }, radius: 13, count: 6 },
   { mobId: 'mirejaw_the_ravenous', center: { x: -132, z: 333 }, radius: 5, count: 1 },
-  // Widows: thicket west of Fenbridge
+  // Widows: thicket west of Backwater Landing
   { mobId: 'mire_widow', center: { x: 70, z: 300 }, radius: 20, count: 7 },
   { mobId: 'mire_widow', center: { x: 95, z: 340 }, radius: 16, count: 6 },
   { mobId: 'mirefen_broodmother', center: { x: 98, z: 348 }, radius: 3, count: 1 },
@@ -1203,7 +1203,7 @@ export const ZONE2_CAMPS: CampDef[] = [
 export const ZONE2_OBJECTS: GroundObjectDef[] = [
   {
     itemId: 'fen_muster_order',
-    name: 'Fenbridge Muster Order',
+    name: 'Backwater Landing Muster Order',
     positions: [
       { x: 1, z: 294 },
       { x: -2, z: 297 },
@@ -1263,7 +1263,7 @@ export const ZONE2_ITEMS: Record<string, ItemDef> = {
   // --- quest items ---
   fen_muster_order: {
     id: 'fen_muster_order',
-    name: 'Fenbridge Muster Order',
+    name: 'Backwater Landing Muster Order',
     kind: 'quest',
     sellValue: 0,
     questId: 'q_fenbridge_muster',
@@ -1312,7 +1312,7 @@ export const ZONE2_ITEMS: Record<string, ItemDef> = {
   },
   troll_fetish: {
     id: 'troll_fetish',
-    name: 'Mirefen Troll Fetish',
+    name: 'Backwater Troll Fetish',
     kind: 'quest',
     sellValue: 0,
     questId: 'q_troll_fetishes',
@@ -1854,7 +1854,7 @@ export const ZONE2_ITEMS: Record<string, ItemDef> = {
   // --- vendor food & drink (Provisioner Hale) ---
   fenbridge_rye: {
     id: 'fenbridge_rye',
-    name: 'Fenbridge Rye Loaf',
+    name: 'Backwater Landing Rye Loaf',
     kind: 'food',
     quality: 'common',
     foodHp: 243,
@@ -1872,7 +1872,7 @@ export const ZONE2_ITEMS: Record<string, ItemDef> = {
   },
   smoked_eel: {
     id: 'smoked_eel',
-    name: 'Smoked Mirefen Eel',
+    name: 'Smoked Backwater Eel',
     kind: 'food',
     quality: 'common',
     foodHp: 432,
@@ -1912,7 +1912,7 @@ export const ZONE2_ITEMS: Record<string, ItemDef> = {
   },
   mirefen_skinner: {
     id: 'mirefen_skinner',
-    name: 'Mirefen Skinner',
+    name: 'Backwater Skinner',
     kind: 'weapon',
     slot: 'mainhand',
     quality: 'common',

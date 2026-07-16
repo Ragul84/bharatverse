@@ -1,5 +1,5 @@
-// Zone 3 — Thornpeak Heights (levels 13-20). The Gravecallers serve Korzul
-// the Gravewyrm, an ancient dragon sealed beneath the peaks. Highwatch holds
+// Zone 3 — Summit Frontier (levels 13-20). The Gravecallers serve Korzul
+// the Gravewyrm, an ancient dragon sealed beneath the peaks. Summit Watch holds
 // the wall against ogres, waking elementals, and the open chanting of the
 // Wyrmcult at the Gravewyrm Sanctum gates.
 
@@ -16,16 +16,16 @@ import type {
 
 export const ZONE3_ZONE: ZoneDef = {
   id: 'thornpeak_heights',
-  name: 'Thornpeak Heights',
+  name: 'Summit Frontier',
   zMin: 540,
   zMax: 900,
   levelRange: [13, 20],
   biome: 'peaks',
-  hub: { x: 0, z: 660, radius: 20, name: 'Highwatch' },
+  hub: { x: 0, z: 660, radius: 20, name: 'Summit Watch' },
   graveyard: { x: 15, z: 645 },
   lakes: [{ x: -70, z: 760, radius: 18 }],
   pois: [
-    { x: 0, z: 660, label: 'Highwatch', id: 'highwatch' },
+    { x: 0, z: 660, label: 'Summit Watch', id: 'highwatch' },
     { x: -50, z: 590, label: 'Stalker Ridge', id: 'stalker_ridge' },
     { x: 85, z: 615, label: 'Deeprock Burrows', id: 'deeprock_burrows' },
     { x: -90, z: 700, label: 'Ogre Foothills', id: 'ogre_foothills' },
@@ -36,17 +36,17 @@ export const ZONE3_ZONE: ZoneDef = {
     { x: -40, z: 830, label: 'Revenant Fields', id: 'revenant_fields' },
     { x: 0, z: 880, label: 'Gravewyrm Sanctum', id: 'gravewyrm_sanctum' },
   ],
-  welcome: 'Captain Thessaly holds the wall at Highwatch - barely.',
+  welcome: 'Captain Thessaly holds the wall at Summit Watch - barely.',
 };
 
-// Mountain road from Fenbridge up to Highwatch, then spokes.
+// Mountain road from Backwater Landing up to Summit Watch, then spokes.
 export const ZONE3_ROADS: { x: number; z: number }[][] = [
   [
     { x: 0, z: 320 },
     { x: 10, z: 450 },
     { x: 0, z: 540 },
     { x: 0, z: 660 },
-  ], // Fenbridge -> Highwatch
+  ], // Backwater Landing -> Summit Watch
   [
     { x: -6, z: 666 },
     { x: -60, z: 700 },
@@ -69,7 +69,7 @@ export const ZONE3_ROADS: { x: number; z: number }[][] = [
 // ---------------------------------------------------------------------------
 
 export const ZONE3_MOBS: Record<string, MobTemplate> = {
-  // Highwatch practice target: a near-immortal, stationary dummy for testing damage
+  // Summit Watch practice target: a near-immortal, stationary dummy for testing damage
   // rotations and reading the combat meters. Cap-level with zero armor so the damage
   // it takes is your clean, unmitigated rotation output. Inert (never fights back),
   // drops nothing (you can never really fell it), and pops back up 10s after a death.
@@ -129,7 +129,7 @@ export const ZONE3_MOBS: Record<string, MobTemplate> = {
   },
   // The apex of the southern ridge: a grizzled, scar-pelted old cat that has
   // outlived three generations of its pack. A rare elite counterpart to the
-  // Ridge Stalkers, met first when climbing into Thornpeak. Reuses existing
+  // Ridge Stalkers, met first when climbing into Summit. Reuses existing
   // mechanics only: a rending pounce (aoePulse) and a wounded-beast enrage.
   old_cragmaw: {
     id: 'old_cragmaw',
@@ -258,7 +258,7 @@ export const ZONE3_MOBS: Record<string, MobTemplate> = {
   },
   thornpeak_ogre: {
     id: 'thornpeak_ogre',
-    name: 'Thornpeak Ogre',
+    name: 'Summit Ogre',
     minLevel: 15,
     maxLevel: 16,
     family: 'ogre',
@@ -280,7 +280,7 @@ export const ZONE3_MOBS: Record<string, MobTemplate> = {
   },
   ogre_crusher: {
     id: 'ogre_crusher',
-    name: 'Thornpeak Crusher',
+    name: 'Summit Crusher',
     minLevel: 16,
     maxLevel: 17,
     family: 'ogre',
@@ -826,7 +826,7 @@ export const ZONE3_MOBS: Record<string, MobTemplate> = {
     scale: 1.3,
     color: 0xe8702a,
   },
-  // Thunzharr, the Waking Peak: the world boss of Thornpeak Heights. The
+  // Thunzharr, the Waking Peak: the world boss of Summit Frontier. The
   // mountain at Stormcrag is no mountain at all: a primordial storm elemental the
   // Gravecallers' chanting keeps stirring loose. It rises on a fixed cadence (see
   // src/sim/world_boss.ts), bellows a server-wide warning, and rewards every player
@@ -934,7 +934,7 @@ export const ZONE3_MOBS: Record<string, MobTemplate> = {
     // Loud: a mountain-sized voice, and (with quietMechanics) his ONLY periodic
     // voice. Every yell (engage/summon/enrage + these battle cries) carries 350yd,
     // far past the 100yd default; he bellows one of these lines about every 45s in
-    // combat, so the whole of Thornpeak knows he is awake without the log ever
+    // combat, so the whole of Summit knows he is awake without the log ever
     // filling with per-mechanic barks.
     battleYells: {
       every: 45,
@@ -990,14 +990,14 @@ export const ZONE3_MOBS: Record<string, MobTemplate> = {
 };
 
 // ---------------------------------------------------------------------------
-// NPCs (Highwatch hub)
+// NPCs (Summit Watch hub)
 // ---------------------------------------------------------------------------
 
 export const ZONE3_NPCS: Record<string, NpcDef> = {
   captain_thessaly: {
     id: 'captain_thessaly',
     name: 'Captain Thessaly',
-    title: 'Highwatch Captain',
+    title: 'Summit Watch Captain',
     pos: { x: 4, z: 664 },
     facing: -2.0,
     color: 0x85929e,
@@ -1054,7 +1054,7 @@ export const ZONE3_NPCS: Record<string, NpcDef> = {
     color: 0xd7d0b4,
     questIds: ['q_nythraxis_scourges_end'],
     dynamic: true,
-    // Shares the Highwatch Aldric's name/title/greeting so all three entity
+    // Shares the Summit Watch Aldric's name/title/greeting so all three entity
     // strings reuse his existing 13-locale translations (no new untranslated copy).
     greeting:
       'From a chapel yard in the Vale to the roof of the world... the trail we have followed ends here. I can feel the mountain listening.',
@@ -1073,7 +1073,7 @@ export const ZONE3_NPCS: Record<string, NpcDef> = {
   quartermaster_bree: {
     id: 'quartermaster_bree',
     name: 'Quartermaster Bree',
-    title: 'Highwatch Quartermaster',
+    title: 'Summit Watch Quartermaster',
     pos: { x: -5, z: 668 },
     facing: 1.6,
     color: 0xca8a2a,
@@ -1103,7 +1103,7 @@ export const ZONE3_NPCS: Record<string, NpcDef> = {
       'sunpetal_herb',
     ],
     greeting:
-      'Wool, hardtack, and steel-shod boots — Highwatch runs on all three, and I am short of everything.',
+      'Wool, hardtack, and steel-shod boots — Summit Watch runs on all three, and I am short of everything.',
   },
   armorer_hode: {
     id: 'armorer_hode',
@@ -1126,7 +1126,7 @@ export const ZONE3_NPCS: Record<string, NpcDef> = {
     questIds: [],
     heroicVendor: true,
     greeting:
-      'Proof of the heroic depths buys the finest rings and pendants in Highwatch. Show me your marks.',
+      'Proof of the heroic depths buys the finest rings and pendants in Summit Watch. Show me your marks.',
   },
   loremaster_caddis: {
     id: 'loremaster_caddis',
@@ -1139,9 +1139,9 @@ export const ZONE3_NPCS: Record<string, NpcDef> = {
     greeting:
       'Mind the loose shale, $C. The mountain has been... restless of late. I intend to learn why.',
   },
-  // A second auctioneer: the same shared World Market as The Merchant in Eastbrook,
-  // reachable up here in Highwatch so zone-3 players need not trek back to deal. A
-  // distinct name and amethyst tint set her apart from the gold Eastbrook merchant.
+  // A second auctioneer: the same shared World Market as The Merchant in Unity City,
+  // reachable up here in Summit Watch so zone-3 players need not trek back to deal. A
+  // distinct name and amethyst tint set her apart from the gold Unity City merchant.
   auctioneer_voss: {
     id: 'auctioneer_voss',
     name: 'Auctioneer Voss',
@@ -1173,7 +1173,7 @@ export const ZONE3_NPCS: Record<string, NpcDef> = {
     name: 'Chronicler Zenzie',
     title: 'The Peaks Chronicle',
     // On the south road shoulder below the square, facing south over the road
-    // up from Fenbridge (clear of the house footprint at {8,650}; nearest
+    // up from Backwater Landing (clear of the house footprint at {8,650}; nearest
     // authored neighbor ~15 units, she had been wedged into the gate cluster).
     pos: { x: 2, z: 643 },
     facing: 3.1,
@@ -1193,11 +1193,11 @@ export const ZONE3_QUESTS: Record<string, QuestDef> = {
     name: 'The Watch on the Peaks',
     giverNpcId: 'brother_aldric_fen',
     turnInNpcId: 'captain_thessaly',
-    text: "Vael's last words have not left me, $N: the Wyrm stirs beneath the peaks. Captain Thessaly commands the wall at Highwatch, at the head of the mountain road north. A summons stands posted at her gate — take it up, and tell her Brother Aldric is climbing the mountain behind you.",
+    text: "Vael's last words have not left me, $N: the Wyrm stirs beneath the peaks. Captain Thessaly commands the wall at Summit Watch, at the head of the mountain road north. A summons stands posted at her gate — take it up, and tell her Brother Aldric is climbing the mountain behind you.",
     completionText:
-      "Aldric's word reaches far. If the priest of the Vale is climbing the mountain himself, then it is as bad as I feared. Welcome to Highwatch, $N.",
+      "Aldric's word reaches far. If the priest of the Vale is climbing the mountain himself, then it is as bad as I feared. Welcome to Summit Watch, $N.",
     objectives: [
-      { type: 'collect', itemId: 'highwatch_summons', count: 1, label: 'Highwatch Summons' },
+      { type: 'collect', itemId: 'highwatch_summons', count: 1, label: 'Summit Watch Summons' },
     ],
     xpReward: 500,
     copperReward: 500,
@@ -1220,7 +1220,7 @@ export const ZONE3_QUESTS: Record<string, QuestDef> = {
   },
   q_stalker_pelts: {
     id: 'q_stalker_pelts',
-    name: 'Winter Is Coming to Highwatch',
+    name: 'Winter Is Coming to Summit Watch',
     giverNpcId: 'quartermaster_bree',
     turnInNpcId: 'quartermaster_bree',
     text: 'Winter on this mountain does not knock, $N — it kicks the door in. Eight ridge stalker pelts will line enough cloaks to see the wall through the first snows. The beasts prowl the ridges flanking the road south.',
@@ -1323,11 +1323,11 @@ export const ZONE3_QUESTS: Record<string, QuestDef> = {
     name: 'Ogres at the Foothills',
     giverNpcId: 'scout_maren_highwatch',
     turnInNpcId: 'scout_maren_highwatch',
-    text: 'The Thornpeak clans never come this far east — yet here they are, camped in the eastern foothills with war paint on. Somebody is paying them, $N, and ogres do not take promises. Cut twelve of them down while I find out who holds the purse.',
+    text: 'The Summit clans never come this far east — yet here they are, camped in the eastern foothills with war paint on. Somebody is paying them, $N, and ogres do not take promises. Cut twelve of them down while I find out who holds the purse.',
     completionText:
       'Twelve down, and still they are not pulling back. Whoever bought them paid in something heavier than gold.',
     objectives: [
-      { type: 'kill', targetMobId: 'thornpeak_ogre', count: 12, label: 'Thornpeak Ogre slain' },
+      { type: 'kill', targetMobId: 'thornpeak_ogre', count: 12, label: 'Summit Ogre slain' },
     ],
     xpReward: 2900,
     copperReward: 1400,
@@ -1353,11 +1353,11 @@ export const ZONE3_QUESTS: Record<string, QuestDef> = {
     name: "The Captain's Bounty",
     giverNpcId: 'captain_thessaly',
     turnInNpcId: 'captain_thessaly',
-    text: "Maren's totems tell me all I need to know: the clans are bought, and my wall is their first errand. I will not wait for them to muster. Fourteen more Thornpeak Ogres, $N — and I will pay bounty on every one.",
+    text: "Maren's totems tell me all I need to know: the clans are bought, and my wall is their first errand. I will not wait for them to muster. Fourteen more Summit Ogres, $N — and I will pay bounty on every one.",
     completionText:
       'Bounty paid in full. The foothills are quieter — now we deal with the ones doing the buying.',
     objectives: [
-      { type: 'kill', targetMobId: 'thornpeak_ogre', count: 14, label: 'Thornpeak Ogre slain' },
+      { type: 'kill', targetMobId: 'thornpeak_ogre', count: 14, label: 'Summit Ogre slain' },
     ],
     xpReward: 3000,
     copperReward: 1500,
@@ -1373,7 +1373,7 @@ export const ZONE3_QUESTS: Record<string, QuestDef> = {
     completionText:
       'Ten crushers down. The war-camp is a body without a spine — time to take the head.',
     objectives: [
-      { type: 'kill', targetMobId: 'ogre_crusher', count: 10, label: 'Thornpeak Crusher slain' },
+      { type: 'kill', targetMobId: 'ogre_crusher', count: 10, label: 'Summit Crusher slain' },
     ],
     xpReward: 3600,
     copperReward: 2000,
@@ -1386,7 +1386,7 @@ export const ZONE3_QUESTS: Record<string, QuestDef> = {
     name: 'Warlord Drogmar',
     giverNpcId: 'captain_thessaly',
     turnInNpcId: 'captain_thessaly',
-    text: "Warlord Drogmar took the Wyrmcult's coin and swore the clans to the mountain's waking. He is the hammer they mean to swing at my wall — and when he slams the ground, $N, do not be standing near him. Take your companions into the war-camp and end him, for Highwatch.",
+    text: "Warlord Drogmar took the Wyrmcult's coin and swore the clans to the mountain's waking. He is the hammer they mean to swing at my wall — and when he slams the ground, $N, do not be standing near him. Take your companions into the war-camp and end him, for Summit Watch.",
     completionText:
       'Drogmar, dead in his own camp. The clans will scatter to the high passes — you have bought my wall a winter, $N.',
     objectives: [
@@ -1480,7 +1480,7 @@ export const ZONE3_QUESTS: Record<string, QuestDef> = {
     turnInNpcId: 'brother_aldric_highwatch',
     text: 'The zealots move with purpose now — watches set, supplies counted, like soldiers before a siege. Cultists who organize are cultists taking orders, $N. Kill eight more and bring me four sets of their written orders. I would know the hand that commands them.',
     completionText:
-      "This script... I last saw its like in Morthen's grimoire, in Eastbrook. The same hand has guided every grave we have fought over, $N.",
+      "This script... I last saw its like in Morthen's grimoire, in Unity City. The same hand has guided every grave we have fought over, $N.",
     objectives: [
       { type: 'kill', targetMobId: 'wyrmcult_zealot', count: 8, label: 'Wyrmcult Zealot slain' },
       { type: 'collect', itemId: 'wyrmcult_orders', count: 4, label: 'Wyrmcult Orders' },
@@ -1539,7 +1539,7 @@ export const ZONE3_QUESTS: Record<string, QuestDef> = {
     name: 'Bones of the Vanguard',
     giverNpcId: 'captain_thessaly',
     turnInNpcId: 'captain_thessaly',
-    text: 'The revenants are forming ranks, $N — true ranks, shield-lines and columns, drilling with no drummer. They are being mustered for the Sanctum gate. Break fourteen more before that march begins, and Highwatch will owe you its best steel.',
+    text: 'The revenants are forming ranks, $N — true ranks, shield-lines and columns, drilling with no drummer. They are being mustered for the Sanctum gate. Break fourteen more before that march begins, and Summit Watch will owe you its best steel.',
     completionText:
       'The fields lie still again. Take this — it was made for the defenders of the wall, and no one has earned it more.',
     objectives: [
@@ -1564,7 +1564,7 @@ export const ZONE3_QUESTS: Record<string, QuestDef> = {
     name: 'Sigils of the Wyrm',
     giverNpcId: 'brother_aldric_highwatch',
     turnInNpcId: 'brother_aldric_highwatch',
-    text: 'It is time you knew the whole of it, $N. The Gravecallers serve Korzul the Gravewyrm — an ancient dragon sealed beneath this mountain — and every soul they have stolen since Eastbrook is a tithe poured into its waking. On the Sanctum Approach the cult has laid sigils to thin the seal. Bring me three; I would read the rite they are working.',
+    text: 'It is time you knew the whole of it, $N. The Gravecallers serve Korzul the Gravewyrm — an ancient dragon sealed beneath this mountain — and every soul they have stolen since Unity City is a tithe poured into its waking. On the Sanctum Approach the cult has laid sigils to thin the seal. Bring me three; I would read the rite they are working.',
     completionText:
       'Yes... a waking-litany, generations in the writing. They are close, $N. Closer than I dared fear.',
     objectives: [
@@ -1687,9 +1687,9 @@ export const ZONE3_QUESTS: Record<string, QuestDef> = {
     name: 'Korzul the Gravewyrm',
     giverNpcId: 'brother_aldric_highwatch',
     turnInNpcId: 'brother_aldric_highwatch',
-    text: "There is no rite left to stop, $N — only the Wyrm itself, half-woken in its hollow, gorged on the dead of the Vale and the fen. If it rises, the wall, the marsh, Eastbrook — everything we have defended falls in a single night. Take your companions into the Wyrm's Hollow and finish what we began in a chapel yard so long ago. The Light has carried you this far; carry it the rest of the way.",
+    text: "There is no rite left to stop, $N — only the Wyrm itself, half-woken in its hollow, gorged on the dead of the Vale and the fen. If it rises, the wall, the marsh, Unity City — everything we have defended falls in a single night. Take your companions into the Wyrm's Hollow and finish what we began in a chapel yard so long ago. The Light has carried you this far; carry it the rest of the way.",
     completionText:
-      'It is over. The dead of three lands may rest, the mountain sleeps unhaunted — and it is your name, $N, that every bell from here to Eastbrook rings tonight.',
+      'It is over. The dead of three lands may rest, the mountain sleeps unhaunted — and it is your name, $N, that every bell from here to Unity City rings tonight.',
     objectives: [
       {
         type: 'kill',
@@ -1717,9 +1717,9 @@ export const ZONE3_QUESTS: Record<string, QuestDef> = {
     name: 'Unrest in the Bonefields',
     giverNpcId: 'brother_aldric_highwatch',
     turnInNpcId: 'brother_aldric_highwatch',
-    text: 'Something has changed in Thornpeak Heights, $N. The dead no longer wander aimlessly. They gather and march through the northern bonefields beyond Highwatch, where the old battlefield meets the cliff road. Go there, investigate the unrest among the Boneclad Revenants, and bring back any proof of what is driving them.',
+    text: 'Something has changed in Summit Frontier, $N. The dead no longer wander aimlessly. They gather and march through the northern bonefields beyond Summit Watch, where the old battlefield meets the cliff road. Go there, investigate the unrest among the Boneclad Revenants, and bring back any proof of what is driving them.',
     completionText:
-      'The same mark appears on every shard... a crown. I have seen this before, cut into old graves no Eastbrook record remembers.',
+      'The same mark appears on every shard... a crown. I have seen this before, cut into old graves no Unity City record remembers.',
     objectives: [
       { type: 'collect', itemId: 'runed_bone_shard', count: 10, label: 'Runed Bone Shard' },
     ],
@@ -1767,7 +1767,7 @@ export const ZONE3_QUESTS: Record<string, QuestDef> = {
     name: 'The Abandoned Crypt',
     giverNpcId: 'brother_aldric_highwatch',
     turnInNpcId: 'brother_aldric_highwatch',
-    text: "The visions point to the abandoned crypt in the western cliff. There is an old legend that the crypt housed a king. Perhaps Thornpeak sealed him below after Malric's ritual twisted him into something deathless. Enter the crypt and see what remains inside.",
+    text: "The visions point to the abandoned crypt in the western cliff. There is an old legend that the crypt housed a king. Perhaps Summit sealed him below after Malric's ritual twisted him into something deathless. Enter the crypt and see what remains inside.",
     completionText:
       "The keystone halves fit together, and Voss's diary names what they sealed: the signet of King Nythraxis. If the diary is true, that signet is the key to his tomb.",
     objectives: [
@@ -1788,7 +1788,7 @@ export const ZONE3_QUESTS: Record<string, QuestDef> = {
     turnInNpcId: 'brother_aldric_highwatch',
     text: "Voss wrote that the survivors sealed the King's Signet behind an ancient guardian, so no one could reach the tomb of Nythraxis by accident or ambition. Take the Crypt Keystone to the ritual circle on the flat ground north-west of the abandoned crypt and north-east of High Priest Malric's grave. Use it there, break the guardian, and bring back the signet.",
     completionText:
-      "The three relics tell the same story: Aldren fought to defend his king, Malric broke the boundary of death, and Voss tried to stop what followed. The seal is weakening, and this signet is the key to Nythraxis's tomb. You are now attuned to enter The Crypt of Nythraxis. Return to the abandoned crypt, unlock the royal door, and face Nythraxis before the old king's rage spills beyond Thornpeak.",
+      "The three relics tell the same story: Aldren fought to defend his king, Malric broke the boundary of death, and Voss tried to stop what followed. The seal is weakening, and this signet is the key to Nythraxis's tomb. You are now attuned to enter The Crypt of Nythraxis. Return to the abandoned crypt, unlock the royal door, and face Nythraxis before the old king's rage spills beyond Summit.",
     objectives: [
       {
         type: 'interact',
@@ -1818,9 +1818,9 @@ export const ZONE3_QUESTS: Record<string, QuestDef> = {
     giverNpcId: 'brother_aldric_highwatch',
     turnInNpcId: 'brother_aldric_highwatch',
     turnInNpcIds: ['brother_aldric_highwatch', 'brother_aldric_raid'],
-    text: 'The signet has opened the way, $N, but an open tomb is not a victory. Nythraxis was a king once, and the ruin beneath Thornpeak is still bound to his will. Enter the crypt with allies you trust. Break the deathless crown before its command reaches the battlefield above.',
+    text: 'The signet has opened the way, $N, but an open tomb is not a victory. Nythraxis was a king once, and the ruin beneath Summit is still bound to his will. Enter the crypt with allies you trust. Break the deathless crown before its command reaches the battlefield above.',
     completionText:
-      'Then the crown is silent at last. Thornpeak will still carry its dead, but no king below it will call them to war again. You have ended what Aldren, Malric, and Voss could only contain.',
+      'Then the crown is silent at last. Summit will still carry its dead, but no king below it will call them to war again. You have ended what Aldren, Malric, and Voss could only contain.',
     objectives: [
       {
         type: 'kill',
@@ -1879,7 +1879,7 @@ export const ZONE3_QUEST_ORDER = [
 // ---------------------------------------------------------------------------
 
 export const ZONE3_CAMPS: CampDef[] = [
-  // Training dummy: a single fixed practice target on the hill above Highwatch.
+  // Training dummy: a single fixed practice target on the hill above Summit Watch.
   { mobId: 'training_dummy', center: { x: -40, z: 648 }, radius: 0, count: 1 },
   // Ridge stalkers: the ridge flanking the road from the pass
   { mobId: 'ridge_stalker', center: { x: -50, z: 590 }, radius: 22, count: 7 },
@@ -1923,7 +1923,7 @@ export const ZONE3_CAMPS: CampDef[] = [
 export const ZONE3_OBJECTS: GroundObjectDef[] = [
   {
     itemId: 'highwatch_summons',
-    name: 'Highwatch Summons',
+    name: 'Summit Watch Summons',
     positions: [
       { x: 1, z: 654 },
       { x: -2, z: 657 },
@@ -1992,7 +1992,7 @@ export const ZONE3_ITEMS: Record<string, ItemDef> = {
   // --- quest items ---
   highwatch_summons: {
     id: 'highwatch_summons',
-    name: 'Highwatch Summons',
+    name: 'Summit Watch Summons',
     kind: 'quest',
     sellValue: 0,
     questId: 'q_highwatch_summons',
@@ -2865,7 +2865,7 @@ export const ZONE3_ITEMS: Record<string, ItemDef> = {
   },
   kingsbane_last_oath: {
     id: 'kingsbane_last_oath',
-    name: 'Thronebane, Last Oath of Thornpeak',
+    name: 'Thronebane, Last Oath of Summit',
     kind: 'weapon',
     slot: 'mainhand',
     quality: 'legendary',
@@ -3002,7 +3002,7 @@ export const ZONE3_ITEMS: Record<string, ItemDef> = {
   // --- vendor food & drink (Quartermaster Bree) ---
   trail_hardtack: {
     id: 'trail_hardtack',
-    name: 'Highwatch Trail Hardtack',
+    name: 'Summit Watch Trail Hardtack',
     kind: 'food',
     quality: 'common',
     foodHp: 552,
@@ -3039,7 +3039,7 @@ export const ZONE3_ITEMS: Record<string, ItemDef> = {
   // --- vendor whites (Armorer Hode + Quartermaster Bree) ---
   highwatch_warblade: {
     id: 'highwatch_warblade',
-    name: 'Highwatch Warblade',
+    name: 'Summit Watch Warblade',
     kind: 'weapon',
     slot: 'mainhand',
     quality: 'common',
@@ -3070,7 +3070,7 @@ export const ZONE3_ITEMS: Record<string, ItemDef> = {
   },
   highwatch_breastplate: {
     id: 'highwatch_breastplate',
-    name: 'Highwatch Breastplate',
+    name: 'Summit Watch Breastplate',
     kind: 'armor',
     armorType: 'mail',
     slot: 'chest',
@@ -3162,7 +3162,7 @@ export const ZONE3_ITEMS: Record<string, ItemDef> = {
 };
 
 // ---------------------------------------------------------------------------
-// Static props (rendering + collision share this placement data). Highwatch
+// Static props (rendering + collision share this placement data). Summit Watch
 // sits on a high plateau (~9 elevation); the lake at (-70,760) stays clear.
 // ---------------------------------------------------------------------------
 

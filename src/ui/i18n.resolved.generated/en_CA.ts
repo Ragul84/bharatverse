@@ -8008,7 +8008,7 @@ export const en_CA: EnTranslations = {
         "name": "Deepfen Snapper"
       },
       "mire_widow": {
-        "name": "Mirefen Widow"
+        "name": "Backwater Widow"
       },
       "mirefen_broodmother": {
         "name": "The Broodmother"
@@ -8017,7 +8017,7 @@ export const en_CA: EnTranslations = {
         "name": "Drowned Dead"
       },
       "fen_troll": {
-        "name": "Mirefen Troll"
+        "name": "Backwater Troll"
       },
       "grubjaw": {
         "name": "Grubjaw the Glutton"
@@ -8044,10 +8044,10 @@ export const en_CA: EnTranslations = {
         "name": "Deeprock Tunneler"
       },
       "thornpeak_ogre": {
-        "name": "Thornpeak Ogre"
+        "name": "Summit Ogre"
       },
       "ogre_crusher": {
-        "name": "Thornpeak Crusher"
+        "name": "Summit Crusher"
       },
       "warlord_drogmar": {
         "name": "Warlord Drogmar"
@@ -8143,7 +8143,7 @@ export const en_CA: EnTranslations = {
         "name": "Risen Royal Guard"
       },
       "nythraxis_scourge_of_thornpeak": {
-        "name": "Nythraxis, Scourge of Thornpeak"
+        "name": "Nythraxis, Scourge of Summit"
       },
       "nythraxis_heroic_warrior_add": {
         "name": "Spirit of Aldren"
@@ -8185,7 +8185,7 @@ export const en_CA: EnTranslations = {
         "name": "Deepfen Spearjaw"
       },
       "mirefen_widowling": {
-        "name": "Mirefen Widowling"
+        "name": "Backwater Widowling"
       },
       "spider_egg_sac": {
         "name": "Spider Egg-Sac"
@@ -8369,7 +8369,7 @@ export const en_CA: EnTranslations = {
       },
       "warden_fenwick": {
         "name": "Warden Fenwick",
-        "title": "Warden of Fenbridge",
+        "title": "Warden of Backwater Landing",
         "greeting": "Hold at the gate, {className}. Past those reeds, the fen does the killing for us."
       },
       "brother_aldric_fen": {
@@ -8380,7 +8380,7 @@ export const en_CA: EnTranslations = {
       "provisioner_hale": {
         "name": "Provisioner Hale",
         "title": "Provisioner",
-        "greeting": "Dry boots, dry bread, dry powder - at Fenbridge you get two of the three on a good day."
+        "greeting": "Dry boots, dry bread, dry powder - at Backwater Landing you get two of the three on a good day."
       },
       "herbalist_yara": {
         "name": "Herbalist Yara",
@@ -8394,7 +8394,7 @@ export const en_CA: EnTranslations = {
       },
       "captain_thessaly": {
         "name": "Captain Thessaly",
-        "title": "Highwatch Captain",
+        "title": "Summit Watch Captain",
         "greeting": "Two hundred years this wall has held, {className}. It will not break on my watch - but it groans."
       },
       "brother_aldric_highwatch": {
@@ -8409,8 +8409,8 @@ export const en_CA: EnTranslations = {
       },
       "quartermaster_bree": {
         "name": "Quartermaster Bree",
-        "title": "Highwatch Quartermaster",
-        "greeting": "Wool, hardtack, and steel-shod boots - Highwatch runs on all three, and I am short of everything."
+        "title": "Summit Watch Quartermaster",
+        "greeting": "Wool, hardtack, and steel-shod boots - Summit Watch runs on all three, and I am short of everything."
       },
       "armorer_hode": {
         "name": "Armorer Hode",
@@ -8420,7 +8420,7 @@ export const en_CA: EnTranslations = {
       "heroic_quartermaster": {
         "name": "Quartermaster Vex",
         "title": "Heroic Quartermaster",
-        "greeting": "Proof of the heroic depths buys the finest rings and pendants in Highwatch. Show me your marks."
+        "greeting": "Proof of the heroic depths buys the finest rings and pendants in Summit Watch. Show me your marks."
       },
       "fury": {
         "name": "FURY",
@@ -8501,7 +8501,7 @@ export const en_CA: EnTranslations = {
     "quests": {
       "q_prof_intro": {
         "title": "A Trade for Every Hand",
-        "text": "Every soul in Eastbrook works a trade besides the sword, {playerName}. There's ore veins in the rocks around the Copper Dig, southwest of town, so go swing a pick and bring me 5 chunks. Mine them yourself, mind; I'll know the difference.",
+        "text": "Every soul in Unity City works a trade besides the sword, {playerName}. There's ore veins in the rocks around the Copper Dig, southwest of town, so go swing a pick and bring me 5 chunks. Mine them yourself, mind; I'll know the difference.",
         "completion": "See? Ore in your pack and callus on your hands. Keep at the mining, logging, and herb-picking as you travel the roads, and when you're back in town, mind the Town Focus board by the market and the crafting bench nearby. There's a fair trade waiting in all of it, if you want it.",
         "objectives": {
           "0": {
@@ -8511,7 +8511,7 @@ export const en_CA: EnTranslations = {
       },
       "q_wolves": {
         "title": "Wolves at the Door",
-        "text": "The forest wolves grow bold, snapping at travelers on the north road. Thin their numbers, {playerName}. Slay 8 Forest Wolves and Eastbrook will breathe easier.",
+        "text": "The forest wolves grow bold, snapping at travelers on the north road. Thin their numbers, {playerName}. Slay 8 Forest Wolves and Unity City will breathe easier.",
         "completion": "Fine work. The road feels safer already.",
         "objectives": {
           "0": {
@@ -8584,7 +8584,7 @@ export const en_CA: EnTranslations = {
       },
       "q_supplies": {
         "title": "Stolen Supplies",
-        "text": "Those bandits hit my last wagon and made off with four crates of goods - tools, salt, good Eastbrook linen. The crates are stacked around their camp in the southeast hills. Steal them back for me, would you?",
+        "text": "Those bandits hit my last wagon and made off with four crates of goods - tools, salt, good Unity City linen. The crates are stacked around their camp in the southeast hills. Steal them back for me, would you?",
         "completion": "My crates! Barely a scratch on them. You are a wonder.",
         "objectives": {
           "0": {
@@ -8605,7 +8605,7 @@ export const en_CA: EnTranslations = {
       "q_names_of_the_dead": {
         "title": "The Names of the Dead",
         "text": "If the Gravecallers raised our dead, I must know whose graves they robbed. The chapel sexton kept a burial ledger, and the wind has scattered its pages across the chapel yard. Gather 3 of them for me, {playerName} - the dead deserve to be called by their names.",
-        "completion": "These poor souls... and look here. Sexton Marrow - the chapel's own living caretaker - his grave the first disturbed. Morthen began with the very man who buried Eastbrook's dead.",
+        "completion": "These poor souls... and look here. Sexton Marrow - the chapel's own living caretaker - his grave the first disturbed. Morthen began with the very man who buried Unity City's dead.",
         "objectives": {
           "0": {
             "label": "Weathered Ledger Page"
@@ -8638,7 +8638,7 @@ export const en_CA: EnTranslations = {
       "q_hollow": {
         "title": "Into the Hollow",
         "text": "Morthen the Gravecaller waits at the bottom of the Hollow Crypt, ringed by the elite dead he has raised. He is far beyond any one hero - take four companions, no fewer. End him, and the Vale's dead will finally sleep.",
-        "completion": "The whispering has stopped. You have done what the whole Vale could not, {playerName} - the dead sleep, and Eastbrook owes you everything it has.",
+        "completion": "The whispering has stopped. You have done what the whole Vale could not, {playerName} - the dead sleep, and Unity City owes you everything it has.",
         "objectives": {
           "0": {
             "label": "Morthen the Gravecaller slain"
@@ -8678,7 +8678,7 @@ export const en_CA: EnTranslations = {
       "q_ringleader": {
         "title": "The Ringleader",
         "text": "The bandits answer to one man: Gorrak the Ruthless. Cut off the head and the body will scatter. He skulks at the heart of their camp. End him, {playerName}.",
-        "completion": "Gorrak is dead? Then the Vale is free of his shadow. You have done Eastbrook a great service.",
+        "completion": "Gorrak is dead? Then the Vale is free of his shadow. You have done Unity City a great service.",
         "objectives": {
           "0": {
             "label": "Gorrak the Ruthless slain"
@@ -8686,12 +8686,12 @@ export const en_CA: EnTranslations = {
         }
       },
       "q_fenbridge_muster": {
-        "title": "Muster at Fenbridge",
-        "text": "Morthen's writings named a master in the northern marsh - a 'Fogbinder.' Now Warden Fenwick has sounded the muster horn at Fenbridge, and I do not believe in coincidence, {playerName}. Take the causeway north, pull the muster order from the gatepost, and present it to the Warden.",
+        "title": "Muster at Backwater Landing",
+        "text": "Morthen's writings named a master in the northern marsh - a 'Fogbinder.' Now Warden Fenwick has sounded the muster horn at Backwater Landing, and I do not believe in coincidence, {playerName}. Take the causeway north, pull the muster order from the gatepost, and present it to the Warden.",
         "completion": "Aldric's seal, is it? Then you'll do. The fen has been swallowing my patrols whole, and I need every blade that floats.",
         "objectives": {
           "0": {
-            "label": "Fenbridge Muster Order"
+            "label": "Backwater Landing Muster Order"
           }
         }
       },
@@ -8707,7 +8707,7 @@ export const en_CA: EnTranslations = {
       },
       "q_prowler_pelts": {
         "title": "Pelts for the Causeway",
-        "text": "Every plank of that causeway rests on pilings wrapped in oiled prowler hide - the only thing the rot will not chew through. My stock is gone and the south spans are already sinking. Bring me 8 unspoiled pelts, {playerName}, before we are all wading to Eastbrook.",
+        "text": "Every plank of that causeway rests on pilings wrapped in oiled prowler hide - the only thing the rot will not chew through. My stock is gone and the south spans are already sinking. Bring me 8 unspoiled pelts, {playerName}, before we are all wading to Unity City.",
         "completion": "Good thick pelts, these. The causeway will outlast the both of us now.",
         "objectives": {
           "0": {
@@ -8717,7 +8717,7 @@ export const en_CA: EnTranslations = {
       },
       "q_fen_supplies": {
         "title": "The Lost Caravan",
-        "text": "A caravan out of Eastbrook went into the mist three days back and never rang the gate bell. The wreck is strewn the whole length of the causeway - crates, casks, the lot, sinking slow. Salvage 5 loads of goods before the marsh finishes the job.",
+        "text": "A caravan out of Unity City went into the mist three days back and never rang the gate bell. The wreck is strewn the whole length of the causeway - crates, casks, the lot, sinking slow. Salvage 5 loads of goods before the marsh finishes the job.",
         "completion": "Waterlogged, but whole. Poor drivers... the fen keeps what it catches, {playerName}. Remember that.",
         "objectives": {
           "0": {
@@ -8738,7 +8738,7 @@ export const en_CA: EnTranslations = {
       "q_idols": {
         "title": "Idols of the Deep",
         "text": "Fenwick's wardens say the fish-men dredge idols from the lake bottom and clutch them like holy relics. If those idols are what I fear, I must see them with my own eyes. Take 5 from the Deepfen snappers - they will not part with them kindly.",
-        "completion": "Gravecaller work - older than Morthen, older than me. The sect did not begin in Eastbrook, {playerName}. It began here, and the lake has been keeping its secrets.",
+        "completion": "Gravecaller work - older than Morthen, older than me. The sect did not begin in Unity City, {playerName}. It began here, and the lake has been keeping its secrets.",
         "objectives": {
           "0": {
             "label": "Waterlogged Idol"
@@ -8771,7 +8771,7 @@ export const en_CA: EnTranslations = {
         "completion": "Whole sacs, every one. You have steadier hands than half the surgeons in the south, {playerName}.",
         "objectives": {
           "0": {
-            "label": "Mirefen Widow slain"
+            "label": "Backwater Widow slain"
           },
           "1": {
             "label": "Widow Venom Sac"
@@ -8784,7 +8784,7 @@ export const en_CA: EnTranslations = {
         "completion": "Dead? Truly dead? Then the thicket is just trees again. The Light bless your blade, {playerName}.",
         "objectives": {
           "0": {
-            "label": "Mirefen Widow slain"
+            "label": "Backwater Widow slain"
           },
           "1": {
             "label": "The Broodmother slain"
@@ -8822,12 +8822,12 @@ export const en_CA: EnTranslations = {
         }
       },
       "q_trolls": {
-        "title": "Mounds of the Mirefen",
-        "text": "The Mirefen trolls have torn open the old barrow-mounds east of the far lake - burial mounds, {playerName}, older than any kingdom of men. Whatever gold they think is down there, what they are letting OUT is worse. Drive them off the mounds: 12 trolls dead ought to do it.",
+        "title": "Mounds of the Backwater",
+        "text": "The Backwater trolls have torn open the old barrow-mounds east of the far lake - burial mounds, {playerName}, older than any kingdom of men. Whatever gold they think is down there, what they are letting OUT is worse. Drive them off the mounds: 12 trolls dead ought to do it.",
         "completion": "Trolls don't dig without a reason. Someone told them where to dig - and I'd wager my gate it wears a grey robe.",
         "objectives": {
           "0": {
-            "label": "Mirefen Troll slain"
+            "label": "Backwater Troll slain"
           }
         }
       },
@@ -8837,14 +8837,14 @@ export const en_CA: EnTranslations = {
         "completion": "Same maker as the banners in the cult camp. The trolls are hired shovels, nothing more. Good work, {playerName}.",
         "objectives": {
           "0": {
-            "label": "Mirefen Troll Fetish"
+            "label": "Backwater Troll Fetish"
           }
         }
       },
       "q_grubjaw": {
         "title": "The Glutton",
         "text": "There's one troll the others won't dig beside - Grubjaw, the Glutton. He ate my last two pack-mules, harness and all, and my insurance man drowned years ago. He prowls the far eastern mounds, {playerName}. Bring me his tusk and I will outfit you proper.",
-        "completion": "That tusk is long as my forearm! The mules are avenged, and Fenbridge owes you a round.",
+        "completion": "That tusk is long as my forearm! The mules are avenged, and Backwater Landing owes you a round.",
         "objectives": {
           "0": {
             "label": "Grubjaw's Tusk"
@@ -8916,11 +8916,11 @@ export const en_CA: EnTranslations = {
       },
       "q_highwatch_summons": {
         "title": "The Watch on the Peaks",
-        "text": "Vael's last words have not left me, {playerName}: the Wyrm stirs beneath the peaks. Captain Thessaly commands the wall at Highwatch, at the head of the mountain road north. A summons stands posted at her gate - take it up, and tell her Brother Aldric is climbing the mountain behind you.",
-        "completion": "Aldric's word reaches far. If the priest of the Vale is climbing the mountain himself, then it is as bad as I feared. Welcome to Highwatch, {playerName}.",
+        "text": "Vael's last words have not left me, {playerName}: the Wyrm stirs beneath the peaks. Captain Thessaly commands the wall at Summit Watch, at the head of the mountain road north. A summons stands posted at her gate - take it up, and tell her Brother Aldric is climbing the mountain behind you.",
+        "completion": "Aldric's word reaches far. If the priest of the Vale is climbing the mountain himself, then it is as bad as I feared. Welcome to Summit Watch, {playerName}.",
         "objectives": {
           "0": {
-            "label": "Highwatch Summons"
+            "label": "Summit Watch Summons"
           }
         }
       },
@@ -8935,7 +8935,7 @@ export const en_CA: EnTranslations = {
         }
       },
       "q_stalker_pelts": {
-        "title": "Winter Is Coming to Highwatch",
+        "title": "Winter Is Coming to Summit Watch",
         "text": "Winter on this mountain does not knock, {playerName} - it kicks the door in. Eight ridge stalker pelts will line enough cloaks to see the wall through the first snows. The beasts prowl the ridges flanking the road south.",
         "completion": "Thick as my arm, these. The watch will not freeze this year - take these treads for your trouble.",
         "objectives": {
@@ -8996,11 +8996,11 @@ export const en_CA: EnTranslations = {
       },
       "q_ogre_edges": {
         "title": "Ogres at the Foothills",
-        "text": "The Thornpeak clans never come this far east - yet here they are, camped in the eastern foothills with war paint on. Somebody is paying them, {playerName}, and ogres do not take promises. Cut twelve of them down while I find out who holds the purse.",
+        "text": "The Summit clans never come this far east - yet here they are, camped in the eastern foothills with war paint on. Somebody is paying them, {playerName}, and ogres do not take promises. Cut twelve of them down while I find out who holds the purse.",
         "completion": "Twelve down, and still they are not pulling back. Whoever bought them paid in something heavier than gold.",
         "objectives": {
           "0": {
-            "label": "Thornpeak Ogre slain"
+            "label": "Summit Ogre slain"
           }
         }
       },
@@ -9016,11 +9016,11 @@ export const en_CA: EnTranslations = {
       },
       "q_ogre_bounty": {
         "title": "The Captain's Bounty",
-        "text": "Maren's totems tell me all I need to know: the clans are bought, and my wall is their first errand. I will not wait for them to muster. Fourteen more Thornpeak Ogres, {playerName} - and I will pay bounty on every one.",
+        "text": "Maren's totems tell me all I need to know: the clans are bought, and my wall is their first errand. I will not wait for them to muster. Fourteen more Summit Ogres, {playerName} - and I will pay bounty on every one.",
         "completion": "Bounty paid in full. The foothills are quieter - now we deal with the ones doing the buying.",
         "objectives": {
           "0": {
-            "label": "Thornpeak Ogre slain"
+            "label": "Summit Ogre slain"
           }
         }
       },
@@ -9030,13 +9030,13 @@ export const en_CA: EnTranslations = {
         "completion": "Ten crushers down. The war-camp is a body without a spine - time to take the head.",
         "objectives": {
           "0": {
-            "label": "Thornpeak Crusher slain"
+            "label": "Summit Crusher slain"
           }
         }
       },
       "q_drogmar": {
         "title": "Warlord Drogmar",
-        "text": "Warlord Drogmar took the Wyrmcult's coin and swore the clans to the mountain's waking. He is the hammer they mean to swing at my wall - and when he slams the ground, {playerName}, do not be standing near him. Take your companions into the war-camp and end him, for Highwatch.",
+        "text": "Warlord Drogmar took the Wyrmcult's coin and swore the clans to the mountain's waking. He is the hammer they mean to swing at my wall - and when he slams the ground, {playerName}, do not be standing near him. Take your companions into the war-camp and end him, for Summit Watch.",
         "completion": "Drogmar, dead in his own camp. The clans will scatter to the high passes - you have bought my wall a winter, {playerName}.",
         "objectives": {
           "0": {
@@ -9087,7 +9087,7 @@ export const en_CA: EnTranslations = {
       "q_cult_orders": {
         "title": "Orders from Below",
         "text": "The zealots move with purpose now - watches set, supplies counted, like soldiers before a siege. Cultists who organize are cultists taking orders, {playerName}. Kill eight more and bring me four sets of their written orders. I would know the hand that commands them.",
-        "completion": "This script... I last saw its like in Morthen's grimoire, in Eastbrook. The same hand has guided every grave we have fought over, {playerName}.",
+        "completion": "This script... I last saw its like in Morthen's grimoire, in Unity City. The same hand has guided every grave we have fought over, {playerName}.",
         "objectives": {
           "0": {
             "label": "Wyrmcult Zealot slain"
@@ -9122,7 +9122,7 @@ export const en_CA: EnTranslations = {
       },
       "q_revenant_vanguard": {
         "title": "Bones of the Vanguard",
-        "text": "The revenants are forming ranks, {playerName} - true ranks, shield-lines and columns, drilling with no drummer. They are being mustered for the Sanctum gate. Break fourteen more before that march begins, and Highwatch will owe you its best steel.",
+        "text": "The revenants are forming ranks, {playerName} - true ranks, shield-lines and columns, drilling with no drummer. They are being mustered for the Sanctum gate. Break fourteen more before that march begins, and Summit Watch will owe you its best steel.",
         "completion": "The fields lie still again. Take this - it was made for the defenders of the wall, and no one has earned it more.",
         "objectives": {
           "0": {
@@ -9132,7 +9132,7 @@ export const en_CA: EnTranslations = {
       },
       "q_wyrm_sigils": {
         "title": "Sigils of the Wyrm",
-        "text": "It is time you knew the whole of it, {playerName}. The Gravecallers serve Korzul the Gravewyrm - an ancient dragon sealed beneath this mountain - and every soul they have stolen since Eastbrook is a tithe poured into its waking. On the Sanctum Approach the cult has laid sigils to thin the seal. Bring me three; I would read the rite they are working.",
+        "text": "It is time you knew the whole of it, {playerName}. The Gravecallers serve Korzul the Gravewyrm - an ancient dragon sealed beneath this mountain - and every soul they have stolen since Unity City is a tithe poured into its waking. On the Sanctum Approach the cult has laid sigils to thin the seal. Bring me three; I would read the rite they are working.",
         "completion": "Yes... a waking-litany, generations in the writing. They are close, {playerName}. Closer than I dared fear.",
         "objectives": {
           "0": {
@@ -9195,8 +9195,8 @@ export const en_CA: EnTranslations = {
       },
       "q_gravewyrm": {
         "title": "Korzul the Gravewyrm",
-        "text": "There is no rite left to stop, {playerName} - only the Wyrm itself, half-woken in its hollow, gorged on the dead of the Vale and the fen. If it rises, the wall, the marsh, Eastbrook - everything we have defended falls in a single night. Take your companions into the Wyrm's Hollow and finish what we began in a chapel yard so long ago. The Light has carried you this far; carry it the rest of the way.",
-        "completion": "It is over. The dead of three lands may rest, the mountain sleeps unhaunted - and it is your name, {playerName}, that every bell from here to Eastbrook rings tonight.",
+        "text": "There is no rite left to stop, {playerName} - only the Wyrm itself, half-woken in its hollow, gorged on the dead of the Vale and the fen. If it rises, the wall, the marsh, Unity City - everything we have defended falls in a single night. Take your companions into the Wyrm's Hollow and finish what we began in a chapel yard so long ago. The Light has carried you this far; carry it the rest of the way.",
+        "completion": "It is over. The dead of three lands may rest, the mountain sleeps unhaunted - and it is your name, {playerName}, that every bell from here to Unity City rings tonight.",
         "objectives": {
           "0": {
             "label": "Korzul the Gravewyrm slain"
@@ -9205,8 +9205,8 @@ export const en_CA: EnTranslations = {
       },
       "q_the_codfather": {
         "title": "The Codfather",
-        "text": "The Codfather isn't just a fish, {playerName}, he's a cold-blooded killer. Old-timers swear he eats Mire Prowlers for breakfast, and even the Mirefen Widows won't spin their webs near the Deepfen Shallows out of sheer terror. He rules those waters. Grab a fishing pole, drag that old devil out of his waters, and I will admit you have joined the family.",
-        "completion": "By the damp saints... The Codfather himself. Look at those whiskers. Fenbridge will eat stories off this catch for a year, {playerName}.",
+        "text": "The Codfather isn't just a fish, {playerName}, he's a cold-blooded killer. Old-timers swear he eats Mire Prowlers for breakfast, and even the Backwater Widows won't spin their webs near the Deepfen Shallows out of sheer terror. He rules those waters. Grab a fishing pole, drag that old devil out of his waters, and I will admit you have joined the family.",
+        "completion": "By the damp saints... The Codfather himself. Look at those whiskers. Backwater Landing will eat stories off this catch for a year, {playerName}.",
         "objectives": {
           "0": {
             "label": "The Codfather"
@@ -9215,8 +9215,8 @@ export const en_CA: EnTranslations = {
       },
       "q_nythraxis_restless_dead": {
         "title": "Unrest in the Bonefields",
-        "text": "Something has changed in Thornpeak Heights, {playerName}. The dead no longer wander aimlessly. They gather and march through the northern bonefields beyond Highwatch, where the old battlefield meets the cliff road. Go there, investigate the unrest among the Boneclad Revenants, and bring back any proof of what is driving them.",
-        "completion": "The same mark appears on every shard... a crown. I have seen this before, cut into old graves no Eastbrook record remembers.",
+        "text": "Something has changed in Summit Frontier, {playerName}. The dead no longer wander aimlessly. They gather and march through the northern bonefields beyond Summit Watch, where the old battlefield meets the cliff road. Go there, investigate the unrest among the Boneclad Revenants, and bring back any proof of what is driving them.",
+        "completion": "The same mark appears on every shard... a crown. I have seen this before, cut into old graves no Unity City record remembers.",
         "objectives": {
           "0": {
             "label": "Runed Bone Shard"
@@ -9241,7 +9241,7 @@ export const en_CA: EnTranslations = {
       },
       "q_nythraxis_sealed_crypt": {
         "title": "The Abandoned Crypt",
-        "text": "The visions point to the abandoned crypt in the western cliff. There is an old legend that the crypt housed a king. Perhaps Thornpeak sealed him below after Malric's ritual twisted him into something deathless. Enter the crypt and see what remains inside.",
+        "text": "The visions point to the abandoned crypt in the western cliff. There is an old legend that the crypt housed a king. Perhaps Summit sealed him below after Malric's ritual twisted him into something deathless. Enter the crypt and see what remains inside.",
         "completion": "The keystone halves fit together, and Voss's diary names what they sealed: the signet of King Nythraxis. If the diary is true, that signet is the key to his tomb.",
         "objectives": {
           "0": {
@@ -9258,7 +9258,7 @@ export const en_CA: EnTranslations = {
       "q_nythraxis_bound_guardian": {
         "title": "The Bound Guardian",
         "text": "Voss wrote that the survivors sealed the King's Signet behind an ancient guardian, so no one could reach the tomb of Nythraxis by accident or ambition. Take the Crypt Keystone to the ritual circle on the flat ground north-west of the abandoned crypt and north-east of High Priest Malric's grave. Use it there, break the guardian, and bring back the signet.",
-        "completion": "The three relics tell the same story: Aldren fought to defend his king, Malric broke the boundary of death, and Voss tried to stop what followed. The seal is weakening, and this signet is the key to Nythraxis's tomb. You are now attuned to enter The Crypt of Nythraxis. Return to the abandoned crypt, unlock the royal door, and face Nythraxis before the old king's rage spills beyond Thornpeak.",
+        "completion": "The three relics tell the same story: Aldren fought to defend his king, Malric broke the boundary of death, and Voss tried to stop what followed. The seal is weakening, and this signet is the key to Nythraxis's tomb. You are now attuned to enter The Crypt of Nythraxis. Return to the abandoned crypt, unlock the royal door, and face Nythraxis before the old king's rage spills beyond Summit.",
         "objectives": {
           "0": {
             "label": "Crypt Keystone used at the ritual circle"
@@ -9273,8 +9273,8 @@ export const en_CA: EnTranslations = {
       },
       "q_nythraxis_scourges_end": {
         "title": "Scourge's End",
-        "text": "The signet has opened the way, {playerName}, but an open tomb is not a victory. Nythraxis was a king once, and the ruin beneath Thornpeak is still bound to his will. Enter the crypt with allies you trust. Break the deathless crown before its command reaches the battlefield above.",
-        "completion": "Then the crown is silent at last. Thornpeak will still carry its dead, but no king below it will call them to war again. You have ended what Aldren, Malric, and Voss could only contain.",
+        "text": "The signet has opened the way, {playerName}, but an open tomb is not a victory. Nythraxis was a king once, and the ruin beneath Summit is still bound to his will. Enter the crypt with allies you trust. Break the deathless crown before its command reaches the battlefield above.",
+        "completion": "Then the crown is silent at last. Summit will still carry its dead, but no king below it will call them to war again. You have ended what Aldren, Malric, and Voss could only contain.",
         "objectives": {
           "0": {
             "label": "Nythraxis slain"
@@ -9293,7 +9293,7 @@ export const en_CA: EnTranslations = {
       },
       "q_archetype_acceptance": {
         "title": "A Craft to Call Your Own",
-        "text": "Every artisan of Eastbrook eventually settles on one craft to call their own. Prove yourself with a single deed, {playerName}, and declare your path.",
+        "text": "Every artisan of Unity City eventually settles on one craft to call their own. Prove yourself with a single deed, {playerName}, and declare your path.",
         "completion": "Your path is chosen; walk it well.",
         "objectives": {
           "0": {
@@ -9377,11 +9377,11 @@ export const en_CA: EnTranslations = {
     },
     "zones": {
       "eastbrook_vale": {
-        "name": "Eastbrook Vale",
+        "name": "Unity Vale",
         "welcome": "Find Marshal Redbrook in town - he has work for you.",
         "pois": {
           "0": {
-            "label": "Eastbrook"
+            "label": "Unity City"
           },
           "1": {
             "label": "Wolf Run"
@@ -9416,11 +9416,11 @@ export const en_CA: EnTranslations = {
         }
       },
       "mirefen_marsh": {
-        "name": "Mirefen Marsh",
-        "welcome": "Report to Warden Fenwick at the Fenbridge gate.",
+        "name": "Emerald Backwaters",
+        "welcome": "Report to Warden Fenwick at the Backwater Landing gate.",
         "pois": {
           "0": {
-            "label": "Fenbridge"
+            "label": "Backwater Landing"
           },
           "1": {
             "label": "Prowler Reeds"
@@ -9446,11 +9446,11 @@ export const en_CA: EnTranslations = {
         }
       },
       "thornpeak_heights": {
-        "name": "Thornpeak Heights",
-        "welcome": "Captain Thessaly holds the wall at Highwatch - barely.",
+        "name": "Summit Frontier",
+        "welcome": "Captain Thessaly holds the wall at Summit Watch - barely.",
         "pois": {
           "0": {
-            "label": "Highwatch"
+            "label": "Summit Watch"
           },
           "1": {
             "label": "Stalker Ridge"
@@ -9501,12 +9501,12 @@ export const en_CA: EnTranslations = {
       "nythraxis_crypt": {
         "name": "Abandoned Crypt",
         "enterText": "You cross the threshold of the Abandoned Crypt.",
-        "leaveText": "You return to the cold air of Thornpeak."
+        "leaveText": "You return to the cold air of Summit."
       },
       "nythraxis_boss_arena": {
         "name": "Nythraxis Raid Arena",
         "enterText": "You pass through the sealed royal door.",
-        "leaveText": "You return to the cold air of Thornpeak."
+        "leaveText": "You return to the cold air of Summit."
       },
       "drowned_temple": {
         "name": "The Drowned Temple",
@@ -9530,7 +9530,7 @@ export const en_CA: EnTranslations = {
       "ravenpost_welcome": {
         "sender": "The Ravenpost",
         "subject": "The ravens now fly for you",
-        "body": "Traveler,\n\nThe Ravenpost has opened its perches across the vale. Seek the raven pillars in Eastbrook, Fenbridge and Highwatch: from any of them you may send letters, coin and goods to other adventurers, and collect whatever the ravens bring you.\n\nEnclosed is a small courtesy for your first stamp.\n\nWings up,\nThe Ravenpost"
+        "body": "Traveler,\n\nThe Ravenpost has opened its perches across the vale. Seek the raven pillars in Unity City, Backwater Landing and Summit Watch: from any of them you may send letters, coin and goods to other adventurers, and collect whatever the ravens bring you.\n\nEnclosed is a small courtesy for your first stamp.\n\nWings up,\nThe Ravenpost"
       },
       "letter_q_wolves": {
         "sender": "Marshal Redbrook",

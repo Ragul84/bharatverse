@@ -33,7 +33,7 @@ export const BROTHER_HALVEN_MARSH: NpcDef = {
   name: 'Brother Halven',
   title: 'Reliquary Keeper',
   // A clearing north of the Troll Mounds, clear of the fen_troll/grubjaw camps
-  // (which top out around z~488) and short of the steep rise toward Thornpeak
+  // (which top out around z~488) and short of the steep rise toward Summit
   // Heights (the ground climbs fast past z~510 here). Matches
   // DROWNED_LITANY_DELVE.doorPos.
   pos: { x: -95, z: 505 },
