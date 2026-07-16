@@ -612,8 +612,8 @@ export const nl_NL: EnTranslations = {
     },
     "nativeUpdate": {
       "title": "Update beschikbaar",
-      "body": "Er is een nieuwe versie van World of ClaudeCraft beschikbaar. Werk nu bij voor de nieuwste oplossingen en verbeteringen.",
-      "bodyWithVersion": "Versie {version} van World of ClaudeCraft is beschikbaar. Werk nu bij voor de nieuwste oplossingen en verbeteringen.",
+      "body": "Er is een nieuwe versie van BharatVerse beschikbaar. Werk nu bij voor de nieuwste oplossingen en verbeteringen.",
+      "bodyWithVersion": "Versie {version} van BharatVerse is beschikbaar. Werk nu bij voor de nieuwste oplossingen en verbeteringen.",
       "notNow": "Niet nu",
       "update": "Bijwerken"
     },
@@ -1461,7 +1461,7 @@ export const nl_NL: EnTranslations = {
     },
     "discord": {
       "title": "Discord",
-      "panelTitle": "World of ClaudeCraft",
+      "panelTitle": "BharatVerse",
       "open": "Discord",
       "close": "Sluiten",
       "keybind": "Discord-paneel",
@@ -1578,7 +1578,7 @@ export const nl_NL: EnTranslations = {
         "titleDiscordian": "Titel: Discordiaan",
         "titleSquire": "Titel: Schildknaap van het Rijk",
         "chromaBlurple": "Blurple Mech Chroma",
-        "titleChampion": "Titel: Kampioen van Claudemoon",
+        "titleChampion": "Titel: Kampioen van Bharat",
         "swagStickers": "Stickerpakket (verzonden)",
         "swagTee": "T-shirt (verzonden)"
       },
@@ -2115,8 +2115,8 @@ export const nl_NL: EnTranslations = {
     }
   },
   "guide": {
-    "brand": "World of ClaudeCraft",
-    "brandShort": "ClaudeCraft",
+    "brand": "BharatVerse",
+    "brandShort": "BharatVerse",
     "tagline": "Een MMO in klassieke stijl die je gratis in je browser speelt.",
     "skipToContent": "Ga naar hoofdinhoud",
     "loading": "Laden...",
@@ -2181,7 +2181,7 @@ export const nl_NL: EnTranslations = {
       "github": "Broncode op GitHub",
       "discord": "Word lid van de Discord",
       "communityWiki": "Community-wiki",
-      "rights": "World of ClaudeCraft",
+      "rights": "BharatVerse",
       "linksLabel": "Speel- en communitylinks"
     },
     "language": {
@@ -2204,7 +2204,7 @@ export const nl_NL: EnTranslations = {
     },
     "home": {
       "eyebrow": "Klassieke MMO in je browser",
-      "title": "World of ClaudeCraft",
+      "title": "BharatVerse",
       "subtitle": "Quest, sluit je aaneen en verken een handgebouwde wereld, gratis in je browser.",
       "ctaPlay": "Speel nu",
       "ctaLearn": "Hoe te spelen",
@@ -2696,7 +2696,7 @@ export const nl_NL: EnTranslations = {
     },
     "worldPage": {
       "heading": "De wereld",
-      "intro": "World of ClaudeCraft is één aaneengesloten land dat je te voet doorkruist, drie zones van zuid naar noord. Er is geen snelreizen, dus de reis is onderdeel van het avontuur.",
+      "intro": "BharatVerse is één aaneengesloten land dat je te voet doorkruist, drie zones van zuid naar noord. Er is geen snelreizen, dus de reis is onderdeel van het avontuur.",
       "hub": "Thuisbasis",
       "mapHeading": "De weg naar het noorden",
       "mapSub": "Drie zones, van zuid naar noord, elk een stap hoger in niveau. Volg het questspoor en het land draagt je van het dal naar de toppen.",
@@ -3203,7 +3203,7 @@ export const nl_NL: EnTranslations = {
   },
   "editor": {
     "appTitle": "Kaarteditor",
-    "docTitle": "Kaarteditor - World of ClaudeCraft",
+    "docTitle": "Kaarteditor - BharatVerse",
     "untitledMap": "Naamloze kaart",
     "playtestPlayerName": "Kaartenmaker",
     "topbar": {
@@ -3678,7 +3678,7 @@ export const nl_NL: EnTranslations = {
     "realmName": "Wereldnaam"
   },
   "footer": {
-    "copyright": "2026 World of ClaudeCraft",
+    "copyright": "2026 BharatVerse",
     "githubLink": "https://github.com/levy-street/world-of-claudecraft",
     "githubLabel": "Opensourceproject",
     "whitepaper": "Whitepaper",
@@ -3734,7 +3734,7 @@ export const nl_NL: EnTranslations = {
     "serverOnline": "Online",
     "serverOffline": "Offline",
     "play": "Spelen",
-    "playAria": "Speel World of ClaudeCraft",
+    "playAria": "Speel BharatVerse",
     "serverLabel": "Kies je wereld",
     "serverAria": "Kies wereld: Online of Offline",
     "serverOfflineSub": "Directe lokale wereld",
@@ -3940,16 +3940,16 @@ export const nl_NL: EnTranslations = {
     "levelClass": "Niveau {level} - {className}",
     "topPercent": "TOP {percent}%",
     "realmSubtitle": "Wereld {realm}",
-    "defaultRealm": "World of ClaudeCraft",
-    "brandWordmark": "WORLD OF CLAUDECRAFT",
+    "defaultRealm": "BharatVerse",
+    "brandWordmark": "BHARATVERSE",
     "recruited": "{count} geworven",
     "footerHandle": "@{handle}",
     "footerHandleWithRecruits": "@{handle} - {recruited}",
     "footerCta": "Smeed je legende: {siteUrl}",
     "arenaStat": "Arena",
     "shareTierBit": ", {tier}-rang $WOC-houder",
-    "shareText": "Ik smeed mijn legende in World of ClaudeCraft: Niveau {level} {className}{tierBit}. Sluit je aan bij mijn wereld:",
-    "nativeShareTitle": "World of ClaudeCraft",
+    "shareText": "Ik smeed mijn legende in BharatVerse: Niveau {level} {className}{tierBit}. Sluit je aan bij mijn wereld:",
+    "nativeShareTitle": "BharatVerse",
     "fileNameFallback": "speler",
     "actionShareX": "Delen op X",
     "actionCopyReferral": "Verwijzingslink Kopiëren",
@@ -4571,14 +4571,14 @@ export const nl_NL: EnTranslations = {
     }
   },
   "seo": {
-    "title": "World of ClaudeCraft: Web-MMO in Klassieke Stijl",
-    "description": "Begin aan een episch avontuur in World of ClaudeCraft, een micro-MMO in klassieke stijl die je rechtstreeks in je browser kunt spelen. Sluit je aan bij een blijvende gedeelde wereld, level je klassen op en versla vijanden!",
+    "title": "BharatVerse: Web-MMO in Klassieke Stijl",
+    "description": "Begin aan een episch avontuur in BharatVerse, een micro-MMO in klassieke stijl die je rechtstreeks in je browser kunt spelen. Sluit je aan bij een blijvende gedeelde wereld, level je klassen op en versla vijanden!",
     "genre": "MMORPG",
     "playMode": "Multiplayer",
     "applicationCategory": "Spel",
     "operatingSystem": "Webbrowser",
-    "officialLabel": "Officiële website van World of ClaudeCraft",
-    "officialBody": "worldofclaudecraft.com is de officiële gratis browser-MMO voor de Claudemoon-wereld. Speel online met een blijvend personage, verken solo offline, lees de wiki en volg geverifieerde communitylinks vanaf deze site."
+    "officialLabel": "Officiële website van BharatVerse",
+    "officialBody": "worldofclaudecraft.com is de officiële gratis browser-MMO voor de Bharat-wereld. Speel online met een blijvend personage, verken solo offline, lees de wiki en volg geverifieerde communitylinks vanaf deze site."
   },
   "a11y": {
     "goHome": "Ga naar de startpagina",
@@ -4586,9 +4586,9 @@ export const nl_NL: EnTranslations = {
     "mainNavigation": "Hoofdnavigatie",
     "languageSelection": "Taalkeuze",
     "characterActions": "Personageacties",
-    "githubProject": "Open het World of ClaudeCraft GitHub-project",
-    "discordCommunity": "Word lid van de World of ClaudeCraft Discord-community",
-    "donateProject": "Doneer om World of ClaudeCraft te steunen"
+    "githubProject": "Open het BharatVerse GitHub-project",
+    "discordCommunity": "Word lid van de BharatVerse Discord-community",
+    "donateProject": "Doneer om BharatVerse te steunen"
   },
   "loading": {
     "world": "Wereld laden...",
@@ -4660,11 +4660,11 @@ export const nl_NL: EnTranslations = {
       "later": "Later"
     },
     "crash": {
-      "title": "World of ClaudeCraft",
+      "title": "BharatVerse",
       "body": "De spelweergave werkt niet meer. Opnieuw laden?",
       "reload": "Opnieuw laden",
       "quit": "Afsluiten",
-      "fatalBody": "World of ClaudeCraft is op een onverwachte fout gestuit en moet worden afgesloten."
+      "fatalBody": "BharatVerse is op een onverwachte fout gestuit en moet worden afgesloten."
     }
   },
   "realm": {
@@ -4792,20 +4792,20 @@ export const nl_NL: EnTranslations = {
     "iosStandaloneDetail": "Je bent in de volledig-scherm-modus vanaf het beginscherm. Houd het apparaat in liggende stand.",
     "iosInstallDetail": "Voor echt volledig scherm op iPhone of iPad moet je deze pagina eerst aan je beginscherm toevoegen.",
     "iosShareStep": "Tik in Safari op Deel en daarna op Zet op beginscherm.",
-    "iosOpenStep": "Open World of ClaudeCraft vanaf het nieuwe pictogram op het beginscherm.",
+    "iosOpenStep": "Open BharatVerse vanaf het nieuwe pictogram op het beginscherm.",
     "androidStandaloneDetail": "Je bent in de volledig-scherm-appmodus. Houd het apparaat in liggende stand.",
     "androidInstallDetail": "Voor volledig scherm op Android moet je deze pagina eerst installeren of aan je beginscherm toevoegen.",
     "androidInstallStep": "Tik in Chrome op het menu en daarna op App installeren of Toevoegen aan beginscherm.",
-    "androidOpenStep": "Open World of ClaudeCraft vanaf het nieuwe pictogram.",
+    "androidOpenStep": "Open BharatVerse vanaf het nieuwe pictogram.",
     "otherStandaloneDetail": "Houd je apparaat in liggend volledig scherm.",
     "otherInstallDetail": "Installeer of voeg deze pagina toe aan je beginscherm voor de beste mobiele ervaring met volledig scherm."
   },
   "serverUnavailable": {
-    "title": "World of ClaudeCraft - Wereld niet beschikbaar",
-    "logoAlt": "World of ClaudeCraft",
+    "title": "BharatVerse - Wereld niet beschikbaar",
+    "logoAlt": "BharatVerse",
     "eyebrow": "Wereldonderhoud",
     "heading": "De wereld is tijdelijk niet beschikbaar.",
-    "body": "We herstarten de gameservice en verwachten dat Claudemoon binnenkort weer terug is. Deze pagina blijft automatisch controleren.",
+    "body": "We herstarten de gameservice en verwachten dat Bharat binnenkort weer terug is. Deze pagina blijft automatisch controleren.",
     "status": "Snel terug"
   },
   "hud": {

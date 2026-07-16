@@ -464,9 +464,9 @@ export const hudChromeStrings = {
   },
   nativeUpdate: {
     title: 'Update Available',
-    body: 'A new version of World of ClaudeCraft is available. Update now for the latest fixes and improvements.',
+    body: 'A new version of BharatVerse is available. Update now for the latest fixes and improvements.',
     bodyWithVersion:
-      'Version {version} of World of ClaudeCraft is available. Update now for the latest fixes and improvements.',
+      'Version {version} of BharatVerse is available. Update now for the latest fixes and improvements.',
     notNow: 'Not now',
     update: 'Update',
   },
@@ -1627,7 +1627,7 @@ export const hudChromeStrings = {
   },
   discord: {
     title: 'Discord',
-    panelTitle: 'World of ClaudeCraft',
+    panelTitle: 'BharatVerse',
     open: 'Discord',
     close: 'Close',
     keybind: 'Discord Panel',
@@ -1756,7 +1756,7 @@ export const hudChromeStrings = {
       titleDiscordian: 'Title: Discordian',
       titleSquire: 'Title: Squire of the Realm',
       chromaBlurple: 'Blurple Mech Chroma',
-      titleChampion: 'Title: Champion of Claudemoon',
+      titleChampion: 'Title: Champion of Bharat',
       swagStickers: 'Sticker Pack (shipped)',
       swagTee: 'T-Shirt (shipped)',
     },

@@ -2761,7 +2761,7 @@ export async function startServer(): Promise<http.Server> {
 
   game.start();
   server.listen(config.port, () => {
-    console.log(`World of ClaudeCraft server listening on http://localhost:${config.port}`);
+    console.log(`BharatVerse server listening on http://localhost:${config.port}`);
     console.log(`  REST: /api/register /api/login /api/characters /api/status`);
     console.log(`  WS:   /ws, then first message {t:"auth",token,character}`);
   });

@@ -206,7 +206,7 @@ describe('item webp icons', () => {
     for (const id of [...BAG_IDS, 'backpack']) {
       const entry = m.entries.find((e) => e.itemId === id);
       expect(entry?.license, `${id} must carry its own license override`).toContain(
-        'World of ClaudeCraft original art',
+        'BharatVerse original art',
       );
     }
   });

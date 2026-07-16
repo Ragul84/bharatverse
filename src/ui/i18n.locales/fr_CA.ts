@@ -16,9 +16,9 @@ export const fr_CA: Partial<Record<TranslationKey, string>> = {
   // Stat tooltips inherit the fr_FR base: none of these strings has a genuine
   // Quebec-specific form, so per the divergence-only policy fr_CA carries no
   // hudChrome.statInfo.* overrides.
-  'seo.title': 'World of ClaudeCraft: MMO Web de style classique',
+  'seo.title': 'BharatVerse: MMO Web de style classique',
   'seo.description':
-    'Lancez-vous dans une aventure épique dans World of ClaudeCraft, un micro-MMO de style classique jouable directement dans votre navigateur. Rejoignez un monde partagé et persistant, faites monter vos classes en niveau et terrassez vos ennemis.',
+    'Lancez-vous dans une aventure épique dans BharatVerse, un micro-MMO de style classique jouable directement dans votre navigateur. Rejoignez un monde partagé et persistant, faites monter vos classes en niveau et terrassez vos ennemis.',
   'seo.operatingSystem': 'Navigateur Web',
   'a11y.toggleMenu': 'Ouvrir ou fermer le menu',
   'loading.assetsFailed': 'Le chargement des ressources a échoué: rechargez la page. {error}',
@@ -68,7 +68,7 @@ export const fr_CA: Partial<Record<TranslationKey, string>> = {
   'mobilePreflight.androidInstallStep':
     "Dans Chrome, touchez le menu, puis Installer l'application ou Ajouter à l'écran d'accueil.",
   'serverUnavailable.body':
-    'Nous redémarrons le service de jeu et Claudemoon devrait revenir sous peu. Cette page continuera de vérifier automatiquement.',
+    'Nous redémarrons le service de jeu et Bharat devrait revenir sous peu. Cette page continuera de vérifier automatiquement.',
   'serverUnavailable.status': 'De retour bientôt',
   'delveUi.affix.candleblind': 'Aveuglement de chandelle',
   'delveUi.blessing.chapel_candle':

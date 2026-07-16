@@ -46,7 +46,7 @@ function input(over: Partial<CharacterSheetInput> = {}): CharacterSheetInput {
   return {
     row: makeRow('shaman', 20, makeState()),
     visibility: 'owner',
-    realm: 'Claudemoon',
+    realm: 'Bharat',
     origin: 'https://worldofclaudecraft.com',
     guild: 'Echoes of Claude',
     rank: { scope: 'realm', rank: 27, total: 4012 },
@@ -67,7 +67,7 @@ describe('characterSheet: shared fields', () => {
   it('derives classLabel, zone, virtualLevel, prestige, spec, avatar + profile urls', () => {
     const sheet = characterSheet(input());
     expect(sheet.name).toBe('Thrallish');
-    expect(sheet.realm).toBe('Claudemoon');
+    expect(sheet.realm).toBe('Bharat');
     expect(sheet.class).toBe('shaman');
     expect(sheet.classLabel).toBe('Shaman');
     expect(sheet.level).toBe(20);

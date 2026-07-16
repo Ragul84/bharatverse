@@ -612,8 +612,8 @@ export const es_ES: EnTranslations = {
     },
     "nativeUpdate": {
       "title": "Actualización disponible",
-      "body": "Ya hay disponible una nueva versión de World of ClaudeCraft. Actualiza ahora para obtener las últimas correcciones y mejoras.",
-      "bodyWithVersion": "La versión {version} de World of ClaudeCraft ya está disponible. Actualiza ahora para obtener las últimas correcciones y mejoras.",
+      "body": "Ya hay disponible una nueva versión de BharatVerse. Actualiza ahora para obtener las últimas correcciones y mejoras.",
+      "bodyWithVersion": "La versión {version} de BharatVerse ya está disponible. Actualiza ahora para obtener las últimas correcciones y mejoras.",
       "notNow": "Ahora no",
       "update": "Actualizar"
     },
@@ -1461,7 +1461,7 @@ export const es_ES: EnTranslations = {
     },
     "discord": {
       "title": "Discord",
-      "panelTitle": "World of ClaudeCraft",
+      "panelTitle": "BharatVerse",
       "open": "Discord",
       "close": "Cerrar",
       "keybind": "Panel de Discord",
@@ -1578,7 +1578,7 @@ export const es_ES: EnTranslations = {
         "titleDiscordian": "Título: Discordiano",
         "titleSquire": "Título: Escudero del Reino",
         "chromaBlurple": "Cromática Mech Blurple",
-        "titleChampion": "Título: Campeón de Claudemoon",
+        "titleChampion": "Título: Campeón de Bharat",
         "swagStickers": "Pack de stickers (envío físico)",
         "swagTee": "Camiseta (envío físico)"
       },
@@ -2115,8 +2115,8 @@ export const es_ES: EnTranslations = {
     }
   },
   "guide": {
-    "brand": "World of ClaudeCraft",
-    "brandShort": "ClaudeCraft",
+    "brand": "BharatVerse",
+    "brandShort": "BharatVerse",
     "tagline": "Un MMO de estilo clásico que juegas gratis en tu navegador.",
     "skipToContent": "Saltar al contenido principal",
     "loading": "Cargando...",
@@ -2181,7 +2181,7 @@ export const es_ES: EnTranslations = {
       "github": "Código en GitHub",
       "discord": "Únete al Discord",
       "communityWiki": "Wiki de la comunidad",
-      "rights": "World of ClaudeCraft",
+      "rights": "BharatVerse",
       "linksLabel": "Enlaces de juego y comunidad"
     },
     "language": {
@@ -2204,7 +2204,7 @@ export const es_ES: EnTranslations = {
     },
     "home": {
       "eyebrow": "MMO de navegador de estilo clásico",
-      "title": "World of ClaudeCraft",
+      "title": "BharatVerse",
       "subtitle": "Haz misiones, forma grupo y explora un mundo hecho a mano, gratis en tu navegador.",
       "ctaPlay": "Jugar ahora",
       "ctaLearn": "Cómo jugar",
@@ -2696,7 +2696,7 @@ export const es_ES: EnTranslations = {
     },
     "worldPage": {
       "heading": "El mundo",
-      "intro": "World of ClaudeCraft es una sola tierra continua que recorres a pie, tres zonas dispuestas de sur a norte. No hay viaje rápido, así que el trayecto forma parte de la aventura.",
+      "intro": "BharatVerse es una sola tierra continua que recorres a pie, tres zonas dispuestas de sur a norte. No hay viaje rápido, así que el trayecto forma parte de la aventura.",
       "hub": "Base de operaciones",
       "mapHeading": "El camino al norte",
       "mapSub": "Tres zonas, de sur a norte, cada una un escalón más alta en nivel. Sigue el rastro de las misiones y la tierra te lleva del valle a los picos.",
@@ -3203,7 +3203,7 @@ export const es_ES: EnTranslations = {
   },
   "editor": {
     "appTitle": "Editor de Mapas",
-    "docTitle": "Editor de Mapas - World of ClaudeCraft",
+    "docTitle": "Editor de Mapas - BharatVerse",
     "untitledMap": "Mapa sin título",
     "playtestPlayerName": "Cartógrafo",
     "topbar": {
@@ -3678,7 +3678,7 @@ export const es_ES: EnTranslations = {
     "realmName": "Nombre del mundo"
   },
   "footer": {
-    "copyright": "2026 World of ClaudeCraft",
+    "copyright": "2026 BharatVerse",
     "githubLink": "https://github.com/levy-street/world-of-claudecraft",
     "githubLabel": "Proyecto de código abierto",
     "whitepaper": "Libro blanco",
@@ -3734,7 +3734,7 @@ export const es_ES: EnTranslations = {
     "serverOnline": "En Línea",
     "serverOffline": "Desconectado",
     "play": "Jugar",
-    "playAria": "Jugar World of ClaudeCraft",
+    "playAria": "Jugar BharatVerse",
     "serverLabel": "Elige tu mundo",
     "serverAria": "Selecciona el mundo: En Línea o Desconectado",
     "serverOfflineSub": "Mundo local instantáneo",
@@ -3941,14 +3941,14 @@ export const es_ES: EnTranslations = {
     "topPercent": "TOP {percent}%",
     "realmSubtitle": "Mundo {realm}",
     "defaultRealm": "Mundo de ClaudeCraft",
-    "brandWordmark": "WORLD OF CLAUDECRAFT",
+    "brandWordmark": "BHARATVERSE",
     "recruited": "{count} reclutados",
     "footerHandle": "@{handle}",
     "footerHandleWithRecruits": "@{handle} - {recruited}",
     "footerCta": "Forja tu leyenda: {siteUrl}",
     "arenaStat": "Arena",
     "shareTierBit": ", titular de $WOC de rango {tier}",
-    "shareText": "Estoy forjando mi leyenda en World of ClaudeCraft: nivel {level} {className}{tierBit}. Únete a mi mundo:",
+    "shareText": "Estoy forjando mi leyenda en BharatVerse: nivel {level} {className}{tierBit}. Únete a mi mundo:",
     "nativeShareTitle": "Mundo de ClaudeCraft",
     "fileNameFallback": "jugador",
     "actionShareX": "Compartir en X",
@@ -4571,14 +4571,14 @@ export const es_ES: EnTranslations = {
     }
   },
   "seo": {
-    "title": "World of ClaudeCraft: MMO web de estilo clásico",
-    "description": "Emprende una aventura épica en World of ClaudeCraft, un micro-MMO de estilo clásico jugable directamente en tu navegador. Únete a un mundo compartido persistente, sube de nivel tus clases y derrota a tus enemigos.",
+    "title": "BharatVerse: MMO web de estilo clásico",
+    "description": "Emprende una aventura épica en BharatVerse, un micro-MMO de estilo clásico jugable directamente en tu navegador. Únete a un mundo compartido persistente, sube de nivel tus clases y derrota a tus enemigos.",
     "genre": "MMORPG",
     "playMode": "Multijugador",
     "applicationCategory": "Juego",
     "operatingSystem": "Navegador web",
-    "officialLabel": "Sitio web oficial de World of ClaudeCraft",
-    "officialBody": "worldofclaudecraft.com es el MMO de navegador gratuito oficial del mundo Claudemoon. Juega en línea con un personaje persistente, explora en solitario sin conexión, lee la wiki y sigue los enlaces comunitarios verificados desde este sitio."
+    "officialLabel": "Sitio web oficial de BharatVerse",
+    "officialBody": "worldofclaudecraft.com es el MMO de navegador gratuito oficial del mundo Bharat. Juega en línea con un personaje persistente, explora en solitario sin conexión, lee la wiki y sigue los enlaces comunitarios verificados desde este sitio."
   },
   "a11y": {
     "goHome": "Ir a la página de inicio",
@@ -4586,9 +4586,9 @@ export const es_ES: EnTranslations = {
     "mainNavigation": "Navegación principal",
     "languageSelection": "Selección de idioma",
     "characterActions": "Acciones del personaje",
-    "githubProject": "Abrir el proyecto World of ClaudeCraft en GitHub",
-    "discordCommunity": "Unirse a la comunidad de World of ClaudeCraft en Discord",
-    "donateProject": "Donar para apoyar World of ClaudeCraft"
+    "githubProject": "Abrir el proyecto BharatVerse en GitHub",
+    "discordCommunity": "Unirse a la comunidad de BharatVerse en Discord",
+    "donateProject": "Donar para apoyar BharatVerse"
   },
   "loading": {
     "world": "Cargando mundo...",
@@ -4660,11 +4660,11 @@ export const es_ES: EnTranslations = {
       "later": "Más tarde"
     },
     "crash": {
-      "title": "World of ClaudeCraft",
+      "title": "BharatVerse",
       "body": "La vista del juego dejó de funcionar. ¿Recargarla?",
       "reload": "Recargar",
       "quit": "Salir",
-      "fatalBody": "World of ClaudeCraft tuvo un error inesperado y debe cerrarse."
+      "fatalBody": "BharatVerse tuvo un error inesperado y debe cerrarse."
     }
   },
   "realm": {
@@ -4792,20 +4792,20 @@ export const es_ES: EnTranslations = {
     "iosStandaloneDetail": "Estás en modo de pantalla completa desde la pantalla de inicio. Mantén el dispositivo en horizontal.",
     "iosInstallDetail": "Para pantalla completa real en iPhone o iPad, instala primero esta página en tu pantalla de inicio.",
     "iosShareStep": "En Safari, toca Compartir y luego Añadir a pantalla de inicio.",
-    "iosOpenStep": "Abre World of ClaudeCraft desde el nuevo icono de la pantalla de inicio.",
+    "iosOpenStep": "Abre BharatVerse desde el nuevo icono de la pantalla de inicio.",
     "androidStandaloneDetail": "Estás en modo de app a pantalla completa. Mantén el dispositivo en horizontal.",
     "androidInstallDetail": "Para pantalla completa en Android, instala esta página o añádela a la pantalla de inicio primero.",
     "androidInstallStep": "En Chrome, toca el menú y luego Instalar app o Añadir a pantalla de inicio.",
-    "androidOpenStep": "Abre World of ClaudeCraft desde el nuevo icono.",
+    "androidOpenStep": "Abre BharatVerse desde el nuevo icono.",
     "otherStandaloneDetail": "Mantén el dispositivo en pantalla completa horizontal.",
     "otherInstallDetail": "Instala o añade esta página a la pantalla de inicio para la mejor experiencia móvil a pantalla completa."
   },
   "serverUnavailable": {
-    "title": "World of ClaudeCraft: Mundo no disponible",
-    "logoAlt": "World of ClaudeCraft",
+    "title": "BharatVerse: Mundo no disponible",
+    "logoAlt": "BharatVerse",
     "eyebrow": "Mantenimiento del mundo",
     "heading": "El mundo no está disponible temporalmente.",
-    "body": "Estamos reiniciando el servicio del juego y esperamos que Claudemoon vuelva pronto. Esta página seguirá comprobándolo automáticamente.",
+    "body": "Estamos reiniciando el servicio del juego y esperamos que Bharat vuelva pronto. Esta página seguirá comprobándolo automáticamente.",
     "status": "Volvemos pronto"
   },
   "hud": {

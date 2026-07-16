@@ -694,7 +694,7 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   'editor.confirm.discardBody': 'Du hast ungespeicherte Änderungen an "{name}". Verwerfen?',
   'editor.confirm.discardTitle': 'Änderungen verwerfen?',
   'editor.confirm.ok': 'OK',
-  'editor.docTitle': 'Karteneditor - World of ClaudeCraft',
+  'editor.docTitle': 'Karteneditor - BharatVerse',
   'editor.eraseTool.blockerHint': 'Ein Klick nahe einer Sperrwand entfernt stattdessen diese Wand.',
   'editor.eraseTool.hint':
     'Klicke auf ein platziertes Asset, um es zu entfernen, oder auf geformten Boden, um den neuesten Stempel unter dem Cursor zu entfernen.',
@@ -1375,9 +1375,9 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   'hudChrome.unitFrame.playerLabel': 'Euer Charakter',
   'hudChrome.unitFrame.targetAnnounce': 'Ziel: {name}',
   'hudChrome.unitFrame.targetLabel': 'Euer Ziel',
-  'seo.officialLabel': 'Offizielle Website von World of ClaudeCraft',
+  'seo.officialLabel': 'Offizielle Website von BharatVerse',
   'seo.officialBody':
-    'worldofclaudecraft.com ist das offizielle kostenlose Browser-MMO für die Welt Claudemoon. Spiele online mit einem dauerhaften Charakter, erkunde solo offline, lies das Wiki und folge den verifizierten Community-Links auf dieser Website.',
+    'worldofclaudecraft.com ist das offizielle kostenlose Browser-MMO für die Welt Bharat. Spiele online mit einem dauerhaften Charakter, erkunde solo offline, lies das Wiki und folge den verifizierten Community-Links auf dieser Website.',
   'hudChrome.questShare.notShareable': 'Diese Quest kann nicht geteilt werden.',
   'hudChrome.questShare.notInSharerParty':
     'Ihr müsst in der Gruppe von {name} sein, um diese Quest anzunehmen.',
@@ -1734,7 +1734,7 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   'stats.accountsCreated': 'Spieler',
   'stats.playersOnline': 'Spieler online',
   'stats.realmName': 'Weltname',
-  'footer.copyright': '2026 World of ClaudeCraft',
+  'footer.copyright': '2026 BharatVerse',
   'footer.githubLink': 'https://github.com/levy-street/world-of-claudecraft',
   'footer.githubLabel': 'Open-Source-Projekt',
   'footer.whitepaper': 'Whitepaper',
@@ -1915,7 +1915,7 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   'playerCard.topPercent': 'TOP {percent} %',
   'playerCard.realmSubtitle': 'Welt {realm}',
   'playerCard.defaultRealm': 'Welt von ClaudeCraft',
-  'playerCard.brandWordmark': 'WORLD OF CLAUDECRAFT',
+  'playerCard.brandWordmark': 'BHARATVERSE',
   'playerCard.recruited': '{count} rekrutiert',
   'playerCard.footerHandle': '@{handle}',
   'playerCard.footerHandleWithRecruits': '@{handle} - {recruited}',
@@ -1923,7 +1923,7 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   'playerCard.arenaStat': 'Arena',
   'playerCard.shareTierBit': ', $WOC-Inhaber mit Rang {tier}',
   'playerCard.shareText':
-    'Ich schmiede meine Legende in World of ClaudeCraft: Stufe {level} {className}{tierBit}. Tritt meiner Welt bei:',
+    'Ich schmiede meine Legende in BharatVerse: Stufe {level} {className}{tierBit}. Tritt meiner Welt bei:',
   'playerCard.nativeShareTitle': 'Welt von ClaudeCraft',
   'playerCard.fileNameFallback': 'spieler',
   'playerCard.actionShareX': 'Auf X teilen',
@@ -1985,9 +1985,9 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   'controls.emoteWheel': 'Emote-Rad gedrückt halten',
   'controls.friends': 'Freunde und Gilde',
   'controls.chat': 'Chat öffnen',
-  'seo.title': 'World of ClaudeCraft: Klassisches Web-MMO',
+  'seo.title': 'BharatVerse: Klassisches Web-MMO',
   'seo.description':
-    'Begib dich in World of ClaudeCraft auf ein episches Abenteuer, ein Micro-MMO im klassischen Stil direkt im Browser. Tritt einer dauerhaften, gemeinsamen Welt bei, steigere Klassen und besiege Gegner.',
+    'Begib dich in BharatVerse auf ein episches Abenteuer, ein Micro-MMO im klassischen Stil direkt im Browser. Tritt einer dauerhaften, gemeinsamen Welt bei, steigere Klassen und besiege Gegner.',
   'seo.genre': 'MMORPG',
   'seo.playMode': 'Mehrspieler',
   'seo.applicationCategory': 'Spiel',
@@ -1997,9 +1997,9 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   'a11y.mainNavigation': 'Hauptnavigation',
   'a11y.languageSelection': 'Sprachauswahl',
   'a11y.characterActions': 'Charakteraktionen',
-  'a11y.githubProject': 'World of ClaudeCraft-Projekt auf GitHub öffnen',
-  'a11y.discordCommunity': 'Der World of ClaudeCraft-Community auf Discord beitreten',
-  'a11y.donateProject': 'Spenden, um World of ClaudeCraft zu unterstützen',
+  'a11y.githubProject': 'BharatVerse-Projekt auf GitHub öffnen',
+  'a11y.discordCommunity': 'Der BharatVerse-Community auf Discord beitreten',
+  'a11y.donateProject': 'Spenden, um BharatVerse zu unterstützen',
   'loading.world': 'Welt wird geladen...',
   'loading.worldProgress': 'Welt wird geladen... {done}/{total}',
   'loading.enteringWorld': 'Welt wird betreten...',
@@ -2138,23 +2138,23 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
     'Für echtes Vollbild auf iPhone oder iPad füge diese Seite zuerst zum Home-Bildschirm hinzu.',
   'mobilePreflight.iosShareStep': 'Tippe in Safari auf Teilen und dann auf Zum Home-Bildschirm.',
   'mobilePreflight.iosOpenStep':
-    'Öffne World of ClaudeCraft über das neue Symbol auf dem Home-Bildschirm.',
+    'Öffne BharatVerse über das neue Symbol auf dem Home-Bildschirm.',
   'mobilePreflight.androidStandaloneDetail':
     'Du bist im Vollbild-App-Modus. Halte das Gerät im Querformat.',
   'mobilePreflight.androidInstallDetail':
     'Installiere diese Seite auf Android oder füge sie zum Startbildschirm hinzu, um Vollbild zu nutzen.',
   'mobilePreflight.androidInstallStep':
     'Tippe in Chrome auf das Menü und dann auf App installieren oder Zum Startbildschirm hinzufügen.',
-  'mobilePreflight.androidOpenStep': 'Öffne World of ClaudeCraft über das neue Symbol.',
+  'mobilePreflight.androidOpenStep': 'Öffne BharatVerse über das neue Symbol.',
   'mobilePreflight.otherStandaloneDetail': 'Halte dein Gerät im Vollbild-Querformat.',
   'mobilePreflight.otherInstallDetail':
     'Installiere diese Seite oder füge sie zum Startbildschirm hinzu, um das beste mobile Vollbild-Erlebnis zu erhalten.',
-  'serverUnavailable.title': 'World of ClaudeCraft - Welt nicht verfügbar',
-  'serverUnavailable.logoAlt': 'World of ClaudeCraft',
+  'serverUnavailable.title': 'BharatVerse - Welt nicht verfügbar',
+  'serverUnavailable.logoAlt': 'BharatVerse',
   'serverUnavailable.eyebrow': 'Weltwartung',
   'serverUnavailable.heading': 'Die Welt ist vorübergehend nicht verfügbar.',
   'serverUnavailable.body':
-    'Wir starten den Spieldienst neu und erwarten, dass Claudemoon bald zurückkehrt. Diese Seite prüft automatisch weiter.',
+    'Wir starten den Spieldienst neu und erwarten, dass Bharat bald zurückkehrt. Diese Seite prüft automatisch weiter.',
   'serverUnavailable.status': 'Bald zurück',
   'hud.core.elite': 'ELITE',
   'hud.core.boss': 'BOSS',
@@ -4456,7 +4456,7 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   'mode.caNote':
     'WOC ist unser Community-Token. Es wird zum Spielen nicht benötigt. Tritt dem Discord bei, um über den Nutzen und das Schwungrad von WOC zu sprechen.',
   'mode.play': 'Spielen',
-  'mode.playAria': 'World of ClaudeCraft spielen',
+  'mode.playAria': 'BharatVerse spielen',
   'mode.serverAria': 'Welt wählen: Online oder Offline',
   'mode.serverLabel': 'Wähle deine Welt',
   'mode.serverOffline': 'Offline',
@@ -4961,8 +4961,8 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   'guide.bestiary.levels': 'Stufe {min} bis {max}',
   'guide.bestiary.levelsSame': 'Stufe {min}',
   'guide.bestiary.rare': 'Selten',
-  'guide.brand': 'World of ClaudeCraft',
-  'guide.brandShort': 'ClaudeCraft',
+  'guide.brand': 'BharatVerse',
+  'guide.brandShort': 'BharatVerse',
   'guide.classHook.druid':
     'Ein Gestaltwandler, der als Bär tankt, Gegner als Katze zerfleischt oder mitten im Getümmel heilt.',
   'guide.classHook.hunter':
@@ -5148,7 +5148,7 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   'guide.footer.discord': 'Tritt dem Discord bei',
   'guide.footer.github': 'Quellcode auf GitHub',
   'guide.footer.playNow': 'Jetzt spielen',
-  'guide.footer.rights': 'World of ClaudeCraft',
+  'guide.footer.rights': 'BharatVerse',
   'guide.glossary.aggroDef':
     'Die Aufmerksamkeit eines Feindes. Der Spieler, der die meiste Bedrohung erzeugt, hält die Aggro und wird angegriffen.',
   'guide.glossary.aggroTerm': 'Aggro',
@@ -5224,7 +5224,7 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
     'Die Welt ist im Alleingang spielbar, doch die beste Beute wartet hinter einer guten Gruppe.',
   'guide.home.subtitle':
     'Erfülle Quests, schließe dich mit anderen zusammen und erkunde eine handgebaute Welt, kostenlos in deinem Browser.',
-  'guide.home.title': 'World of ClaudeCraft',
+  'guide.home.title': 'BharatVerse',
   'guide.home.what.heading': 'Ein klassisches MMO, gemacht zum Loslegen',
   'guide.home.what.pillarClassesBody':
     'Tanken, heilen oder austeilen. Jede Klasse spielt sich so, wie es ihr Archetyp verlangt, mit Talenten, um sie zu deiner eigenen zu machen.',
@@ -5349,7 +5349,7 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   'guide.worldPage.heading': 'Die Welt',
   'guide.worldPage.hub': 'Heimatbasis',
   'guide.worldPage.intro':
-    'World of ClaudeCraft ist ein zusammenhängendes Land, das du zu Fuß durchquerst, drei Gebiete von Süden nach Norden gereiht. Es gibt keine Schnellreise, die Reise selbst ist also Teil des Abenteuers.',
+    'BharatVerse ist ein zusammenhängendes Land, das du zu Fuß durchquerst, drei Gebiete von Süden nach Norden gereiht. Es gibt keine Schnellreise, die Reise selbst ist also Teil des Abenteuers.',
   'guide.worldPage.marshBlurb':
     'Ein ertrunkenes Land aus Nebel und Ruinen. Mudfins überschwemmen das Seichte, und etwas Älteres regt sich unter dem Wasser, beobachtet aus der Brückenstadt Fenbridge.',
   'guide.worldPage.peaksBlurb':
@@ -6422,7 +6422,7 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   'hudChrome.leaderboard.guildXp': 'Gesamt-XP',
   'hudChrome.leaderboard.guildEmpty': 'Noch keine platzierten Gilden.',
   'hudChrome.discord.title': 'Discord',
-  'hudChrome.discord.panelTitle': 'World of ClaudeCraft',
+  'hudChrome.discord.panelTitle': 'BharatVerse',
   'hudChrome.discord.open': 'Discord',
   'hudChrome.discord.close': 'Schließen',
   'hudChrome.discord.keybind': 'Discord-Panel',
@@ -6524,7 +6524,7 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
   'hudChrome.discord.swag.titleDiscordian': 'Titel: Discordianer',
   'hudChrome.discord.swag.titleSquire': 'Titel: Knappe des Reichs',
   'hudChrome.discord.swag.chromaBlurple': 'Blurple-Mech-Chroma',
-  'hudChrome.discord.swag.titleChampion': 'Titel: Champion von Claudemoon',
+  'hudChrome.discord.swag.titleChampion': 'Titel: Champion von Bharat',
   'hudChrome.discord.swag.swagStickers': 'Stickerpaket (Versand)',
   'hudChrome.discord.swag.swagTee': 'T-Shirt (Versand)',
   'hudChrome.discord.relay.tooFast':
@@ -6546,10 +6546,10 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
     'Der Desktop-Anmeldecode ist ungültig oder abgelaufen. Bitte versuche es erneut.',
   'desktop.crash.body': 'Die Spielansicht funktioniert nicht mehr. Neu laden?',
   'desktop.crash.fatalBody':
-    'World of ClaudeCraft ist auf einen unerwarteten Fehler gestoßen und muss geschlossen werden.',
+    'BharatVerse ist auf einen unerwarteten Fehler gestoßen und muss geschlossen werden.',
   'desktop.crash.quit': 'Beenden',
   'desktop.crash.reload': 'Neu laden',
-  'desktop.crash.title': 'World of ClaudeCraft',
+  'desktop.crash.title': 'BharatVerse',
   'desktop.update.downloading': 'Update {version} wird heruntergeladen...',
   'desktop.update.later': 'Später',
   'desktop.update.ready':
@@ -6602,9 +6602,9 @@ export const de_DE: Partial<Record<TranslationKey, string>> = {
     'Der WOC-Preis ist derzeit nicht verfügbar. Schau bald wieder vorbei.',
   'hudChrome.dailyRewards.walletValue': 'Wallet-Wert (WOC)',
   'hudChrome.nativeUpdate.body':
-    'Eine neue Version von World of ClaudeCraft ist verfügbar. Aktualisiere jetzt für die neuesten Fehlerbehebungen und Verbesserungen.',
+    'Eine neue Version von BharatVerse ist verfügbar. Aktualisiere jetzt für die neuesten Fehlerbehebungen und Verbesserungen.',
   'hudChrome.nativeUpdate.bodyWithVersion':
-    'Version {version} von World of ClaudeCraft ist verfügbar. Aktualisiere jetzt für die neuesten Fehlerbehebungen und Verbesserungen.',
+    'Version {version} von BharatVerse ist verfügbar. Aktualisiere jetzt für die neuesten Fehlerbehebungen und Verbesserungen.',
   'hudChrome.nativeUpdate.notNow': 'Jetzt nicht',
   'hudChrome.nativeUpdate.title': 'Update verfügbar',
   'hudChrome.nativeUpdate.update': 'Aktualisieren',
