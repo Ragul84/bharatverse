@@ -74,9 +74,11 @@ Bands from safe → challenge, gating by Mastery + difficulty tier:
    elite mobs, **Quiz Duels (PvP)**, rare high-value nodes, and a **small death risk**
    (drop a little Gold/materials). Mastery-gated entry.
 
-Additional landmark hubs interspersed: **Nalanda Great Library**, **India Gate district**
-(events/Assessment Arena). Monuments are secular and iconic. **[OPEN]** final monument
-list + which land each maps to.
+**Locked monument mapping:** Hub = **Statue of Unity** plaza · Practice groves =
+**Lodhi / Hanging Gardens** · Caverns = **Ajanta–Ellora** rock-cut caves · Frontier =
+**Hampi ruins + Konark** · plus special hubs **Nalanda Great Library** and **India Gate**
+(Assessment Arena). Qutub Minar / Hawa Mahal / Charminar / Gateway of India = later
+districts. All secular, iconic, visually distinct.
 
 ## 6. Buildings & features (each functional)
 | Building | Function |
@@ -156,24 +158,31 @@ personas (which to keep/merge/rename, and each signature power + affinity).
 ## 12. Content (see `quizhub-integration.md`)
 Questions ingested from the mindwhite/quizhub Upstash Redis into a versioned server
 catalog; deterministic `Rng` selection; server-side validation via the ported
-`evaluateQuizQuestion`; explanations feed post-answer review. Books for the Library are a
-scaled-up `public/data/books.json` (**[OPEN]** source/volume of books).
+`evaluateQuizQuestion`; explanations feed post-answer review.
+**Library books:** ingest mindwhite's already-extracted **textbook corpus** — 1,211
+NCERT + Samacheer chapters (`data/textbook-release-corpus` + the `textbookSourceIndex`
+metadata, the same corpus powering mindwhite's textbook-aware AI chat) — into the Book
+Reader (by board/class/subject/chapter). No authoring; matches the NCERT+Samacheer goal.
 
 ## 13. Tech invariants (from root CLAUDE.md)
 Server-authoritative + deterministic (`Rng`, no `Math.random`/`Date.now`); `src/sim/`
 pure; new data/actions via an `IWorld` facet in **both** `Sim` + `ClientWorld`; every
 player string a `t()` key; mobile-web/PWA first; merge bar = `npm run gate` green.
 
-## 14. Design decisions
-**LOCKED (2026-07-16):** universal audience · Indian-monument world · 6 personas as full
-RPG classes · full-version sequence (social at M4) · **combat = real-time + quiz
-power-moments** · **online-only** · **free + cosmetics-only** · quiz content from
-mindwhite/quizhub Redis.
+## 14. Design decisions — ALL LOCKED (2026-07-16), design CLOSED
+- Universal audience · Indian-monument world · **online-only** · **free + cosmetics-only**.
+- **Combat = real-time MMO + quiz power-moments** (keep upstream combat).
+- **6 personas as full RPG classes** — mapping locked (§7): Scholar=Priest, Strategist=Mage,
+  Explorer=Hunter, Orator=Paladin, Inventor=Warlock, Mentor=Druid.
+- **Monuments/lands locked** (§5): Statue of Unity hub · Lodhi/Hanging-Gardens groves ·
+  Ajanta–Ellora caverns · Hampi + Konark frontier · Nalanda Library · India Gate arena.
+- **PvP death risk = light**: drop a small % of carried Gold + unbanked materials only;
+  never Mastery/XP/levels; respawn at Chai Stall.
+- **First Learning Goal = NCERT + Samacheer (6–12)** — school curriculum that also forms
+  the foundation for most government exams; the wider exam Goals layer on after.
+- **Quiz content** = mindwhite/quizhub Upstash Redis (`quizhub-integration.md`).
+- **Library book content** = mindwhite's already-extracted **textbook corpus** (1,211
+  NCERT+Samacheer chapters: `data/textbook-release-corpus` + `textbook-source-index.ts`,
+  the same corpus behind mindwhite's textbook-aware AI chat) — ingested, not authored.
 
-**Still [OPEN] to fully close the design:**
-1. Final **monument list** + which land each maps to (§5).
-2. **Persona → upstream-class mapping**: which of the 9 upstream classes each persona
-   inherits, and each one's signature power + affinity (§7).
-3. **PvP death risk** amount in the Frontier — how punishing (§5).
-4. **Books** for the Nalanda Library — source + volume (§6/§12).
-5. **First Learning Goal(s)** to ship with (which exam/class from the quizhub taxonomy).
+Design is complete. Build begins at **M0** (`implementation-plan.md`) when the go-ahead is given.
