@@ -27,6 +27,12 @@ The authoritative design for the universal learning MMO. Companion docs:
 7. **Habit:** daily challenges + streaks + spaced-repetition reviews pull you back.
 
 ## 3. The recall system (the heart)
+- **Combat model = real-time MMO + quiz power-moments (LOCKED).** You move and fight in
+  real-time on upstream's existing combat (we keep it, don't rebuild). **Questions surface
+  as power-moments**, not per-swing tolls: charging a special/finisher, a boss-phase
+  gate, a gather crit, a duel volley. Answer well → a big, satisfying power spike. This
+  keeps it feeling like a real MMO with learning woven through, and reuses the upstream
+  combat/ability engine.
 - **Question flow:** the server picks an `Rng`-seeded question for the activity's
   subject+difficulty, sends it **without the answer key**, the client shows it, the player
   responds with `{choice/response, timingMs}`, the **server validates** (ported
@@ -86,9 +92,12 @@ list + which land each maps to.
 | **Chai Stall / Wellspring** | stand near → restore HP ("review & recover") |
 | **Library Locker (Bank)** | store materials + cosmetics |
 
-## 7. Characters — 6 personas (LOCKED set; details **[OPEN]**)
-Each shapes **how you learn best** (a subject affinity → faster Mastery / bonus power in
-that lane) and a **co-op role**:
+## 7. Characters — 6 personas as FULL RPG classes (LOCKED)
+Each persona is a **full class** — unique abilities, a **talent/skill tree**, and a
+distinct combat + co-op role — built by **re-theming upstream's existing 9-class + talent
+system** (we map/rename, not rebuild) into the 6 learning identities. Each also has a
+**subject affinity** (faster Mastery / bonus power in its lane) so your class reinforces
+how you learn. Quiz power-moments (§3) charge each class's signature abilities.
 | Persona | Affinity | Co-op role |
 |---|---|---|
 | **Scholar** | Reading/Humanities | sustain — bonus from Library/reading |
@@ -98,7 +107,8 @@ that lane) and a **co-op role**:
 | **Inventor** | Science/Tech | control — gadgets/AoE in raids |
 | **Mentor** | Any (teaching) | healer/leader — buffs the group, earns by helping juniors |
 Free base customization (skin/hair/attire, Indian options); cosmetics earned with Gold,
-visual-only. **[OPEN]** exact per-persona numbers/abilities.
+visual-only. **Next design step:** map each of upstream's 9 classes/talent trees → the 6
+personas (which to keep/merge/rename, and each signature power + affinity).
 
 ## 8. The many ways to learn (each a distinct activity)
 - **Recall combat** — the daily driver.
@@ -126,7 +136,11 @@ visual-only. **[OPEN]** exact per-persona numbers/abilities.
 - **Sinks:** Study Hall mastery upgrades · Cosmetics · pets · (later) player market.
 - **Materials:** from gathering (recall-gated); consumed by Study Hall upgrades.
 - Self-reinforcing: more Mastery → better nodes/mobs → more Gold/materials → more upgrades.
-- No pay-to-win; cosmetics never touch power. **[OPEN]** monetization model (later).
+- No pay-to-win; cosmetics never touch power.
+- **Monetization = free + cosmetics-only (LOCKED).** Fully free to learn; revenue only
+  from visual cosmetics/pets. Most inclusive, fairest, best reach in India.
+- **Online model = online-only (LOCKED)**, like kintara: always-connected shared world,
+  server-authoritative (matches upstream). No offline/solo mode.
 
 ## 11. Retention & onboarding
 - **Onboarding:** Guru intro → pick a Learning Goal → guided first fight/gather/answer →
@@ -145,12 +159,16 @@ Server-authoritative + deterministic (`Rng`, no `Math.random`/`Date.now`); `src/
 pure; new data/actions via an `IWorld` facet in **both** `Sim` + `ClientWorld`; every
 player string a `t()` key; mobile-web/PWA first; merge bar = `npm run gate` green.
 
-## 14. Open design decisions (to close the design)
-1. **[OPEN]** Final **monument list** + land mapping (§5).
-2. **[OPEN]** **Persona** numbers/abilities (§7) — is the 6-role split right?
-3. **[OPEN]** **Combat feel** — turn-based question-per-attack, or real-time with periodic
-   quiz "power moments"? (affects how recall-combat plays).
-4. **[OPEN]** **PvP death risk** amount in the Frontier (§5) — how punishing?
-5. **[OPEN]** **Books** — where the Library's book content comes from + how many.
-6. **[OPEN]** **Monetization** (§10) — free / cosmetics-only / premium Learning Goals?
-7. **[OPEN]** **Offline/solo** — is there a single-player mode, or online-only like kintara?
+## 14. Design decisions
+**LOCKED (2026-07-16):** universal audience · Indian-monument world · 6 personas as full
+RPG classes · full-version sequence (social at M4) · **combat = real-time + quiz
+power-moments** · **online-only** · **free + cosmetics-only** · quiz content from
+mindwhite/quizhub Redis.
+
+**Still [OPEN] to fully close the design:**
+1. Final **monument list** + which land each maps to (§5).
+2. **Persona → upstream-class mapping**: which of the 9 upstream classes each persona
+   inherits, and each one's signature power + affinity (§7).
+3. **PvP death risk** amount in the Frontier — how punishing (§5).
+4. **Books** for the Nalanda Library — source + volume (§6/§12).
+5. **First Learning Goal(s)** to ship with (which exam/class from the quizhub taxonomy).
