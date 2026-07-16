@@ -98,14 +98,19 @@ distinct combat + co-op role — built by **re-theming upstream's existing 9-cla
 system** (we map/rename, not rebuild) into the 6 learning identities. Each also has a
 **subject affinity** (faster Mastery / bonus power in its lane) so your class reinforces
 how you learn. Quiz power-moments (§3) charge each class's signature abilities.
-| Persona | Affinity | Co-op role |
-|---|---|---|
-| **Scholar** | Reading/Humanities | sustain — bonus from Library/reading |
-| **Strategist** | Maths/Logic | burst — combo/crit specialist |
-| **Explorer** | GK/Geography | utility — puzzle/exploration bonuses |
-| **Orator** | Language | support — buffs allies' answer window |
-| **Inventor** | Science/Tech | control — gadgets/AoE in raids |
-| **Mentor** | Any (teaching) | healer/leader — buffs the group, earns by helping juniors |
+| Persona | Affinity | Base upstream class | Combat identity | Co-op role |
+|---|---|---|---|---|
+| **Scholar** | Humanities/Reading | **Priest** | insight/light caster | healer / sustain |
+| **Strategist** | Maths/Logic | **Mage** | precise burst caster | ranged DPS / crit |
+| **Explorer** | GK/Geography | **Hunter** | ranger + companion | utility / scout |
+| **Orator** | Language | **Paladin** | aura/buff leader | support |
+| **Inventor** | Science/Tech | **Warlock** | summons gadgets, DoT/AoE | control |
+| **Mentor** | Teaching (any) | **Druid** | shapeshifting, adaptable | flex healer / leader |
+
+The remaining upstream classes (**Warrior, Rogue, Shaman**) are held as candidate future
+personas or alternate specs. Each persona keeps its base class's abilities + talent tree
+(re-themed names), and quiz power-moments charge its signature abilities. *(Proposed
+mapping — confirm/adjust.)*
 Free base customization (skin/hair/attire, Indian options); cosmetics earned with Gold,
 visual-only. **Next design step:** map each of upstream's 9 classes/talent trees → the 6
 personas (which to keep/merge/rename, and each signature power + affinity).
