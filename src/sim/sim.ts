@@ -1074,6 +1074,12 @@ export interface PlayerMeta {
   deedStats: DeedStats;
   activeTitle: string | null;
   renown: number;
+  // BharatVerse recall (docs/bharatverse/game-design.md S3/S4). `recallMastery` is the
+  // accumulated Subject Mastery XP per subject key (persisted in the JSONB save; read by
+  // src/sim/recall/subject_mastery.ts to derive the level/tier that scales recall power).
+  // `recallCombo` is the live consecutive-correct streak (session-only; a miss resets it).
+  recallMastery: Map<string, number>;
+  recallCombo: number;
 }
 
 // Away-from-keyboard / do-not-disturb presence. `afk` still delivers whispers
@@ -1239,6 +1245,9 @@ export interface CharacterState {
   deedStats?: SavedDeedStats;
   activeTitle?: string | null;
   renown?: number;
+  // BharatVerse Subject Mastery XP per subject key. Optional so every pre-recall save
+  // loads cleanly at zero mastery; omitted from the save entirely when empty.
+  recallMastery?: Record<string, number>;
 }
 
 export interface PetState {
@@ -1955,6 +1964,8 @@ export class Sim {
       deedStats: freshDeedStats(),
       activeTitle: null,
       renown: 0,
+      recallMastery: new Map(),
+      recallCombo: 0,
     };
     // A fresh character sets out provisioned (class-defined starter rations);
     // a saved character loads its own bags from savedState below.
@@ -2086,6 +2097,13 @@ export class Sim {
       // saved number only feeds a SQL sort index).
       for (const [deedId, day] of Object.entries(s.deeds ?? {})) {
         if (typeof day === 'string') meta.deedsEarned.set(deedId, day);
+      }
+      // BharatVerse Subject Mastery XP per subject. Additive and defensive: an old save
+      // simply has none, and a corrupt/negative entry is dropped rather than trusted.
+      for (const [subject, xp] of Object.entries(s.recallMastery ?? {})) {
+        if (typeof xp === 'number' && Number.isFinite(xp) && xp > 0) {
+          meta.recallMastery.set(subject, xp);
+        }
       }
       meta.deedStats = restoreDeedStats(s.deedStats);
       deedsMod.unionLegacyMilestones(meta);
@@ -2505,6 +2523,11 @@ export class Sim {
       // so pre-deed saves stay byte-equal until the system engages. The
       // legacy unlockedMilestones above stays dual-written for one release.
       ...(meta.deedsEarned.size > 0 ? { deeds: Object.fromEntries(meta.deedsEarned) } : {}),
+      // BharatVerse Subject Mastery XP per subject. Additive + omitted when empty, so old
+      // saves load unchanged (recallCombo is session-only and deliberately not persisted).
+      ...(meta.recallMastery.size > 0
+        ? { recallMastery: Object.fromEntries(meta.recallMastery) }
+        : {}),
       ...(() => {
         const deedStats = serializeDeedStats(meta.deedStats);
         return deedStats ? { deedStats } : {};
