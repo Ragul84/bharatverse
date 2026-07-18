@@ -2012,6 +2012,18 @@ export const en_XA: EnTranslations = {
       "lbEmpty": "[Ñó ŕáñķéð çĥŕóñíçļéŕš ýéţ.]",
       "broadcastsLabel": "[Šĥáŕé ðééð úñļóçķš ŵíţĥ ĝúíļð áñð ƒŕíéñðš]",
       "titledName": "[{name} [{title}]]"
+    },
+    "recall": {
+      "title": "[Þóŵéŕ Ɱóɱéñţ]",
+      "subject": "[Šúƀĵéçţ: {subject}]",
+      "combo": "[Çóɱƀó ẋ{n}]",
+      "hint": "[Áñšŵéŕ ŵéļļ ţó þóŵéŕ ýóúŕ ñéẋţ ĥíţ. Ŵŕóñĝ šţíļļ áçţš, áţ ļóŵéŕ þóŵéŕ.]",
+      "result": {
+        "correct": "[Çóŕŕéçţ!]",
+        "crit": "[Çŕíţíçáļ ŕéçáļļ!]",
+        "wrong": "[Ñóţ ɋúíţé]",
+        "power": "[Þóŵéŕ ẋ{mult}]"
+      }
     }
   },
   "apiError": {

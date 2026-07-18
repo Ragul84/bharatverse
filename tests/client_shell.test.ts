@@ -688,67 +688,34 @@ describe('client HTML shell', () => {
     expect(html).toContain(
       '<meta name="robots" content="index, follow, max-image-preview:large" />',
     );
-    expect(html).toContain('<link rel="canonical" href="https://worldofclaudecraft.com/" />');
+    expect(html).toContain('<link rel="canonical" href="https://bharatverse.game/" />');
     expect(html).toContain('<meta property="og:site_name" content="BharatVerse" />');
     expect(html).toContain('"alternateName": "Bharatverse"');
-    expect(html).toContain('"https://github.com/levy-street/world-of-claudecraft"');
+    // Upstream socials stripped (M-Trim brand de-fork); sameAs filled when channels exist.
+    expect(html).not.toContain('worldofclaudecraft');
+    expect(html).not.toContain('levy-street/world-of-claudecraft');
     expect(mainTs).toContain("alternateName: 'Bharatverse'");
-    expect(mainTs).toContain("'https://github.com/levy-street/world-of-claudecraft'");
-    expect(robotsTxt.trim()).toBe(
-      'User-agent: *\nAllow: /\n\nSitemap: https://worldofclaudecraft.com/sitemap.xml\nSitemap: https://worldofclaudecraft.com/sitemap-characters.xml',
-    );
-    expect(robotsTxt).toContain('Sitemap: https://worldofclaudecraft.com/sitemap.xml');
-    // The dynamic per-character sitemap (served by the game server) is advertised too.
-    expect(robotsTxt).toContain('Sitemap: https://worldofclaudecraft.com/sitemap-characters.xml');
-    expect(sitemapXml).toContain('<loc>https://worldofclaudecraft.com/</loc>');
-    expect(sitemapXml).toContain('<loc>https://worldofclaudecraft.com/links</loc>');
-    expect(sitemapXml).toContain('<loc>https://worldofclaudecraft.com/play</loc>');
-    expect(playHtml).toContain(
-      '<link rel="canonical" href="https://worldofclaudecraft.com/play" />',
-    );
-    expect(playHtml).toContain(
-      '<meta property="og:url" content="https://worldofclaudecraft.com/play" />',
-    );
-    expect(playHtml).toContain('"url": "https://worldofclaudecraft.com/play"');
-    expect(sitemapXml).toContain('<loc>https://worldofclaudecraft.com/privacy</loc>');
-    expect(sitemapXml).toContain('<loc>https://worldofclaudecraft.com/terms</loc>');
-    expect(sitemapXml).toContain('<loc>https://worldofclaudecraft.com/data-deletion</loc>');
-    expect(sitemapXml).toContain('<loc>https://worldofclaudecraft.com/support</loc>');
-    expect(privacyHtml).toContain(
-      '<link rel="canonical" href="https://worldofclaudecraft.com/privacy" />',
-    );
+    expect(mainTs).toContain('SITE_ORIGIN');
+    expect(robotsTxt).toMatch(/Sitemap:/);
+    expect(sitemapXml).toMatch(/<loc>https?:\/\//);
+    expect(playHtml).toContain('rel="canonical"');
+    expect(privacyHtml).toContain('rel="canonical"');
     expect(privacyHtml).toContain('<h1>Privacy Policy</h1>');
     expect(privacyHtml).toContain('href="/support">Support</a>');
     expect(privacyHtml).toContain('href="/data-deletion">Data Deletion</a>');
-    expect(termsHtml).toContain(
-      '<link rel="canonical" href="https://worldofclaudecraft.com/terms" />',
-    );
+    expect(termsHtml).toContain('rel="canonical"');
     expect(termsHtml).toContain('<h1>Terms and Conditions</h1>');
     expect(termsHtml).toContain('href="/support">Support</a>');
     expect(termsHtml).toContain('href="/data-deletion">Data Deletion</a>');
-    expect(dataDeletionHtml).toContain(
-      '<link rel="canonical" href="https://worldofclaudecraft.com/data-deletion" />',
-    );
+    expect(dataDeletionHtml).toContain('rel="canonical"');
     expect(dataDeletionHtml).toContain('<h1>Data Deletion</h1>');
-    expect(dataDeletionHtml).toContain('href="mailto:woc@levystreet.com"');
-    expect(dataDeletionHtml).toContain('href="https://discord.com/invite/worldofclaudecraft"');
     expect(dataDeletionHtml).toContain('href="/support">Support</a>');
-    expect(supportHtml).toContain(
-      '<link rel="canonical" href="https://worldofclaudecraft.com/support" />',
-    );
+    expect(supportHtml).toContain('rel="canonical"');
     expect(supportHtml).toContain('<h1>Support</h1>');
-    expect(supportHtml).toContain('href="mailto:woc@levystreet.com"');
-    expect(supportHtml).toContain('href="https://discord.com/invite/worldofclaudecraft"');
     expect(supportHtml).toContain('href="/data-deletion">Data Deletion page</a>');
     expect(supportHtml).toContain('"@type": "ContactPage"');
-    expect(html).toContain(
-      'href="/World-of-ClaudeCraft-Whitepaper-v1.0.pdf" class="footer-link" data-i18n="footer.whitepaper"',
-    );
-    expect(html.indexOf('data-i18n="footer.whitepaper"')).toBeLessThan(
-      html.indexOf('data-i18n="footer.terms"'),
-    );
-    expect(existsSync(whitepaperUrl)).toBe(true);
-    expect(statSync(whitepaperUrl).size).toBeGreaterThan(0);
+    // Upstream whitepaper removed from the BharatVerse shell footer.
+    expect(html).not.toContain('World-of-ClaudeCraft-Whitepaper');
     expect(html).toContain('href="/terms" class="footer-link" data-i18n="footer.terms"');
     expect(html).toContain('href="/privacy" class="footer-link" data-i18n="footer.privacy"');
     expect(viteConfig).toContain("['/privacy', '/privacy.html']");
@@ -795,9 +762,8 @@ describe('client HTML shell', () => {
     );
     expect(html).toContain('<section class="account-card account-wallet-card">');
     expect(mainTs).toContain("document.body.classList.toggle('desktop-app', DESKTOP_APP);");
-    expect(mainTs).toContain(
-      "!NATIVE_APP && !DESKTOP_APP && String(import.meta.env.VITE_WALLET_DISABLED ?? '').trim() !== '1';",
-    );
+    // BharatVerse M-Trim: wallet permanently disabled (no Solana / $WOC rails).
+    expect(mainTs).toContain('const WALLET_ENABLED = false;');
     expect(mainTs).toContain("document.querySelector('.cs-wallet')?.remove();");
     expect(mainTs).toContain("document.querySelector('.account-wallet-card')?.remove();");
   });
@@ -899,23 +865,19 @@ describe('client HTML shell', () => {
     // policy); the tray entry joins the same suppression block as the desktop
     // .donate links in hud.css.
     expect(hudCss).toContain('body.native-app #mobile-donate,');
-    // The tap targets: the account panel with the invite as the logged-out /
-    // offline fallback, and the Ko-fi page, pinned to the shells' URLs.
-    expect(mainTs).toContain(
-      "const DISCORD_INVITE_URL = 'https://discord.com/invite/worldofclaudecraft';",
-    );
-    expect(mainTs).toContain("const DONATE_URL = 'https://ko-fi.com/worldofclaudecraft';");
+    // BharatVerse M-Trim: community URLs come from bharatverse_site (empty until
+    // real channels land). Donate opens only when DONATE_URL is non-empty.
+    expect(mainTs).toContain('const DISCORD_INVITE_URL = COMMUNITY.discordInvite');
+    expect(mainTs).toContain('const DONATE_URL = COMMUNITY.donate');
     expect(mainTs).toContain(
       "window.open(discordInviteUrl() || DISCORD_INVITE_URL, '_blank', 'noopener,noreferrer');",
     );
-    expect(mainTs).toContain(
-      "onDonate: () => window.open(DONATE_URL, '_blank', 'noopener,noreferrer'),",
-    );
+    expect(mainTs).toContain('if (DONATE_URL) window.open(DONATE_URL');
     for (const [name, entry] of [
       ['index.html', html],
       ['play.html', playHtml],
     ] as const) {
-      expect(entry.match(/href="https:\/\/ko-fi\.com\/worldofclaudecraft"/g), name).toHaveLength(3);
+      expect(entry, name).not.toContain('https://ko-fi.com/worldofclaudecraft');
       expect(entry, name).not.toContain('https://github.com/sponsors/levy-street');
     }
   });

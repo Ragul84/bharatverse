@@ -46,6 +46,11 @@ import {
   grantXp as grantXpImpl,
   handleDeath as handleDeathImpl,
 } from './combat/damage';
+import {
+  answerRecallMoment,
+  RECALL_COMBAT,
+  toClientPrompt,
+} from './recall/recall_combat';
 import { runEffects as runEffectsImpl } from './combat/effect_dispatch';
 import {
   applyHeal as applyHealImpl,
@@ -305,6 +310,7 @@ import {
   revivePlayerAt,
   spawnOverworldSpiritHealers,
 } from './spirit';
+import { BV_FEATURES } from './bharatverse_features';
 import {
   rollWorldBossLoot as rollWorldBossLootImpl,
   scaleWorldBossHp,
@@ -1080,6 +1086,17 @@ export interface PlayerMeta {
   // `recallCombo` is the live consecutive-correct streak (session-only; a miss resets it).
   recallMastery: Map<string, number>;
   recallCombo: number;
+  // Active power-moment (server holds the answer key). Session-only.
+  recallPending: import('./recall/recall_combat').RecallPending | null;
+  // Sim-time when the next power-moment may open.
+  recallCooldownUntil: number;
+  // Armed power multiplier for the next outgoing hit(s).
+  recallChargeMult: number;
+  recallChargeHitsLeft: number;
+  // Monotonic offer counter (salts hash picks; also rotates subject pools).
+  recallOfferIndex: number;
+  // Last resolved outcome for HUD feedback (session-only).
+  recallLastResult: import('./recall/recall_combat').RecallClientResult | null;
 }
 
 // Away-from-keyboard / do-not-disturb presence. `afk` still delivers whispers
@@ -1435,7 +1452,11 @@ export class Sim {
   // (null once none is alive). Driven by updateWorldBosses() in the tick prologue.
   // Sim-time scheduling keeps it deterministic (no wall clock); on the live server
   // the sim runs at 20 Hz wall speed, so the interval is real hours.
-  private worldBossNextAt: number[] = WORLD_BOSSES.map((b) => b.intervalSeconds);
+  // M-Trim: when BV_FEATURES.worldBosses is off, nextAt is +Infinity so the live
+  // product never auto-spawns; unit tests may still force nextAt to exercise combat.
+  private worldBossNextAt: number[] = WORLD_BOSSES.map((b) =>
+    BV_FEATURES.worldBosses ? b.intervalSeconds : Number.POSITIVE_INFINITY,
+  );
   private worldBossEntityIds: (number | null)[] = WORLD_BOSSES.map(() => null);
 
   constructor(cfg: SimConfig) {
@@ -1460,8 +1481,10 @@ export class Sim {
     // Live server opt-in (worldBossAtBoot): the first world-boss rise is due
     // immediately instead of one interval out, so a freshly (re)started realm
     // has its boss up. Draws no rng here; the spawn itself fires on the first
-    // tick through the normal updateWorldBosses path.
-    if (cfg.worldBossAtBoot) this.worldBossNextAt = WORLD_BOSSES.map(() => 0);
+    // tick through the normal updateWorldBosses path. Gated by BV_FEATURES.
+    if (cfg.worldBossAtBoot && BV_FEATURES.worldBosses) {
+      this.worldBossNextAt = WORLD_BOSSES.map(() => 0);
+    }
     // S0b seam: the shared SimContext every extracted slice routes through. Built
     // once here (the rng now exists); a live view + bound callbacks, it draws no rng
     // and mutates nothing, so it cannot perturb the construction draws below.
@@ -1966,6 +1989,12 @@ export class Sim {
       renown: 0,
       recallMastery: new Map(),
       recallCombo: 0,
+      recallPending: null,
+      recallCooldownUntil: 0,
+      recallChargeMult: 1,
+      recallChargeHitsLeft: 0,
+      recallOfferIndex: 0,
+      recallLastResult: null,
     };
     // A fresh character sets out provisioned (class-defined starter rations);
     // a saved character loads its own bags from savedState below.
@@ -2938,6 +2967,64 @@ export class Sim {
     const r = this.resolve(pid);
     if (r) deedsMod.setActiveTitle(r.meta, r.e, deedId);
   }
+
+  // --- IWorldRecall: active-recall power-moments (BharatVerse learning combat) ---
+  get recallPrompt(): import('../world_api/recall').RecallClientPrompt | null {
+    const pending = this.primary.recallPending;
+    if (!pending) return null;
+    return toClientPrompt(pending);
+  }
+  get recallCombo(): number {
+    return this.primary.recallCombo;
+  }
+  get recallLastResult(): import('../world_api/recall').RecallClientResult | null {
+    return this.primary.recallLastResult;
+  }
+  answerRecall(selectedIndex: number, timingMs: number, pid?: number): void {
+    const r = this.resolve(pid);
+    if (!r?.meta.recallPending) return;
+    this.resolvePlayerRecall(r.meta, selectedIndex, timingMs, false);
+  }
+  /** Internal: resolve answer or timeout for one player. */
+  private resolvePlayerRecall(
+    meta: PlayerMeta,
+    selectedIndex: number,
+    timingMs: number,
+    timedOut: boolean,
+  ): void {
+    const pending = meta.recallPending;
+    if (!pending) return;
+    const masteryXp = meta.recallMastery.get(pending.subject) ?? 0;
+    const out = answerRecallMoment({
+      pending,
+      selectedIndex: timedOut ? -1 : selectedIndex,
+      timingMs: timedOut ? RECALL_COMBAT.TIMEOUT_S * 1000 : timingMs,
+      masteryXp,
+      combo: meta.recallCombo,
+      now: this.time,
+    });
+    meta.recallPending = null;
+    meta.recallCombo = out.nextCombo;
+    meta.recallCooldownUntil = out.cooldownUntil;
+    meta.recallChargeMult = out.chargeMult;
+    meta.recallChargeHitsLeft = out.chargeHits;
+    meta.recallLastResult = out.result;
+    if (out.masteryXpGain > 0) {
+      meta.recallMastery.set(pending.subject, masteryXp + out.masteryXpGain);
+    }
+    this.emit({
+      type: 'recallResult',
+      pid: meta.entityId,
+      correct: out.result.correct,
+      powerMult: out.result.powerMult,
+      isCrit: out.result.isCrit,
+      masteryXpGain: out.result.masteryXpGain,
+      combo: out.result.combo,
+      masteryTier: out.result.masteryTier,
+      explanation: out.result.explanation,
+      prompt: out.result.prompt,
+    });
+  }
   // Offline the sandbox has no population, so there is no rarity to report:
   // always null (the facet's documented no-data value; the window hides the
   // slot). Deterministic, no fetch, no clock (the dailyRewards stub doctrine).
@@ -3832,6 +3919,10 @@ export class Sim {
     for (const meta of this.players.values()) {
       const p = this.entities.get(meta.entityId);
       if (!p) continue;
+      // Unanswered power-moments auto-resolve as wrong (learning still shows explanation).
+      if (meta.recallPending && this.time >= meta.recallPending.expiresAt) {
+        this.resolvePlayerRecall(meta, -1, RECALL_COMBAT.TIMEOUT_S * 1000, true);
+      }
       if (!p.dead) {
         this.updatePlayerMovement(p, meta);
         lap?.('p.move');

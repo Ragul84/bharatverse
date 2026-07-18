@@ -2012,6 +2012,18 @@ export const pt_BR: EnTranslations = {
       "lbEmpty": "Ainda não há cronistas na classificação.",
       "broadcastsLabel": "Compartilhar feitos desbloqueados com a guilda e os amigos",
       "titledName": "{name} [{title}]"
+    },
+    "recall": {
+      "title": "Power Moment",
+      "subject": "Subject: {subject}",
+      "combo": "Combo x{n}",
+      "hint": "Answer well to power your next hit. Wrong still acts, at lower power.",
+      "result": {
+        "correct": "Correct!",
+        "crit": "Critical recall!",
+        "wrong": "Not quite",
+        "power": "Power x{mult}"
+      }
     }
   },
   "apiError": {

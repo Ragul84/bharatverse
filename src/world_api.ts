@@ -45,6 +45,7 @@
 //   dungeon_finder.ts   IWorldDungeonFinder  Dungeon Finder queue/proposals/premade board
 //   deeds.ts            IWorldDeeds          earned deeds, lifetime stats, renown, active title,
 //                                            rarity + the account-Renown leaderboard reads
+//   recall.ts           IWorldRecall         active-recall power-moments (question + answer)
 //
 // THREE GATES pin this seam (run before any facet edit; the literal counts are
 // pinned THERE and re-stale here, so this prose stays count-free):
@@ -64,6 +65,7 @@ import type { IWorldCosmetics } from './world_api/cosmetics';
 import type { IWorldDailyRewards } from './world_api/daily_rewards';
 import type { IWorldDeeds } from './world_api/deeds';
 import type { IWorldDelves } from './world_api/delves';
+import type { IWorldRecall } from './world_api/recall';
 import type { IWorldDuelArena } from './world_api/duel_arena';
 import type { IWorldDungeonFinder } from './world_api/dungeon_finder';
 import type { IWorldDungeons } from './world_api/dungeons';
@@ -182,6 +184,7 @@ export type {
   VcRosterPlayer,
   VcStanding,
 } from './world_api/vale_cup';
+export type { RecallClientPrompt, RecallClientResult } from './world_api/recall';
 
 // The aggregate seam. Empty body: every member lives on exactly one facet above,
 // so `IWorld` is byte-identical to the pre-split flat interface and both the
@@ -213,7 +216,8 @@ export interface IWorld
     IWorldBank,
     IWorldValeCup,
     IWorldDungeonFinder,
-    IWorldDeeds {}
+    IWorldDeeds,
+    IWorldRecall {}
 
 // ---------------------------------------------------------------------------
 // Command schema (W0b): the shared wire-token vocabulary.
@@ -392,6 +396,8 @@ export const COMMAND_NAMES = [
   'ignore_add',
   'ignore_remove',
   'stow_weapon',
+  // BharatVerse recall power-moment answer (selectedIndex + timingMs).
+  'recall_answer',
 ] as const;
 
 // The union both the send path (`online.ts`) and the dispatch switch
@@ -459,7 +465,8 @@ export type WorldFacet =
   | 'IWorldBank'
   | 'IWorldValeCup'
   | 'IWorldDungeonFinder'
-  | 'IWorldDeeds';
+  | 'IWorldDeeds'
+  | 'IWorldRecall';
 
 export const COMMAND_FACETS = {
   // IWorldCombat: ability casts, auto-attack, spirit release.
@@ -633,4 +640,6 @@ export const COMMAND_FACETS = {
   // design). deedsEarned/deedStats/renown/activeTitle are snapshot reads (no
   // send, untagged).
   deed_set_title: 'IWorldDeeds',
+  // IWorldRecall: submit answer for the active power-moment question.
+  recall_answer: 'IWorldRecall',
 } as const satisfies Partial<Record<ClientCommand, WorldFacet>>;

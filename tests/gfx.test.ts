@@ -65,9 +65,9 @@ describe('graphics tier resolution', () => {
     expect(tierFromHints(desktop, false)).toBe('medium'); // unknown device -> medium fallback
     expect(tierFromHints({ ...desktop, graphicsPreset: 0 }, false)).toBe('low'); // legacy explicit 0
     expect(tierFromHints(desktop, true)).toBe('low'); // software GL with no preset -> low floor
-    // unset + unknown mobile -> medium (not the old unset -> ultra default)
+    // unset + unknown mobile -> low (BharatVerse M-Trim mobile-first floor)
     expect(tierFromHints({ ...desktop, maxTouchPoints: 1, coarsePointer: true }, false)).toBe(
-      'medium',
+      'low',
     );
     // a URL-forced tier always wins, even on a touch device or software GL
     expect(
@@ -318,14 +318,14 @@ describe('graphics tier resolution', () => {
       ).toBe(2);
     });
 
-    it('caps mobile at HIGH: flagship / strong-on-touch -> HIGH, weak phone -> LOW, else MEDIUM', () => {
+    it('caps mobile at MEDIUM (BharatVerse M-Trim): flagship/strong touch -> MEDIUM, unknown -> LOW', () => {
       expect(
         resolveDefaultGraphicsPreset({ ...phone, gpuRenderer: 'Adreno (TM) 740', deviceMemory: 8 }),
-      ).toBe(3); // flagship phone
-      // an M-series iPad (strong GPU on a touch device) is capped at HIGH (ultra is desktop-only)
-      expect(resolveDefaultGraphicsPreset({ ...phone, gpuRenderer: 'Apple M2' })).toBe(3);
+      ).toBe(2); // flagship phone: medium floor, not high
+      // an M-series iPad (strong GPU on a touch device) stays MEDIUM for thermals
+      expect(resolveDefaultGraphicsPreset({ ...phone, gpuRenderer: 'Apple M2' })).toBe(2);
       expect(resolveDefaultGraphicsPreset({ ...phone, gpuRenderer: 'Adreno (TM) 330' })).toBe(1); // old phone
-      expect(resolveDefaultGraphicsPreset(phone)).toBe(2); // typical/unknown phone -> medium
+      expect(resolveDefaultGraphicsPreset(phone)).toBe(1); // typical/unknown phone -> low
     });
 
     it('rewards a strong desktop: ULTRA with a corroborating signal (or unreported mem), else HIGH', () => {

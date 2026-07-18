@@ -1194,6 +1194,11 @@ export class ClientWorld implements IWorld {
   deedStats: DeedStats = freshDeedStats();
   renown = 0;
   activeTitle: string | null = null;
+  // --- IWorldRecall: power-moment prompt/result mirrored from recallOffer /
+  // recallResult events (no snapshot field for M0; reconnect clears prompt). ---
+  recallPrompt: import('../world_api').RecallClientPrompt | null = null;
+  recallCombo = 0;
+  recallLastResult: import('../world_api').RecallClientResult | null = null;
   // --- IWorldDelves: active delve run + companion + marks/upgrades + daily, all
   // mirrored from the snapshot self (delta-omitted). lockpickState is the exception:
   // it has NO snapshot field and is rebuilt from the lockpick* events by the private
@@ -1695,6 +1700,7 @@ export class ClientWorld implements IWorld {
         this.applyLockpickEvent(ev as SimEvent);
         this.applyCraftResultEvent(ev as SimEvent);
         this.applyChatFlairEvent(ev as SimEvent);
+        this.applyRecallEvent(ev as SimEvent);
         this.eventQueue.push(ev as SimEvent);
       }
       return;
@@ -2313,6 +2319,36 @@ export class ClientWorld implements IWorld {
     const tid = this.player.targetId;
     const target = tid !== null ? this.entities.get(tid) : undefined;
     return !!target && target.dead;
+  }
+
+  // --- IWorldRecall: active-recall power-moments ---
+  answerRecall(selectedIndex: number, timingMs: number): void {
+    this.cmd({
+      cmd: 'recall_answer',
+      index: selectedIndex | 0,
+      timingMs: Math.max(0, timingMs | 0),
+    });
+  }
+
+  private applyRecallEvent(ev: SimEvent): void {
+    if (ev.type === 'recallOffer') {
+      this.recallPrompt = ev.prompt;
+      return;
+    }
+    if (ev.type === 'recallResult') {
+      this.recallPrompt = null;
+      this.recallCombo = ev.combo;
+      this.recallLastResult = {
+        correct: ev.correct,
+        powerMult: ev.powerMult,
+        isCrit: ev.isCrit,
+        masteryXpGain: ev.masteryXpGain,
+        combo: ev.combo,
+        masteryTier: ev.masteryTier,
+        explanation: ev.explanation,
+        prompt: ev.prompt,
+      };
+    }
   }
 
   // --- IWorldCombat: ability casts, auto-attack, spirit release ---

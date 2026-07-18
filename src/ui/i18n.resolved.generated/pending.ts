@@ -9,25 +9,205 @@
 // Reproducibility is checked by tests/i18n_resolved_equivalence.test.ts.
 
 export const pending: Record<string, readonly string[]> = {
-  "es": [],
-  "es_ES": [],
-  "fr_FR": [],
-  "fr_CA": [],
+  "es": [
+    "hudChrome.recall.combo",
+    "hudChrome.recall.hint",
+    "hudChrome.recall.result.correct",
+    "hudChrome.recall.result.crit",
+    "hudChrome.recall.result.power",
+    "hudChrome.recall.result.wrong",
+    "hudChrome.recall.subject",
+    "hudChrome.recall.title"
+  ],
+  "es_ES": [
+    "hudChrome.recall.combo",
+    "hudChrome.recall.hint",
+    "hudChrome.recall.result.correct",
+    "hudChrome.recall.result.crit",
+    "hudChrome.recall.result.power",
+    "hudChrome.recall.result.wrong",
+    "hudChrome.recall.subject",
+    "hudChrome.recall.title"
+  ],
+  "fr_FR": [
+    "hudChrome.recall.combo",
+    "hudChrome.recall.hint",
+    "hudChrome.recall.result.correct",
+    "hudChrome.recall.result.crit",
+    "hudChrome.recall.result.power",
+    "hudChrome.recall.result.wrong",
+    "hudChrome.recall.subject",
+    "hudChrome.recall.title"
+  ],
+  "fr_CA": [
+    "hudChrome.recall.combo",
+    "hudChrome.recall.hint",
+    "hudChrome.recall.result.correct",
+    "hudChrome.recall.result.crit",
+    "hudChrome.recall.result.power",
+    "hudChrome.recall.result.wrong",
+    "hudChrome.recall.subject",
+    "hudChrome.recall.title"
+  ],
   "en_CA": [],
-  "it_IT": [],
-  "de_DE": [],
-  "zh_CN": [],
-  "zh_TW": [],
-  "ko_KR": [],
-  "ja_JP": [],
-  "pt_BR": [],
-  "ru_RU": [],
-  "cs_CZ": [],
-  "nl_NL": [],
-  "pl_PL": [],
-  "id_ID": [],
-  "tr_TR": [],
-  "sv_SE": [],
-  "vi_VN": [],
-  "da_DK": []
+  "it_IT": [
+    "hudChrome.recall.combo",
+    "hudChrome.recall.hint",
+    "hudChrome.recall.result.correct",
+    "hudChrome.recall.result.crit",
+    "hudChrome.recall.result.power",
+    "hudChrome.recall.result.wrong",
+    "hudChrome.recall.subject",
+    "hudChrome.recall.title"
+  ],
+  "de_DE": [
+    "hudChrome.recall.combo",
+    "hudChrome.recall.hint",
+    "hudChrome.recall.result.correct",
+    "hudChrome.recall.result.crit",
+    "hudChrome.recall.result.power",
+    "hudChrome.recall.result.wrong",
+    "hudChrome.recall.subject",
+    "hudChrome.recall.title"
+  ],
+  "zh_CN": [
+    "hudChrome.recall.combo",
+    "hudChrome.recall.hint",
+    "hudChrome.recall.result.correct",
+    "hudChrome.recall.result.crit",
+    "hudChrome.recall.result.power",
+    "hudChrome.recall.result.wrong",
+    "hudChrome.recall.subject",
+    "hudChrome.recall.title"
+  ],
+  "zh_TW": [
+    "hudChrome.recall.combo",
+    "hudChrome.recall.hint",
+    "hudChrome.recall.result.correct",
+    "hudChrome.recall.result.crit",
+    "hudChrome.recall.result.power",
+    "hudChrome.recall.result.wrong",
+    "hudChrome.recall.subject",
+    "hudChrome.recall.title"
+  ],
+  "ko_KR": [
+    "hudChrome.recall.combo",
+    "hudChrome.recall.hint",
+    "hudChrome.recall.result.correct",
+    "hudChrome.recall.result.crit",
+    "hudChrome.recall.result.power",
+    "hudChrome.recall.result.wrong",
+    "hudChrome.recall.subject",
+    "hudChrome.recall.title"
+  ],
+  "ja_JP": [
+    "hudChrome.recall.combo",
+    "hudChrome.recall.hint",
+    "hudChrome.recall.result.correct",
+    "hudChrome.recall.result.crit",
+    "hudChrome.recall.result.power",
+    "hudChrome.recall.result.wrong",
+    "hudChrome.recall.subject",
+    "hudChrome.recall.title"
+  ],
+  "pt_BR": [
+    "hudChrome.recall.combo",
+    "hudChrome.recall.hint",
+    "hudChrome.recall.result.correct",
+    "hudChrome.recall.result.crit",
+    "hudChrome.recall.result.power",
+    "hudChrome.recall.result.wrong",
+    "hudChrome.recall.subject",
+    "hudChrome.recall.title"
+  ],
+  "ru_RU": [
+    "hudChrome.recall.combo",
+    "hudChrome.recall.hint",
+    "hudChrome.recall.result.correct",
+    "hudChrome.recall.result.crit",
+    "hudChrome.recall.result.power",
+    "hudChrome.recall.result.wrong",
+    "hudChrome.recall.subject",
+    "hudChrome.recall.title"
+  ],
+  "cs_CZ": [
+    "hudChrome.recall.combo",
+    "hudChrome.recall.hint",
+    "hudChrome.recall.result.correct",
+    "hudChrome.recall.result.crit",
+    "hudChrome.recall.result.power",
+    "hudChrome.recall.result.wrong",
+    "hudChrome.recall.subject",
+    "hudChrome.recall.title"
+  ],
+  "nl_NL": [
+    "hudChrome.recall.combo",
+    "hudChrome.recall.hint",
+    "hudChrome.recall.result.correct",
+    "hudChrome.recall.result.crit",
+    "hudChrome.recall.result.power",
+    "hudChrome.recall.result.wrong",
+    "hudChrome.recall.subject",
+    "hudChrome.recall.title"
+  ],
+  "pl_PL": [
+    "hudChrome.recall.combo",
+    "hudChrome.recall.hint",
+    "hudChrome.recall.result.correct",
+    "hudChrome.recall.result.crit",
+    "hudChrome.recall.result.power",
+    "hudChrome.recall.result.wrong",
+    "hudChrome.recall.subject",
+    "hudChrome.recall.title"
+  ],
+  "id_ID": [
+    "hudChrome.recall.combo",
+    "hudChrome.recall.hint",
+    "hudChrome.recall.result.correct",
+    "hudChrome.recall.result.crit",
+    "hudChrome.recall.result.power",
+    "hudChrome.recall.result.wrong",
+    "hudChrome.recall.subject",
+    "hudChrome.recall.title"
+  ],
+  "tr_TR": [
+    "hudChrome.recall.combo",
+    "hudChrome.recall.hint",
+    "hudChrome.recall.result.correct",
+    "hudChrome.recall.result.crit",
+    "hudChrome.recall.result.power",
+    "hudChrome.recall.result.wrong",
+    "hudChrome.recall.subject",
+    "hudChrome.recall.title"
+  ],
+  "sv_SE": [
+    "hudChrome.recall.combo",
+    "hudChrome.recall.hint",
+    "hudChrome.recall.result.correct",
+    "hudChrome.recall.result.crit",
+    "hudChrome.recall.result.power",
+    "hudChrome.recall.result.wrong",
+    "hudChrome.recall.subject",
+    "hudChrome.recall.title"
+  ],
+  "vi_VN": [
+    "hudChrome.recall.combo",
+    "hudChrome.recall.hint",
+    "hudChrome.recall.result.correct",
+    "hudChrome.recall.result.crit",
+    "hudChrome.recall.result.power",
+    "hudChrome.recall.result.wrong",
+    "hudChrome.recall.subject",
+    "hudChrome.recall.title"
+  ],
+  "da_DK": [
+    "hudChrome.recall.combo",
+    "hudChrome.recall.hint",
+    "hudChrome.recall.result.correct",
+    "hudChrome.recall.result.crit",
+    "hudChrome.recall.result.power",
+    "hudChrome.recall.result.wrong",
+    "hudChrome.recall.subject",
+    "hudChrome.recall.title"
+  ]
 };

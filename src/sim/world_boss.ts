@@ -52,6 +52,9 @@ export interface WorldBossDef {
 
 // The world bosses of the live world. One per entry; the scheduler tracks each
 // independently. Thunzharr rises at Stormcrag in Summit Frontier.
+// M-Trim: when BV_FEATURES.worldBosses is off the Sim scheduler never fires these
+// (see sim.ts worldBossNextAt init + updateWorldBosses gate). The catalog stays
+// so content tests can still spawn via forced nextAt / createMob.
 export const WORLD_BOSSES: readonly WorldBossDef[] = [
   {
     templateId: 'thunzharr_waking_peak',
@@ -64,6 +67,9 @@ export const WORLD_BOSSES: readonly WorldBossDef[] = [
     hpScale: { base: 40_000, perPlayer: 5_000, max: 1_000_000 },
   },
 ];
+
+/** Alias kept for M-Trim tests that pin the author catalog. */
+export const WORLD_BOSS_CATALOG = WORLD_BOSSES;
 
 // The raid-lockout id under which a looted world boss is BOTH gated and shown in the
 // raid-lockout timer UI. Prefixed so it never collides with a real dungeon id (the

@@ -2261,4 +2261,17 @@ export const hudChromeStrings = {
     // after placeholder strip, so no forced non-Latin fills.
     titledName: '{name} [{title}]',
   },
+  // BharatVerse active-recall power-moment panel (learning combat).
+  recall: {
+    title: 'Power Moment',
+    subject: 'Subject: {subject}',
+    combo: 'Combo x{n}',
+    hint: 'Answer well to power your next hit. Wrong still acts, at lower power.',
+    result: {
+      correct: 'Correct!',
+      crit: 'Critical recall!',
+      wrong: 'Not quite',
+      power: 'Power x{mult}',
+    },
+  },
 };

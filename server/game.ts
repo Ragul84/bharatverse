@@ -4609,6 +4609,13 @@ export class GameServer {
           sim.setActiveTitle(msg.deedId, pid);
         }
         break;
+      // BharatVerse recall: submit MCQ choice for the active power-moment.
+      case 'recall_answer': {
+        const index = typeof msg.index === 'number' ? msg.index | 0 : -1;
+        const timingMs = typeof msg.timingMs === 'number' ? Math.max(0, msg.timingMs | 0) : 0;
+        sim.answerRecall(index, timingMs, pid);
+        break;
+      }
       // dev/ops commands, only when ALLOW_DEV_COMMANDS=1 (never in production)
       case 'dev_level': {
         if (process.env.ALLOW_DEV_COMMANDS === '1' && typeof msg.level === 'number') {

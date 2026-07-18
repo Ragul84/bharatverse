@@ -2012,6 +2012,18 @@ export const it_IT: EnTranslations = {
       "lbEmpty": "Ancora nessun cronista in classifica.",
       "broadcastsLabel": "Condividi le imprese ottenute con la gilda e gli amici",
       "titledName": "{name} [{title}]"
+    },
+    "recall": {
+      "title": "Power Moment",
+      "subject": "Subject: {subject}",
+      "combo": "Combo x{n}",
+      "hint": "Answer well to power your next hit. Wrong still acts, at lower power.",
+      "result": {
+        "correct": "Correct!",
+        "crit": "Critical recall!",
+        "wrong": "Not quite",
+        "power": "Power x{mult}"
+      }
     }
   },
   "apiError": {

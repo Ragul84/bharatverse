@@ -2326,6 +2326,30 @@ export type SimEvent = { pid?: number } & (
   | { type: 'castStart'; entityId: number; ability: string; time: number }
   | { type: 'castStop'; entityId: number; success: boolean }
   | { type: 'comboPoint'; points: number }
+  // BharatVerse recall power-moment: client-safe question (no answer key).
+  | {
+      type: 'recallOffer';
+      prompt: {
+        id: string;
+        prompt: string;
+        options: string[];
+        subject: string;
+        difficulty?: string;
+        expiresAt: number;
+      };
+    }
+  // BharatVerse recall outcome (after answer or timeout).
+  | {
+      type: 'recallResult';
+      correct: boolean;
+      powerMult: number;
+      isCrit: boolean;
+      masteryXpGain: number;
+      combo: number;
+      masteryTier: number;
+      explanation?: string;
+      prompt: string;
+    }
   | { type: 'playerDeath' }
   | { type: 'respawn' }
   // itemId names the single item for buy/sell/buyback; it is omitted for the

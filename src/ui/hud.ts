@@ -5,6 +5,7 @@ import { music, musicZoneForLocation, shouldResetMusicForDungeonEntry } from '..
 import type { GameSettings, Settings } from '../game/settings';
 import { sfx } from '../game/sfx';
 import type { UiEffectsTier } from '../game/ui_effects_profile';
+import { RecallPromptPanel } from './recall_prompt';
 import {
   auraRefreshIntervalMs,
   cadenceDue,
@@ -1474,6 +1475,8 @@ export class Hud {
   // or loadout switch. Owned here; TalentsWindow reads/replaces it via its deps.
   private talentStage: TalentAllocation | null = null;
 
+  private recallPromptPanel: RecallPromptPanel;
+
   constructor(
     private sim: IWorld,
     private renderer: Renderer,
@@ -1482,6 +1485,7 @@ export class Hud {
   ) {
     this.localIgnoredNames = this.loadLocalIgnoredNames();
     this.meters = new Meters(sim);
+    this.recallPromptPanel = new RecallPromptPanel(() => this.sim);
     this.initChatTabs();
     this.initChatBoxGeometry();
     this.initFrameMovers();
@@ -7663,6 +7667,8 @@ export class Hud {
 
       this.updateQuestTracker();
       this.updateDelveTracker();
+      // BharatVerse recall power-moment panel (question + answer + short result flash).
+      this.recallPromptPanel.update();
       // Party frames run on the ~4Hz mediumHud band (the enclosing block) for EVERY tier.
       // The tier knobs deliberately do NOT tier them down on low: party-member HP is a healer's
       // only actionable signal (no self-dispel), so a graphics preset must not slow it

@@ -2012,6 +2012,18 @@ export const vi_VN: EnTranslations = {
       "lbEmpty": "Chưa có sử quan nào được xếp hạng.",
       "broadcastsLabel": "Chia sẻ kỳ công vừa lập với bang hội và bạn bè",
       "titledName": "{name} [{title}]"
+    },
+    "recall": {
+      "title": "Power Moment",
+      "subject": "Subject: {subject}",
+      "combo": "Combo x{n}",
+      "hint": "Answer well to power your next hit. Wrong still acts, at lower power.",
+      "result": {
+        "correct": "Correct!",
+        "crit": "Critical recall!",
+        "wrong": "Not quite",
+        "power": "Power x{mult}"
+      }
     }
   },
   "apiError": {

@@ -2012,6 +2012,18 @@ export const cs_CZ: EnTranslations = {
       "lbEmpty": "V žebříčku zatím nejsou žádní kronikáři.",
       "broadcastsLabel": "Sdílet vykonané skutky s cechem a přáteli",
       "titledName": "{name} [{title}]"
+    },
+    "recall": {
+      "title": "Power Moment",
+      "subject": "Subject: {subject}",
+      "combo": "Combo x{n}",
+      "hint": "Answer well to power your next hit. Wrong still acts, at lower power.",
+      "result": {
+        "correct": "Correct!",
+        "crit": "Critical recall!",
+        "wrong": "Not quite",
+        "power": "Power x{mult}"
+      }
     }
   },
   "apiError": {

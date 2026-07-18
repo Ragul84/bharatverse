@@ -559,8 +559,22 @@ export function resolveDefaultGraphicsPreset(hints: GfxRuntimeHints): number {
 
   if (gpu === 'software' || gpu === 'weak') return PRESET_LOW;
   if (gpu === 'strongDesktop' && !isMobile) return ampleOrUnknownMem ? PRESET_ULTRA : PRESET_HIGH;
-  // A strong/flagship GPU on a touch device: capped at HIGH (ultra is desktop-only) for thermals.
-  if (gpu === 'flagshipMobile' || (gpu === 'strongDesktop' && isMobile)) return PRESET_HIGH;
+  // BharatVerse M-Trim (mobile-first): touch devices never auto-default above MEDIUM.
+  // Flagship phones still get a playable middle tier; players can raise the preset
+  // manually. This keeps thermals and frame time healthy on mid-range Android,
+  // the primary India audience, without changing the gameplay-neutral tier rules.
+  if (isMobile) {
+    if (
+      gpu === 'flagshipMobile' ||
+      gpu === 'strongDesktop' ||
+      gpu === 'midIntegrated' ||
+      gpu === 'midMobile'
+    ) {
+      return PRESET_MEDIUM;
+    }
+    // Unknown / inconclusive mobile: prefer LOW so first boot on a cheap phone is smooth.
+    return PRESET_LOW;
+  }
   if (gpu === 'midIntegrated' || gpu === 'midMobile') return PRESET_MEDIUM;
   if (
     gpu === 'unknown' &&
@@ -571,7 +585,7 @@ export function resolveDefaultGraphicsPreset(hints: GfxRuntimeHints): number {
     cores >= AMPLE_LOGICAL_CORES
   )
     return PRESET_HIGH;
-  return PRESET_MEDIUM; // unknown / masked / inconclusive -> the safe middle
+  return PRESET_MEDIUM; // unknown / masked / inconclusive desktop -> the safe middle
 }
 
 /**

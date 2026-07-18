@@ -29,6 +29,8 @@ import * as deedsMod from '../deeds';
 import { recalcPlayerStats } from '../entity';
 import { DAMAGE_IDLE_DESPAWN_MOB_IDS, DAMAGE_IDLE_DESPAWN_SECONDS } from '../entity_roster';
 import { pvpDamageMultiplier } from '../pvp';
+import { DEFAULT_RECALL_BANK } from '../recall/fixture_bank';
+import { applyRecallCharge, toClientPrompt, tryBuildRecallOffer } from '../recall/recall_combat';
 import { aurasSurvivingDeath } from '../resurrection';
 import type { PlayerMeta } from '../sim';
 import type { SimContext } from '../sim_context';
@@ -53,6 +55,25 @@ import { WORLD_BOSS_CORPSE_SECONDS, worldBossLootContributors } from '../world_b
 // How long a slain mob's corpse persists (seconds) before it is cleared. Sole user
 // is handleDeath, so the constant lives here with the death-domain code.
 const CORPSE_DURATION = 60;
+
+/** Open a recall power-moment for a player if cooldown + bank allow. No rng draws. */
+function maybeOfferRecallPowerMoment(ctx: SimContext, playerId: number): void {
+  const meta = ctx.players.get(playerId);
+  if (!meta || meta.recallPending) return;
+  const offer = tryBuildRecallOffer({
+    bank: DEFAULT_RECALL_BANK,
+    worldSeed: ctx.cfg.seed,
+    now: ctx.time,
+    offerIndex: meta.recallOfferIndex,
+    playerId,
+    cooldownUntil: meta.recallCooldownUntil,
+    hasPending: !!meta.recallPending,
+  });
+  if (!offer) return;
+  meta.recallPending = offer;
+  meta.recallOfferIndex += 1;
+  ctx.emit({ type: 'recallOffer', pid: playerId, prompt: toClientPrompt(offer) });
+}
 // Self attack-speed buff a wounded frenzyOnHit mob gains; sole user maybeFrenzyOnHit.
 const BLOOD_FRENZY_AURA_ID = 'blood_frenzy';
 
@@ -101,6 +122,27 @@ export function dealDamage(
   // marks real, non-fighting game masters). Draws no rng.
   if (source?.devGod && source.kind === 'player' && ctx.devCommands)
     amount = Math.round(amount * 100);
+
+  // BharatVerse recall charge: learning multiplies the next outgoing player hit(s).
+  // Hash-picked offers never touch ctx.rng (determinism parity preserved).
+  if (
+    !alreadyFinal &&
+    source &&
+    source.kind === 'player' &&
+    source.id !== target.id &&
+    amount > 0 &&
+    kind === 'hit'
+  ) {
+    const meta = ctx.players.get(source.id);
+    if (meta) {
+      const charged = applyRecallCharge(amount, meta.recallChargeMult, meta.recallChargeHitsLeft);
+      if (charged.applied) {
+        amount = charged.amount;
+        meta.recallChargeHitsLeft = charged.chargeHitsLeft;
+        meta.recallChargeMult = charged.chargeMult;
+      }
+    }
+  }
 
   // Defensive Stance, classic: deal 10% less, take 10% less (and +30% threat below)
   if (
@@ -458,6 +500,19 @@ export function dealDamage(
   });
   if (guardianWardRestore > 0) {
     ctx.emit({ type: 'heal', targetId: target.id, amount: guardianWardRestore });
+  }
+
+  // Power-moment offer: after a real player hit on a hostile mob, open a recall
+  // question when off cooldown (hash pick; no ctx.rng draw).
+  if (
+    amount > 0 &&
+    kind === 'hit' &&
+    direct &&
+    source?.kind === 'player' &&
+    target.kind === 'mob' &&
+    !target.dead
+  ) {
+    maybeOfferRecallPowerMoment(ctx, source.id);
   }
 
   if (amount > 0) {

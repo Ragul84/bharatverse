@@ -160,6 +160,7 @@ const UI_PURE_CORES = [
   'src/ui/calendar_view.ts',
   'src/ui/char_view.ts',
   'src/ui/map_window_view.ts',
+  'src/ui/recall_prompt_view.ts',
   'src/ui/map_quest_list_view.ts',
   'src/ui/arena_window_view.ts',
   'src/ui/dungeon_finder_view.ts',

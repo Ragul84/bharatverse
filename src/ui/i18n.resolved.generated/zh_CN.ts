@@ -2012,6 +2012,18 @@ export const zh_CN: EnTranslations = {
       "lbEmpty": "暂无上榜的编年史家。",
       "broadcastsLabel": "与公会和好友分享功绩达成",
       "titledName": "{name}【{title}】"
+    },
+    "recall": {
+      "title": "Power Moment",
+      "subject": "Subject: {subject}",
+      "combo": "Combo x{n}",
+      "hint": "Answer well to power your next hit. Wrong still acts, at lower power.",
+      "result": {
+        "correct": "Correct!",
+        "crit": "Critical recall!",
+        "wrong": "Not quite",
+        "power": "Power x{mult}"
+      }
     }
   },
   "apiError": {

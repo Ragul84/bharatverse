@@ -6,6 +6,14 @@ import { syncAppViewport as syncAppViewportShared } from './game/app_viewport';
 import { audio } from './game/audio';
 import { AutoLoot } from './game/autoloot';
 import {
+  COMMUNITY,
+  DESKTOP_SCHEME,
+  PRODUCT_NAME,
+  SITE_ORIGIN,
+  siteLogoUrl,
+} from './game/bharatverse_site';
+import { applyBharatverseSurfaceTrim, bvActionAllowed } from './game/bharatverse_surface_trim';
+import {
   BROWSER_BODY_CLASSES,
   browserBodyClasses,
   cssEffectsTier,
@@ -311,7 +319,7 @@ applyNativeDeviceLanguage({
   language: navigator.language,
 });
 
-const SITE_URL = 'https://worldofclaudecraft.com/';
+const SITE_URL = SITE_ORIGIN;
 
 const RESOURCE_KEYS = {
   mana: 'classDetails.resources.mana',
@@ -846,6 +854,7 @@ function mountGameUi(): void {
   const startScreen = document.getElementById('start-screen');
   if (!template || !startScreen) throw new Error('Game UI shell is missing.');
   document.body.insertBefore(template.content.cloneNode(true), startScreen);
+  applyBharatverseSurfaceTrim();
   translatePage();
   syncCommunityMenuMode();
   // #mm-discord lives inside this template, so it does not exist in the live DOM
@@ -1239,13 +1248,13 @@ async function startGame(
             hud.toggleSocial();
             break;
           case 'arena':
-            hud.toggleArena();
+            if (bvActionAllowed('arena')) hud.toggleArena();
             break;
           case 'dungeonFinder':
-            hud.toggleDungeonFinder();
+            if (bvActionAllowed('dungeonFinder')) hud.toggleDungeonFinder();
             break;
           case 'valecup':
-            hud.toggleValeCup();
+            if (bvActionAllowed('valecup')) hud.toggleValeCup();
             break;
           case 'leaderboard':
             hud.toggleLeaderboard();
@@ -1311,11 +1320,19 @@ async function startGame(
     onMenu: () => hud.toggleOptionsMenu(),
     onSocial: () => hud.toggleSocial(),
     onDiscord: () => openDiscordEntry(),
-    onDonate: () => window.open(DONATE_URL, '_blank', 'noopener,noreferrer'),
+    onDonate: () => {
+      if (DONATE_URL) window.open(DONATE_URL, '_blank', 'noopener,noreferrer');
+    },
     onEmotes: () => hud.toggleEmoteWheel(),
-    onArena: () => hud.toggleArena(),
-    onDungeonFinder: () => hud.toggleDungeonFinder(),
-    onValeCup: () => hud.toggleValeCup(),
+    onArena: () => {
+      if (bvActionAllowed('arena')) hud.toggleArena();
+    },
+    onDungeonFinder: () => {
+      if (bvActionAllowed('dungeonFinder')) hud.toggleDungeonFinder();
+    },
+    onValeCup: () => {
+      if (bvActionAllowed('valecup')) hud.toggleValeCup();
+    },
     onQuestLog: () => hud.toggleQuestLog(),
     onCharacter: () => hud.toggleChar(),
     onBags: () => hud.toggleBags(),
@@ -1324,7 +1341,9 @@ async function startGame(
     onTalents: () => hud.toggleTalents(),
     onMap: () => hud.toggleMap(),
     onLeaderboard: () => hud.toggleLeaderboard(),
-    onDailyRewards: () => hud.toggleDailyRewards(),
+    onDailyRewards: () => {
+      if (bvActionAllowed('dailyRewards')) hud.toggleDailyRewards();
+    },
     onDeeds: () => hud.toggleDeeds(),
     onNameplates: () => (renderer.showNameplates = !renderer.showNameplates),
     onMusic: () => {
@@ -1409,10 +1428,10 @@ async function startGame(
         hud.toggleSocial();
         break;
       case 'arena':
-        hud.toggleArena();
+        if (bvActionAllowed('arena')) hud.toggleArena();
         break;
       case 'valecup':
-        hud.toggleValeCup();
+        if (bvActionAllowed('valecup')) hud.toggleValeCup();
         break;
       case 'leaderboard':
         hud.toggleLeaderboard();
@@ -2105,8 +2124,9 @@ async function startGame(
     }
     if (bestNpc !== null) {
       const npc = world.entities.get(bestNpc);
-      if (npc?.kind === 'npc' && npc.templateId === 'brother_halven') hud.openDelveBoard(bestNpc);
-      else hud.openQuestDialog(bestNpc);
+      if (npc?.kind === 'npc' && npc.templateId === 'brother_halven' && bvActionAllowed('delve')) {
+        hud.openDelveBoard(bestNpc);
+      } else hud.openQuestDialog(bestNpc);
       return;
     }
     if (bestNode !== null) {
@@ -3860,7 +3880,7 @@ async function completeDesktopBrowserLogin(): Promise<boolean> {
   try {
     const { code } = await api.createDesktopLoginCode();
     if (!code) throw new Error('missing desktop login code');
-    location.href = `worldofclaudecraft://desktop-login?code=${encodeURIComponent(code)}`;
+    location.href = `${DESKTOP_SCHEME}://desktop-login?code=${encodeURIComponent(code)}`;
   } catch (err) {
     loginError(userFacingApiError(err));
     show('#login-panel');
@@ -4960,52 +4980,46 @@ function updateSeoMetadata(lang: SupportedLanguage): void {
 
   const jsonLd = document.getElementById('structured-data') as HTMLScriptElement | null;
   if (jsonLd) {
-    const sameAs = [
-      'https://github.com/levy-street/world-of-claudecraft',
-      'https://discord.com/invite/worldofclaudecraft',
-      'https://www.youtube.com/@WoClaudeCraft',
-      'https://x.com/WoClaudecraft',
-      'https://www.instagram.com/worldofclaudecraft/',
-      'https://www.tiktok.com/@worldofclaudecraft',
-      'https://www.reddit.com/r/WorldofClaudecraft/',
-    ];
+    const origin = SITE_URL.replace(/\/$/, '');
+    const sameAs = Object.values(COMMUNITY).filter((u) => typeof u === 'string' && u.length > 0);
+    const logo = siteLogoUrl(SITE_URL);
     jsonLd.textContent = JSON.stringify(
       {
         '@context': 'https://schema.org',
         '@graph': [
           {
             '@type': 'WebSite',
-            '@id': 'https://worldofclaudecraft.com/#website',
-            name: 'BharatVerse',
+            '@id': `${origin}/#website`,
+            name: PRODUCT_NAME,
             alternateName: 'Bharatverse',
             url: canonicalHref,
             inLanguage: languageTag(lang),
             description: t('seo.description'),
-            publisher: { '@id': 'https://worldofclaudecraft.com/#organization' },
+            publisher: { '@id': `${origin}/#organization` },
           },
           {
             '@type': 'Organization',
-            '@id': 'https://worldofclaudecraft.com/#organization',
-            name: 'BharatVerse',
-            url: 'https://worldofclaudecraft.com/',
-            logo: 'https://worldofclaudecraft.com/woc_logo_square.webp',
-            sameAs,
+            '@id': `${origin}/#organization`,
+            name: PRODUCT_NAME,
+            url: `${origin}/`,
+            logo,
+            ...(sameAs.length ? { sameAs } : {}),
           },
           {
             '@type': 'VideoGame',
-            '@id': 'https://worldofclaudecraft.com/#game',
-            name: 'BharatVerse',
+            '@id': `${origin}/#game`,
+            name: PRODUCT_NAME,
             alternateName: 'Bharatverse',
             genre: t('seo.genre'),
             playMode: t('seo.playMode'),
             applicationCategory: t('seo.applicationCategory'),
             operatingSystem: t('seo.operatingSystem'),
             url: canonicalHref,
-            image: 'https://worldofclaudecraft.com/woc_logo_square.webp',
+            image: logo,
             description: t('seo.description'),
             inLanguage: languageTag(lang),
-            publisher: { '@id': 'https://worldofclaudecraft.com/#organization' },
-            sameAs,
+            publisher: { '@id': `${origin}/#organization` },
+            ...(sameAs.length ? { sameAs } : {}),
           },
         ],
       },
@@ -5468,9 +5482,9 @@ let walletHiddenNoticeTimeout: number | null = null;
 // hatch for deploys that want to hide the wallet UI entirely. Native and desktop
 // app builds intentionally exclude wallet verification for now.
 // client_shell.test guards the native exclusion:
-// const WALLET_ENABLED = !NATIVE_APP && String(import.meta.env.VITE_WALLET_DISABLED ?? '').trim() !== '1';
-const WALLET_ENABLED =
-  !NATIVE_APP && !DESKTOP_APP && String(import.meta.env.VITE_WALLET_DISABLED ?? '').trim() !== '1';
+// BharatVerse M-Trim: crypto / $WOC wallet is permanently off (free + cosmetics-only,
+// no Solana rails). Env toggles cannot re-enable it on this product branch.
+const WALLET_ENABLED = false;
 
 function walletCharacterScreenVisible(): boolean {
   try {
@@ -5990,8 +6004,8 @@ const DISCORD_BUILD_ENABLED = String(import.meta.env.VITE_DISCORD_DISABLED ?? ''
 // Community links for the mobile More tray. The invite mirrors the hardcoded
 // invite on the shells' community links and is the fallback when the server-fed
 // discordInviteUrl() is not known yet (logged out, offline).
-const DISCORD_INVITE_URL = 'https://discord.com/invite/worldofclaudecraft';
-const DONATE_URL = 'https://ko-fi.com/worldofclaudecraft';
+const DISCORD_INVITE_URL = COMMUNITY.discordInvite || '';
+const DONATE_URL = COMMUNITY.donate || '';
 const DISCORD_ONBOARD_KEY = 'woc_discord_onboard';
 let discordPopup: Window | null = null;
 
@@ -6961,6 +6975,8 @@ function wireStartScreens(): void {
   // locale skip the gate entirely (no blank, no delay). The gate lifts on BOTH resolve and
   // reject (the English fallback still renders), so a failed locale fetch can never strand the
   // homepage hidden. The stored-locale modulepreload will shrink the non-en hold toward zero.
+  // M-Trim: hide cut systems + crypto chrome before first paint of the start shell.
+  applyBharatverseSurfaceTrim();
   const bootLang = getLanguage();
   const startScreen = document.getElementById('start-screen');
   const gated = !!startScreen && !isLocaleResident(bootLang);

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { BV_FEATURES } from '../src/sim/bharatverse_features';
 import { MOBS } from '../src/sim/data';
 import { respawnMob } from '../src/sim/mob/lifecycle';
 import { resetEvadingMob } from '../src/sim/mob/locomotion';
@@ -72,6 +73,8 @@ describe('world boss loot lockout gate (pure helpers)', () => {
   });
 });
 
+// Scheduler tests force nextAt so they still exercise combat under M-Trim.
+// Boot auto-spawn is gated by BV_FEATURES.worldBosses.
 describe('world boss scheduler', () => {
   it('spawns on the interval and announces server-wide', () => {
     const sim = makeSim();
@@ -79,7 +82,7 @@ describe('world boss scheduler', () => {
     const { boss, events } = spawnBossNow(sim);
     expect(boss.level).toBe(20);
     const announce = events.find(
-      (e) => e.type === 'log' && /rises over Thornpeak Heights!$/.test((e as any).text),
+      (e) => e.type === 'log' && /rises over Summit Frontier!$/.test((e as any).text),
     );
     expect(announce).toBeDefined();
     // Server-wide => no pid (personal) and no entityId (proximity) anchor.
@@ -87,8 +90,7 @@ describe('world boss scheduler', () => {
     expect((announce as any).entityId).toBeUndefined();
   });
 
-  it('worldBossAtBoot spawns the boss on the first tick (the live server), default waits the interval', () => {
-    // The live server opts in: Thunzharr is up as soon as the realm boots.
+  it('worldBossAtBoot only auto-spawns when BV worldBosses is on', () => {
     const atBoot = new Sim({
       seed: 7,
       playerClass: 'warrior',
@@ -97,10 +99,13 @@ describe('world boss scheduler', () => {
       worldBossAtBoot: true,
     });
     atBoot.tick();
-    expect(findBoss(atBoot)).toBeDefined();
-    // After the boot spawn, the next rise is still one interval out.
-    expect((atBoot as any).worldBossNextAt[0]).toBeCloseTo(WORLD_BOSS_INTERVAL_SECONDS, 0);
-    // Default (offline worlds, parity traces): nothing spawns at boot.
+    if (BV_FEATURES.worldBosses) {
+      expect(findBoss(atBoot)).toBeDefined();
+      expect((atBoot as any).worldBossNextAt[0]).toBeCloseTo(WORLD_BOSS_INTERVAL_SECONDS, 0);
+    } else {
+      // M-Trim: boot flag cannot re-enable cut world bosses.
+      expect(findBoss(atBoot)).toBeUndefined();
+    }
     const plain = makeSim();
     plain.tick();
     expect(findBoss(plain)).toBeUndefined();
@@ -118,10 +123,14 @@ describe('world boss scheduler', () => {
     expect(bosses).toHaveLength(1);
   });
 
-  it('schedules the next spawn one interval out', () => {
+  it('schedules the next spawn one interval out after a forced rise', () => {
     const sim = makeSim();
     const before = (sim as any).worldBossNextAt[0] as number;
-    expect(before).toBe(WORLD_BOSSES[0].intervalSeconds);
+    if (BV_FEATURES.worldBosses) {
+      expect(before).toBe(WORLD_BOSSES[0].intervalSeconds);
+    } else {
+      expect(before).toBe(Number.POSITIVE_INFINITY);
+    }
     (sim as any).worldBossNextAt[0] = (sim as any).time;
     sim.tick();
     expect((sim as any).worldBossNextAt[0]).toBeCloseTo(

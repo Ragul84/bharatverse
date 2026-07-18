@@ -10181,3 +10181,49 @@
     }
   }
 }
+
+/* BharatVerse recall power-moment panel */
+#recall-prompt {
+  position: fixed;
+  left: 50%;
+  top: 18%;
+  transform: translateX(-50%);
+  z-index: 80;
+  width: min(420px, 92vw);
+  padding: 12px 14px 14px;
+  pointer-events: auto;
+}
+#recall-prompt .recall-q {
+  margin: 8px 0 10px;
+  font-size: 1.05rem;
+  line-height: 1.35;
+  font-weight: 600;
+}
+#recall-prompt .recall-meta,
+#recall-prompt .recall-hint,
+#recall-prompt .recall-explain {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  margin-top: 6px;
+}
+#recall-prompt .recall-opts {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+}
+#recall-prompt .recall-opt {
+  text-align: left;
+  width: 100%;
+}
+#recall-prompt .recall-timer {
+  height: 4px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 6px 0 4px;
+}
+#recall-prompt .recall-timer-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #e8b84a, #f0d78c);
+  transition: width 0.2s linear;
+}
