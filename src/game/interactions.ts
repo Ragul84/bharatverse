@@ -22,6 +22,8 @@ export interface PickInteractionHud {
   openLoot(mobId: number, screenX: number, screenY: number): void;
   openQuestDialog(npcId: number): void;
   openDelveBoard(npcId: number): void;
+  /** BharatVerse hub building overlay; returns true if handled. */
+  openHubBuilding(templateId: string): boolean;
   openMailbox(): void;
   showError(text: string): void;
   closeContextMenu(): void;
