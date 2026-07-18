@@ -129,7 +129,7 @@ Net effect: smaller bundle, fewer draw calls, less code = smoother on low-end An
 | Recall wired into combat/HUD | **DONE (M0 combat power-moments + HUD panel)** |
 | Mastery panel + spaced repetition | **DONE (M1)** |
 | Trim upstream weight | **IN PROGRESS (M-Trim slice 1 shipped)** |
-| Monuments + buildings (Study Hall/Library/Theatre/Arena) | NOT STARTED |
+| Monuments + buildings (Study Hall/Library/Theatre/Arena) | **DONE (M2 hub shells + NPCs)** |
 | 6 personas | NOT STARTED |
 | Live quiz sync + textbook ingest | BLOCKED on Upstash creds |
 | Logo art | BLOCKED on user file |

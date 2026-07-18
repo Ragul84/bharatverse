@@ -157,7 +157,7 @@ export function handlePickedEntity(
           hud.showError(tSim('error.cantWhileDead'));
         } else if (e.templateId === 'brother_halven' || e.templateId === 'brother_halven_marsh')
           hud.openDelveBoard(id);
-        else hud.openQuestDialog(id);
+        else if (!hud.openHubBuilding(e.templateId)) hud.openQuestDialog(id);
       } else hud.showError(t('questUi.errors.tooFar'));
     } else if (
       isAttackableEntity(e, world.playerId ?? world.player.id, activePvpOpponentIds(world))
@@ -192,7 +192,7 @@ export function handlePickedEntity(
       if (d <= INTERACT_RANGE + 2 && !world.player.dead) {
         if (e.templateId === 'brother_halven' || e.templateId === 'brother_halven_marsh')
           hud.openDelveBoard(id);
-        else hud.openQuestDialog(id);
+        else if (!hud.openHubBuilding(e.templateId)) hud.openQuestDialog(id);
       }
     }
   }

@@ -1,4 +1,4 @@
-// Zone 1 — Unity Vale (levels 1-7). The starter zone: town of Unity City,
+// Zone 1 - Unity Vale (levels 1-7). The starter zone: town of Unity City,
 // wolves and boars, the bandit camp, and Brother Aldric's Gravecaller chain
 // leading to the Hollow Crypt.
 
@@ -11,6 +11,7 @@ import type {
   ZoneDef,
   ZonePropsDef,
 } from '../types';
+import { BHARATVERSE_HUB_NPCS, BHARATVERSE_HUB_POIS } from './bharatverse_hub';
 
 export const TOWN_RADIUS = 26;
 export const GRAVEYARD_POS = { x: -12, z: -14 };
@@ -30,6 +31,7 @@ export const ZONE1_ZONE: ZoneDef = {
   lakes: [LAKE],
   pois: [
     { x: 0, z: -3, label: 'Unity City', id: 'eastbrook' },
+    ...BHARATVERSE_HUB_POIS,
     { x: -2, z: 70, label: 'Wolf Run', id: 'wolf_run' },
     { x: 65, z: 0, label: 'Boar Meadow', id: 'boar_meadow' },
     { x: -88, z: 82, label: 'Mirror Lake', id: 'mirror_lake' },
@@ -41,7 +43,7 @@ export const ZONE1_ZONE: ZoneDef = {
     { x: 40, z: 140, label: 'Brightwood Glade', id: 'brightwood_glade' },
     { x: -11, z: -112, label: 'The Sowfield', id: 'the_sowfield' },
   ],
-  welcome: 'Find Marshal Redbrook in town - he has work for you.',
+  welcome: 'Speak with Acharya Meera in Unity City, then find Marshal Redbrook for work.',
   welcomeQuestId: 'q_wolves',
 };
 
@@ -687,6 +689,8 @@ export const ZONE1_NPCS: Record<string, NpcDef> = {
     greeting:
       'Every deed worth doing is worth writing down twice, $N: once for the ledger and once for the fireside.',
   },
+  // BharatVerse learning hub buildings (M2).
+  ...BHARATVERSE_HUB_NPCS,
 };
 
 // ---------------------------------------------------------------------------

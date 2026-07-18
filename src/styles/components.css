@@ -10276,3 +10276,63 @@
 #mm-mastery {
   min-width: 1.6em;
 }
+
+/* BharatVerse hub building overlays */
+#hub-building-panel {
+  position: fixed;
+  left: 50%;
+  top: 12%;
+  transform: translateX(-50%);
+  z-index: 76;
+  width: min(440px, 94vw);
+  max-height: 72vh;
+  overflow: auto;
+  padding: 12px 14px 14px;
+}
+#hub-building-panel .hub-body { margin: 8px 0 12px; line-height: 1.4; }
+#hub-building-panel .hub-goals,
+#hub-building-panel .hub-chapters { display: grid; gap: 6px; margin-bottom: 10px; }
+#hub-building-panel .hub-goal,
+#hub-building-panel .hub-chapter {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+#hub-building-panel .hub-goal.active,
+#hub-building-panel .hub-chapter.active {
+  outline: 1px solid #e8b84a;
+}
+#hub-building-panel .hub-excerpt {
+  background: rgba(0,0,0,0.25);
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+#hub-building-panel .hub-ready-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 8px;
+  margin-bottom: 6px;
+  font-size: 0.88rem;
+}
+#hub-building-panel .hub-ready-bar {
+  grid-column: 1 / -1;
+  height: 5px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 3px;
+  overflow: hidden;
+}
+#hub-building-panel .hub-ready-bar > div {
+  height: 100%;
+  background: linear-gradient(90deg, #4a9fe8, #7ec8ff);
+}
+#hub-building-panel .hub-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+#hub-building-panel .hub-playlist { margin: 8px 0 0; padding-left: 1.2em; }
+#hub-building-panel .hub-note { margin-top: 10px; opacity: 0.9; font-size: 0.9rem; }

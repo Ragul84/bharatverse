@@ -1201,6 +1201,7 @@ export class ClientWorld implements IWorld {
   recallLastResult: import('../world_api').RecallClientResult | null = null;
   masteryBySubject = new Map<string, number>();
   reviewDueCount = 0;
+  learningGoalId: string | null = null;
   // --- IWorldDelves: active delve run + companion + marks/upgrades + daily, all
   // mirrored from the snapshot self (delta-omitted). lockpickState is the exception:
   // it has NO snapshot field and is rebuilt from the lockpick* events by the private
@@ -2333,6 +2334,13 @@ export class ClientWorld implements IWorld {
   }
   startRecallReview(): void {
     this.cmd({ cmd: 'recall_review' });
+  }
+  setLearningGoal(goalId: string | null): void {
+    this.learningGoalId = goalId;
+    this.cmd({ cmd: 'set_learning_goal', goalId });
+  }
+  startStudyHallQuiz(): void {
+    this.cmd({ cmd: 'study_hall_quiz' });
   }
 
   private applyRecallEvent(ev: SimEvent): void {

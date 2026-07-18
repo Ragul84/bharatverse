@@ -2274,6 +2274,39 @@ export const hudChromeStrings = {
       power: 'Power x{mult}',
     },
   },
+  // Unity City hub building overlays (M2).
+  hub: {
+    close: 'Close',
+    guru: {
+      title: 'The Guru',
+      body: 'Choose a Learning Goal. The world will favor related subjects. You can change this any time.',
+      active: 'Active goal: {id}',
+    },
+    study_hall: {
+      title: 'Study Hall',
+      body: 'Start a focused quiz. Correct answers raise Subject Mastery and schedule reviews.',
+      start: 'Start focused quiz',
+      review: 'Review due ({n})',
+    },
+    library: {
+      title: 'Nalanda Annex',
+      body: 'Read short chapter notes. Real textbook ingest arrives with quizhub sync.',
+    },
+    theatre: {
+      title: 'Learning Theatre',
+      body: 'Sit with others and watch concept explainers. Full video playlist hours land in a later slice.',
+    },
+    assessment: {
+      title: 'Assessment Arena',
+      body: 'Timed mock exams and leaderboards will live here. Your Readiness from mastery is below.',
+      soon: 'Scheduled mocks ship in a later milestone. Train mastery first.',
+    },
+    chai: {
+      title: 'Chai Stall',
+      body: 'Rest, review, and recover. A good pause is part of learning.',
+      rest: 'You feel steadier already. Return to the field when ready.',
+    },
+  },
   // Subject Mastery skills panel + Leitner review (M1).
   mastery: {
     title: 'Subject Mastery',

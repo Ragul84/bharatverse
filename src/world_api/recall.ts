@@ -36,4 +36,13 @@ export interface IWorldRecall {
    * No-op if a prompt is already open or nothing is due.
    */
   startRecallReview(): void;
+  /** Active Learning Goal id (Guru), or null if unset. */
+  readonly learningGoalId: string | null;
+  /** Set Learning Goal (Guru); null clears. */
+  setLearningGoal(goalId: string | null): void;
+  /**
+   * Study Hall: open a focused quiz power-moment (ignores combat cooldown).
+   * No-op if a prompt is already open.
+   */
+  startStudyHallQuiz(): void;
 }

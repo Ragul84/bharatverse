@@ -2025,6 +2025,38 @@ export const es_ES: EnTranslations = {
         "power": "Power x{mult}"
       }
     },
+    "hub": {
+      "close": "Close",
+      "guru": {
+        "title": "The Guru",
+        "body": "Choose a Learning Goal. The world will favor related subjects. You can change this any time.",
+        "active": "Active goal: {id}"
+      },
+      "study_hall": {
+        "title": "Study Hall",
+        "body": "Start a focused quiz. Correct answers raise Subject Mastery and schedule reviews.",
+        "start": "Start focused quiz",
+        "review": "Review due ({n})"
+      },
+      "library": {
+        "title": "Nalanda Annex",
+        "body": "Read short chapter notes. Real textbook ingest arrives with quizhub sync."
+      },
+      "theatre": {
+        "title": "Learning Theatre",
+        "body": "Sit with others and watch concept explainers. Full video playlist hours land in a later slice."
+      },
+      "assessment": {
+        "title": "Assessment Arena",
+        "body": "Timed mock exams and leaderboards will live here. Your Readiness from mastery is below.",
+        "soon": "Scheduled mocks ship in a later milestone. Train mastery first."
+      },
+      "chai": {
+        "title": "Chai Stall",
+        "body": "Rest, review, and recover. A good pause is part of learning.",
+        "rest": "You feel steadier already. Return to the field when ready."
+      }
+    },
     "mastery": {
       "title": "Subject Mastery",
       "close": "Close mastery panel",
@@ -9441,6 +9473,21 @@ export const es_ES: EnTranslations = {
           },
           "10": {
             "label": "El Sembradal"
+          },
+          "11": {
+            "label": "Bandit Camp"
+          },
+          "12": {
+            "label": "Fallen Chapel"
+          },
+          "13": {
+            "label": "Reliquary Hill"
+          },
+          "14": {
+            "label": "Brightwood Glade"
+          },
+          "15": {
+            "label": "The Sowfield"
           }
         }
       },

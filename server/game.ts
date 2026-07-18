@@ -4619,6 +4619,15 @@ export class GameServer {
       case 'recall_review':
         sim.startRecallReview(pid);
         break;
+      case 'set_learning_goal': {
+        const goalId =
+          msg.goalId === null || typeof msg.goalId === 'string' ? msg.goalId : undefined;
+        if (goalId !== undefined) sim.setLearningGoal(goalId, pid);
+        break;
+      }
+      case 'study_hall_quiz':
+        sim.startStudyHallQuiz(pid);
+        break;
       // dev/ops commands, only when ALLOW_DEV_COMMANDS=1 (never in production)
       case 'dev_level': {
         if (process.env.ALLOW_DEV_COMMANDS === '1' && typeof msg.level === 'number') {

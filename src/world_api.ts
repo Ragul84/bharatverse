@@ -404,6 +404,9 @@ export const COMMAND_NAMES = [
   'recall_answer',
   // Start a Leitner review power-moment from the earliest due card.
   'recall_review',
+  // Guru Learning Goal + Study Hall focused quiz.
+  'set_learning_goal',
+  'study_hall_quiz',
 ] as const;
 
 // The union both the send path (`online.ts`) and the dispatch switch
@@ -649,4 +652,6 @@ export const COMMAND_FACETS = {
   // IWorldRecall: submit answer for the active power-moment question.
   recall_answer: 'IWorldRecall',
   recall_review: 'IWorldRecall',
+  set_learning_goal: 'IWorldRecall',
+  study_hall_quiz: 'IWorldRecall',
 } as const satisfies Partial<Record<ClientCommand, WorldFacet>>;

@@ -5,6 +5,8 @@ import { music, musicZoneForLocation, shouldResetMusicForDungeonEntry } from '..
 import type { GameSettings, Settings } from '../game/settings';
 import { sfx } from '../game/sfx';
 import type { UiEffectsTier } from '../game/ui_effects_profile';
+import { bvBuildingKindForNpc } from '../sim/content/bharatverse_hub';
+import { HubBuildingPanel } from './hub_building_panel';
 import { MasteryPanel } from './mastery_panel';
 import { RecallPromptPanel } from './recall_prompt';
 import {
@@ -1478,6 +1480,7 @@ export class Hud {
 
   private recallPromptPanel: RecallPromptPanel;
   private masteryPanel: MasteryPanel;
+  private hubBuildingPanel: HubBuildingPanel;
 
   constructor(
     private sim: IWorld,
@@ -1489,6 +1492,7 @@ export class Hud {
     this.meters = new Meters(sim);
     this.recallPromptPanel = new RecallPromptPanel(() => this.sim);
     this.masteryPanel = new MasteryPanel(() => this.sim);
+    this.hubBuildingPanel = new HubBuildingPanel(() => this.sim);
     this.initChatTabs();
     this.initChatBoxGeometry();
     this.initFrameMovers();
@@ -7674,6 +7678,7 @@ export class Hud {
       // BharatVerse recall power-moment panel (question + answer + short result flash).
       this.recallPromptPanel.update();
       this.masteryPanel.update();
+      this.hubBuildingPanel.update();
       // Party frames run on the ~4Hz mediumHud band (the enclosing block) for EVERY tier.
       // The tier knobs deliberately do NOT tier them down on low: party-member HP is a healer's
       // only actionable signal (no self-dispel), so a graphics preset must not slow it
@@ -15469,8 +15474,20 @@ export class Hud {
     this.hideTooltip();
   }
 
+  /** Open a BharatVerse hub building overlay (Guru, Study Hall, Library, ...). */
+  openHubBuilding(templateId: string): boolean {
+    const kind = bvBuildingKindForNpc(templateId);
+    if (!kind) return false;
+    this.hubBuildingPanel.open(kind);
+    return true;
+  }
+
   // Closes the topmost UI. Returns true if something was closed.
   closeAll(): boolean {
+    if (this.hubBuildingPanel.isOpen) {
+      this.hubBuildingPanel.close();
+      return true;
+    }
     if (this.masteryPanel.isOpen) {
       this.masteryPanel.close();
       return true;

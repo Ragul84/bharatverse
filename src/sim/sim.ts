@@ -50,6 +50,7 @@ import {
   answerRecallMoment,
   RECALL_COMBAT,
   toClientPrompt,
+  tryBuildRecallOffer,
 } from './recall/recall_combat';
 import { DEFAULT_RECALL_BANK } from './recall/fixture_bank';
 import { findQuestionById } from './recall/question_bank';
@@ -60,6 +61,7 @@ import {
   scheduleAfterAnswer,
   serializeRecallCards,
 } from './recall/spaced_repetition';
+import { learningGoalById } from './content/bharatverse_goals';
 import { runEffects as runEffectsImpl } from './combat/effect_dispatch';
 import {
   applyHeal as applyHealImpl,
@@ -1108,6 +1110,8 @@ export interface PlayerMeta {
   recallLastResult: import('./recall/recall_combat').RecallClientResult | null;
   // Leitner review deck (question id -> card). Persisted; dueAt uses host lockout clock.
   recallCards: import('./recall/spaced_repetition').RecallCardMap;
+  // Learning Goal id from the Guru (e.g. ncert_6_8). Persisted; null = unset.
+  learningGoalId: string | null;
 }
 
 // Away-from-keyboard / do-not-disturb presence. `afk` still delivers whispers
@@ -1278,6 +1282,8 @@ export interface CharacterState {
   recallMastery?: Record<string, number>;
   // Leitner review cards (question id -> box/due). Additive; absent loads empty.
   recallCards?: Record<string, import('./recall/spaced_repetition').RecallCard>;
+  // Learning Goal id (Guru). Additive; absent loads null.
+  learningGoalId?: string | null;
 }
 
 export interface PetState {
@@ -2009,6 +2015,10 @@ export class Sim {
       recallOfferIndex: 0,
       recallLastResult: null,
       recallCards: loadRecallCards(savedState?.recallCards),
+      learningGoalId:
+        typeof savedState?.learningGoalId === 'string' && learningGoalById(savedState.learningGoalId)
+          ? savedState.learningGoalId
+          : null,
     };
     // A fresh character sets out provisioned (class-defined starter rations);
     // a saved character loads its own bags from savedState below.
@@ -2572,6 +2582,7 @@ export class Sim {
         ? { recallMastery: Object.fromEntries(meta.recallMastery) }
         : {}),
       ...(meta.recallCards.size > 0 ? { recallCards: serializeRecallCards(meta.recallCards) } : {}),
+      ...(meta.learningGoalId ? { learningGoalId: meta.learningGoalId } : {}),
       ...(() => {
         const deedStats = serializeDeedStats(meta.deedStats);
         return deedStats ? { deedStats } : {};
@@ -3033,6 +3044,41 @@ export class Sim {
       });
       return;
     }
+  }
+  get learningGoalId(): string | null {
+    return this.primary.learningGoalId;
+  }
+  setLearningGoal(goalId: string | null, pid?: number): void {
+    const r = this.resolve(pid);
+    if (!r) return;
+    if (goalId === null) {
+      r.meta.learningGoalId = null;
+      return;
+    }
+    if (!learningGoalById(goalId)) return;
+    r.meta.learningGoalId = goalId;
+  }
+  startStudyHallQuiz(pid?: number): void {
+    const r = this.resolve(pid);
+    if (!r || r.meta.recallPending) return;
+    // Focused Study Hall quiz ignores combat cooldown (still one pending at a time).
+    const offer = tryBuildRecallOffer({
+      bank: DEFAULT_RECALL_BANK,
+      worldSeed: this.cfg.seed,
+      now: this.time,
+      offerIndex: r.meta.recallOfferIndex,
+      playerId: r.meta.entityId,
+      cooldownUntil: 0,
+      hasPending: false,
+    });
+    if (!offer) return;
+    r.meta.recallPending = offer;
+    r.meta.recallOfferIndex += 1;
+    this.emit({
+      type: 'recallOffer',
+      pid: r.meta.entityId,
+      prompt: toClientPrompt(offer),
+    });
   }
   /** Internal: resolve answer or timeout for one player. */
   private resolvePlayerRecall(

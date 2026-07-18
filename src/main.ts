@@ -2126,6 +2126,8 @@ async function startGame(
       const npc = world.entities.get(bestNpc);
       if (npc?.kind === 'npc' && npc.templateId === 'brother_halven' && bvActionAllowed('delve')) {
         hud.openDelveBoard(bestNpc);
+      } else if (npc?.kind === 'npc' && hud.openHubBuilding(npc.templateId)) {
+        // BharatVerse hub building overlay.
       } else hud.openQuestDialog(bestNpc);
       return;
     }
