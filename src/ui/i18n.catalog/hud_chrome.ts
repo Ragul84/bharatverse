@@ -2274,4 +2274,22 @@ export const hudChromeStrings = {
       power: 'Power x{mult}',
     },
   },
+  // Subject Mastery skills panel + Leitner review (M1).
+  mastery: {
+    title: 'Subject Mastery',
+    close: 'Close mastery panel',
+    subtitle: 'Learn to grow stronger. Combo x{combo}',
+    levelTier: 'L{level} · Tier {tier}',
+    xpLine: '{into} / {need} XP',
+    maxed: 'Max level',
+    reviewDue: 'Review due ({n})',
+    reviewNone: 'No reviews due',
+    openHint: 'Mastery',
+    subjects: {
+      gk: 'General Knowledge',
+      science: 'Science',
+      maths: 'Maths',
+      history: 'History',
+    },
+  },
 };

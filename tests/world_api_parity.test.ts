@@ -335,6 +335,9 @@ export const IWORLD_MEMBERS = [
   { name: 'recallCombo', kind: 'data' },
   { name: 'recallLastResult', kind: 'data' },
   { name: 'answerRecall', kind: 'method' },
+  { name: 'masteryBySubject', kind: 'data' },
+  { name: 'reviewDueCount', kind: 'data' },
+  { name: 'startRecallReview', kind: 'method' },
   { name: 'setActiveTitle', kind: 'method' },
   { name: 'deedsRarity', kind: 'method' },
   { name: 'deedsLeaderboard', kind: 'method' },
@@ -439,9 +442,9 @@ beforeAll(() => {
 
 describe('IWORLD_MEMBERS is the pinned IWorld contract (anti-loosening)', () => {
   it('pins total / data / method counts', () => {
-    expect(IWORLD_MEMBERS.length).toBe(237);
-    expect(DATA_MEMBERS.length).toBe(65);
-    expect(METHOD_MEMBERS.length).toBe(172);
+    expect(IWORLD_MEMBERS.length).toBe(240);
+    expect(DATA_MEMBERS.length).toBe(67);
+    expect(METHOD_MEMBERS.length).toBe(173);
   });
   it('has no duplicate member names', () => {
     const names = IWORLD_MEMBERS.map((m) => m.name);
@@ -450,7 +453,7 @@ describe('IWORLD_MEMBERS is the pinned IWorld contract (anti-loosening)', () => 
 
   // Sorted-name `toEqual` snapshots: a dropped, renamed, or kind-flipped member reddens
   // these deliberately, forcing a reviewed edit. NOT length-only.
-  it('the full sorted member set is exactly the pinned 237', () => {
+  it('the full sorted member set is exactly the pinned 240', () => {
     expect(IWORLD_MEMBERS.map((m) => m.name).sort()).toEqual([
       'abandonPet',
       'abandonQuest',
@@ -602,6 +605,7 @@ describe('IWORLD_MEMBERS is the pinned IWorld contract (anti-loosening)', () => 
       'marketInfo',
       'marketList',
       'marketSearch',
+      'masteryBySubject',
       'moveInput',
       'moveInventoryItem',
       'moveRaidMember',
@@ -640,6 +644,7 @@ describe('IWORLD_MEMBERS is the pinned IWorld contract (anti-loosening)', () => 
       'restedXp',
       'resurrectAtCorpse',
       'resurrectAtSpiritHealer',
+      'reviewDueCount',
       'revivePet',
       'saveLoadout',
       'searchCharacters',
@@ -656,6 +661,7 @@ describe('IWORLD_MEMBERS is the pinned IWorld contract (anti-loosening)', () => 
       'socialInfo',
       'spinDailyReward',
       'startAutoAttack',
+      'startRecallReview',
       'stopAutoAttack',
       'submitLootRoll',
       'switchArchetype',
@@ -692,7 +698,7 @@ describe('IWORLD_MEMBERS is the pinned IWorld contract (anti-loosening)', () => 
     ]);
   });
 
-  it('the sorted data-kind set is exactly the pinned 65', () => {
+  it('the sorted data-kind set is exactly the pinned 67', () => {
     expect(DATA_MEMBERS.map((m) => m.name).sort()).toEqual([
       'accountCosmetics',
       'activeArchetype',
@@ -735,6 +741,7 @@ describe('IWORLD_MEMBERS is the pinned IWorld contract (anti-loosening)', () => 
       'mailInfo',
       'mailUnread',
       'marketInfo',
+      'masteryBySubject',
       'moveInput',
       'partyInfo',
       'player',
@@ -750,6 +757,7 @@ describe('IWORLD_MEMBERS is the pinned IWorld contract (anti-loosening)', () => 
       'recipeList',
       'renown',
       'restedXp',
+      'reviewDueCount',
       'socialInfo',
       'talentRole',
       'talentSpec',
@@ -762,7 +770,7 @@ describe('IWORLD_MEMBERS is the pinned IWorld contract (anti-loosening)', () => 
     ]);
   });
 
-  it('the sorted method-kind set is exactly the pinned 172', () => {
+  it('the sorted method-kind set is exactly the pinned 173', () => {
     expect(METHOD_MEMBERS.map((m) => m.name).sort()).toEqual([
       'abandonPet',
       'abandonQuest',
@@ -911,6 +919,7 @@ describe('IWORLD_MEMBERS is the pinned IWorld contract (anti-loosening)', () => 
       'setTownFocus',
       'spinDailyReward',
       'startAutoAttack',
+      'startRecallReview',
       'stopAutoAttack',
       'submitLootRoll',
       'switchArchetype',
@@ -983,7 +992,7 @@ describe('membership, not equality: world extras do not fail the gate', () => {
 //       a MISSING name (if the array omits a key, Exclude<> is a non-never union and tsc
 //       fails) -- (1)+(2) together make each array EXACTLY its facet key-set;
 //   (3) the 27 arrays are pairwise DISJOINT (a member filed in two facets reddens);
-//   (4) their union, sorted, equals the pinned 237-name IWORLD_MEMBERS set (a member
+//   (4) their union, sorted, equals the pinned 240-name IWORLD_MEMBERS set (a member
 //       dropped from the split reddens).
 // This is the rigorous form, NOT the tautological `keyof IWorld === keyof (A & B & ...)`
 // (IWorld extends them, so that self-equality proves nothing): it asserts against the
@@ -1358,7 +1367,10 @@ const FACET_RECALL = [
   'recallPrompt',
   'recallCombo',
   'recallLastResult',
+  'masteryBySubject',
+  'reviewDueCount',
   'answerRecall',
+  'startRecallReview',
 ] as const satisfies readonly (keyof IWorldRecall)[];
 type _ExhaustRecall = AssertNever<Exclude<keyof IWorldRecall, (typeof FACET_RECALL)[number]>>;
 
@@ -1422,10 +1434,10 @@ describe('W1: aggregate IWorld member set equals the disjoint union of the 28 fa
     expect(overlaps, `members filed in more than one facet:\n${overlaps.join('\n')}`).toEqual([]);
   });
 
-  it('the union of the 28 facets equals the pinned 237-member IWORLD_MEMBERS set', () => {
+  it('the union of the 28 facets equals the pinned 240-member IWORLD_MEMBERS set', () => {
     const union = Object.values(FACET_MEMBER_ARRAYS).flatMap((arr) => [...arr]);
-    expect(union.length, 'union size before dedup (catches a duplicated member)').toBe(237);
-    expect(new Set(union).size, 'union size after dedup (catches a duplicated member)').toBe(237);
+    expect(union.length, 'union size before dedup (catches a duplicated member)').toBe(240);
+    expect(new Set(union).size, 'union size after dedup (catches a duplicated member)').toBe(240);
     const sortedUnion = [...union].sort();
     const pinned = IWORLD_MEMBERS.map((m) => m.name).sort();
     expect(sortedUnion).toEqual(pinned);

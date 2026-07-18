@@ -184,7 +184,11 @@ export type {
   VcRosterPlayer,
   VcStanding,
 } from './world_api/vale_cup';
-export type { RecallClientPrompt, RecallClientResult } from './world_api/recall';
+export type {
+  MasterySubjectView,
+  RecallClientPrompt,
+  RecallClientResult,
+} from './world_api/recall';
 
 // The aggregate seam. Empty body: every member lives on exactly one facet above,
 // so `IWorld` is byte-identical to the pre-split flat interface and both the
@@ -398,6 +402,8 @@ export const COMMAND_NAMES = [
   'stow_weapon',
   // BharatVerse recall power-moment answer (selectedIndex + timingMs).
   'recall_answer',
+  // Start a Leitner review power-moment from the earliest due card.
+  'recall_review',
 ] as const;
 
 // The union both the send path (`online.ts`) and the dispatch switch
@@ -642,4 +648,5 @@ export const COMMAND_FACETS = {
   deed_set_title: 'IWorldDeeds',
   // IWorldRecall: submit answer for the active power-moment question.
   recall_answer: 'IWorldRecall',
+  recall_review: 'IWorldRecall',
 } as const satisfies Partial<Record<ClientCommand, WorldFacet>>;

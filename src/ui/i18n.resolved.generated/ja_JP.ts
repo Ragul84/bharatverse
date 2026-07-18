@@ -2024,6 +2024,23 @@ export const ja_JP: EnTranslations = {
         "wrong": "Not quite",
         "power": "Power x{mult}"
       }
+    },
+    "mastery": {
+      "title": "Subject Mastery",
+      "close": "Close mastery panel",
+      "subtitle": "Learn to grow stronger. Combo x{combo}",
+      "levelTier": "L{level} · Tier {tier}",
+      "xpLine": "{into} / {need} XP",
+      "maxed": "Max level",
+      "reviewDue": "Review due ({n})",
+      "reviewNone": "No reviews due",
+      "openHint": "Mastery",
+      "subjects": {
+        "gk": "General Knowledge",
+        "science": "Science",
+        "maths": "Maths",
+        "history": "History"
+      }
     }
   },
   "apiError": {

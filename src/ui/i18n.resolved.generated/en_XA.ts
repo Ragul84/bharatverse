@@ -2024,6 +2024,23 @@ export const en_XA: EnTranslations = {
         "wrong": "[Ñóţ ɋúíţé]",
         "power": "[Þóŵéŕ ẋ{mult}]"
       }
+    },
+    "mastery": {
+      "title": "[Šúƀĵéçţ Ɱášţéŕý]",
+      "close": "[Çļóšé ɱášţéŕý þáñéļ]",
+      "subtitle": "[Ļéáŕñ ţó ĝŕóŵ šţŕóñĝéŕ. Çóɱƀó ẋ{combo}]",
+      "levelTier": "[Ļ{level} · Ţíéŕ {tier}]",
+      "xpLine": "[{into} / {need} ẊÞ]",
+      "maxed": "[Ɱáẋ ļéʋéļ]",
+      "reviewDue": "[Ŕéʋíéŵ ðúé ({n})]",
+      "reviewNone": "[Ñó ŕéʋíéŵš ðúé]",
+      "openHint": "[Ɱášţéŕý]",
+      "subjects": {
+        "gk": "[Ĝéñéŕáļ Ķñóŵļéðĝé]",
+        "science": "[Šçíéñçé]",
+        "maths": "[Ɱáţĥš]",
+        "history": "[Ĥíšţóŕý]"
+      }
     }
   },
   "apiError": {

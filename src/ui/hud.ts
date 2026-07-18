@@ -5,6 +5,7 @@ import { music, musicZoneForLocation, shouldResetMusicForDungeonEntry } from '..
 import type { GameSettings, Settings } from '../game/settings';
 import { sfx } from '../game/sfx';
 import type { UiEffectsTier } from '../game/ui_effects_profile';
+import { MasteryPanel } from './mastery_panel';
 import { RecallPromptPanel } from './recall_prompt';
 import {
   auraRefreshIntervalMs,
@@ -1476,6 +1477,7 @@ export class Hud {
   private talentStage: TalentAllocation | null = null;
 
   private recallPromptPanel: RecallPromptPanel;
+  private masteryPanel: MasteryPanel;
 
   constructor(
     private sim: IWorld,
@@ -1486,6 +1488,7 @@ export class Hud {
     this.localIgnoredNames = this.loadLocalIgnoredNames();
     this.meters = new Meters(sim);
     this.recallPromptPanel = new RecallPromptPanel(() => this.sim);
+    this.masteryPanel = new MasteryPanel(() => this.sim);
     this.initChatTabs();
     this.initChatBoxGeometry();
     this.initFrameMovers();
@@ -1694,6 +1697,7 @@ export class Hud {
     $('#mm-char').addEventListener('click', () => this.toggleChar());
     $('#mm-spell').addEventListener('click', () => this.toggleSpellbook());
     $('#mm-talents')?.addEventListener('click', () => this.toggleTalents());
+    this.ensureMasteryMicroButton();
     $('#mm-town-focus')?.addEventListener('click', () => this.toggleTownFocus());
     $('#mm-quest').addEventListener('click', () => this.toggleQuestLog());
     $('#mm-deeds').addEventListener('click', () => this.toggleDeeds());
@@ -7669,6 +7673,7 @@ export class Hud {
       this.updateDelveTracker();
       // BharatVerse recall power-moment panel (question + answer + short result flash).
       this.recallPromptPanel.update();
+      this.masteryPanel.update();
       // Party frames run on the ~4Hz mediumHud band (the enclosing block) for EVERY tier.
       // The tier knobs deliberately do NOT tier them down on low: party-member HP is a healer's
       // only actionable signal (no self-dispel), so a graphics preset must not slow it
@@ -14163,6 +14168,31 @@ export class Hud {
     this.talentsWindow.open();
   }
 
+  /** BharatVerse Subject Mastery + Leitner review panel. */
+  toggleMastery(): void {
+    if (this.masteryPanel.isOpen) this.masteryPanel.close();
+    else {
+      this.closeOtherWindows('#mastery-panel');
+      this.masteryPanel.show();
+    }
+  }
+
+  private ensureMasteryMicroButton(): void {
+    if (document.getElementById('mm-mastery')) return;
+    const talents = document.getElementById('mm-talents');
+    const parent = talents?.parentElement;
+    if (!parent) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = talents?.className || 'micro-btn';
+    btn.id = 'mm-mastery';
+    btn.title = t('hudChrome.mastery.openHint');
+    btn.setAttribute('aria-label', t('hudChrome.mastery.openHint'));
+    btn.textContent = 'M';
+    parent.insertBefore(btn, talents.nextSibling);
+    btn.addEventListener('click', () => this.toggleMastery());
+  }
+
   // Restore a saved loadout's action bar into the per-class slot map (reuses the
   // existing hotbar persistence; only places ids that resolve to real abilities).
   // A SavedLoadout's bar is ability ids only (currentBar strips item shortcuts
@@ -15441,6 +15471,10 @@ export class Hud {
 
   // Closes the topmost UI. Returns true if something was closed.
   closeAll(): boolean {
+    if (this.masteryPanel.isOpen) {
+      this.masteryPanel.close();
+      return true;
+    }
     if (this.openLootChestId !== null) {
       this.closeLoot();
       return true;

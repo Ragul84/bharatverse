@@ -10227,3 +10227,52 @@
   background: linear-gradient(90deg, #e8b84a, #f0d78c);
   transition: width 0.2s linear;
 }
+
+/* BharatVerse Subject Mastery panel */
+#mastery-panel {
+  position: fixed;
+  left: 50%;
+  top: 14%;
+  transform: translateX(-50%);
+  z-index: 75;
+  width: min(380px, 92vw);
+  max-height: 70vh;
+  overflow: auto;
+  padding: 12px 14px 14px;
+}
+#mastery-panel .mastery-sub {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  margin-bottom: 10px;
+}
+#mastery-panel .mastery-row {
+  margin-bottom: 10px;
+}
+#mastery-panel .mastery-row-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.92rem;
+  margin-bottom: 4px;
+}
+#mastery-panel .mastery-bar {
+  height: 6px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 3px;
+  overflow: hidden;
+}
+#mastery-panel .mastery-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4a9fe8, #7ec8ff);
+}
+#mastery-panel .mastery-xp {
+  font-size: 0.78rem;
+  opacity: 0.85;
+  margin-top: 2px;
+}
+#mastery-panel .mastery-actions {
+  margin-top: 12px;
+}
+#mm-mastery {
+  min-width: 1.6em;
+}

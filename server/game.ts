@@ -4616,6 +4616,9 @@ export class GameServer {
         sim.answerRecall(index, timingMs, pid);
         break;
       }
+      case 'recall_review':
+        sim.startRecallReview(pid);
+        break;
       // dev/ops commands, only when ALLOW_DEV_COMMANDS=1 (never in production)
       case 'dev_level': {
         if (process.env.ALLOW_DEV_COMMANDS === '1' && typeof msg.level === 'number') {

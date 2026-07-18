@@ -2347,8 +2347,10 @@ export type SimEvent = { pid?: number } & (
       masteryXpGain: number;
       combo: number;
       masteryTier: number;
+      subject: string;
       explanation?: string;
       prompt: string;
+      reviewDueCount?: number;
     }
   | { type: 'playerDeath' }
   | { type: 'respawn' }

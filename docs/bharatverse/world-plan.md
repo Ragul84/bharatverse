@@ -127,6 +127,7 @@ Net effect: smaller bundle, fewer draw calls, less code = smoother on low-end An
 | Re-fork, backup, rebrand, crypto UI removal, zone names | DONE |
 | Recall ENGINE (code) + persisted state | DONE |
 | Recall wired into combat/HUD | **DONE (M0 combat power-moments + HUD panel)** |
+| Mastery panel + spaced repetition | **DONE (M1)** |
 | Trim upstream weight | **IN PROGRESS (M-Trim slice 1 shipped)** |
 | Monuments + buildings (Study Hall/Library/Theatre/Arena) | NOT STARTED |
 | 6 personas | NOT STARTED |

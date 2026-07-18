@@ -49,6 +49,20 @@ export function poolFor(bank: QuestionBank, poolKey: string): readonly QuizQuest
   return bank.pools.get(poolKey) ?? [];
 }
 
+/** Find a question by id across every pool (first match wins). */
+export function findQuestionById(
+  bank: QuestionBank,
+  questionId: string,
+): { question: QuizQuestionEnvelope; poolKey: string } | null {
+  if (!questionId) return null;
+  for (const [poolKey, pool] of bank.pools) {
+    for (const q of pool) {
+      if (q.id === questionId) return { question: q, poolKey };
+    }
+  }
+  return null;
+}
+
 /** Number of questions in a pool (the LLEN analogue). */
 export function poolSize(bank: QuestionBank, poolKey: string): number {
   return poolFor(bank, poolKey).length;

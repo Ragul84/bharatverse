@@ -51,6 +51,15 @@ import {
   RECALL_COMBAT,
   toClientPrompt,
 } from './recall/recall_combat';
+import { DEFAULT_RECALL_BANK } from './recall/fixture_bank';
+import { findQuestionById } from './recall/question_bank';
+import {
+  dueCardCount,
+  dueCardIds,
+  loadRecallCards,
+  scheduleAfterAnswer,
+  serializeRecallCards,
+} from './recall/spaced_repetition';
 import { runEffects as runEffectsImpl } from './combat/effect_dispatch';
 import {
   applyHeal as applyHealImpl,
@@ -1097,6 +1106,8 @@ export interface PlayerMeta {
   recallOfferIndex: number;
   // Last resolved outcome for HUD feedback (session-only).
   recallLastResult: import('./recall/recall_combat').RecallClientResult | null;
+  // Leitner review deck (question id -> card). Persisted; dueAt uses host lockout clock.
+  recallCards: import('./recall/spaced_repetition').RecallCardMap;
 }
 
 // Away-from-keyboard / do-not-disturb presence. `afk` still delivers whispers
@@ -1265,6 +1276,8 @@ export interface CharacterState {
   // BharatVerse Subject Mastery XP per subject key. Optional so every pre-recall save
   // loads cleanly at zero mastery; omitted from the save entirely when empty.
   recallMastery?: Record<string, number>;
+  // Leitner review cards (question id -> box/due). Additive; absent loads empty.
+  recallCards?: Record<string, import('./recall/spaced_repetition').RecallCard>;
 }
 
 export interface PetState {
@@ -1995,6 +2008,7 @@ export class Sim {
       recallChargeHitsLeft: 0,
       recallOfferIndex: 0,
       recallLastResult: null,
+      recallCards: loadRecallCards(savedState?.recallCards),
     };
     // A fresh character sets out provisioned (class-defined starter rations);
     // a saved character loads its own bags from savedState below.
@@ -2557,6 +2571,7 @@ export class Sim {
       ...(meta.recallMastery.size > 0
         ? { recallMastery: Object.fromEntries(meta.recallMastery) }
         : {}),
+      ...(meta.recallCards.size > 0 ? { recallCards: serializeRecallCards(meta.recallCards) } : {}),
       ...(() => {
         const deedStats = serializeDeedStats(meta.deedStats);
         return deedStats ? { deedStats } : {};
@@ -2980,10 +2995,44 @@ export class Sim {
   get recallLastResult(): import('../world_api/recall').RecallClientResult | null {
     return this.primary.recallLastResult;
   }
+  get masteryBySubject(): ReadonlyMap<string, number> {
+    return this.primary.recallMastery;
+  }
+  get reviewDueCount(): number {
+    return dueCardCount(this.primary.recallCards, this.lockoutNowMs());
+  }
   answerRecall(selectedIndex: number, timingMs: number, pid?: number): void {
     const r = this.resolve(pid);
     if (!r?.meta.recallPending) return;
     this.resolvePlayerRecall(r.meta, selectedIndex, timingMs, false);
+  }
+  startRecallReview(pid?: number): void {
+    const r = this.resolve(pid);
+    if (!r || r.meta.recallPending) return;
+    const nowMs = this.lockoutNowMs();
+    const due = dueCardIds(r.meta.recallCards, nowMs);
+    for (const qid of due) {
+      const found = findQuestionById(DEFAULT_RECALL_BANK, qid);
+      if (!found) continue;
+      const subject =
+        r.meta.recallCards.get(qid)?.subject ||
+        found.question.subject ||
+        found.poolKey.split(':')[0] ||
+        'gk';
+      r.meta.recallPending = {
+        question: found.question,
+        poolKey: found.poolKey,
+        subject,
+        startedAt: this.time,
+        expiresAt: this.time + RECALL_COMBAT.TIMEOUT_S,
+      };
+      this.emit({
+        type: 'recallOffer',
+        pid: r.meta.entityId,
+        prompt: toClientPrompt(r.meta.recallPending),
+      });
+      return;
+    }
   }
   /** Internal: resolve answer or timeout for one player. */
   private resolvePlayerRecall(
@@ -3012,6 +3061,15 @@ export class Sim {
     if (out.masteryXpGain > 0) {
       meta.recallMastery.set(pending.subject, masteryXp + out.masteryXpGain);
     }
+    // Leitner schedule for this question id (host clock).
+    const qid = pending.question.id;
+    if (qid) {
+      const prev = meta.recallCards.get(qid) ?? null;
+      meta.recallCards.set(
+        qid,
+        scheduleAfterAnswer(prev, pending.subject, out.result.correct, this.lockoutNowMs()),
+      );
+    }
     this.emit({
       type: 'recallResult',
       pid: meta.entityId,
@@ -3021,8 +3079,10 @@ export class Sim {
       masteryXpGain: out.result.masteryXpGain,
       combo: out.result.combo,
       masteryTier: out.result.masteryTier,
+      subject: pending.subject,
       explanation: out.result.explanation,
       prompt: out.result.prompt,
+      reviewDueCount: dueCardCount(meta.recallCards, this.lockoutNowMs()),
     });
   }
   // Offline the sandbox has no population, so there is no rarity to report:
