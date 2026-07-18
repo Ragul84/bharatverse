@@ -61,6 +61,13 @@ import {
   scheduleAfterAnswer,
   serializeRecallCards,
 } from './recall/spaced_repetition';
+import {
+  buildFlashcardDueList,
+  clampStudyCount,
+  remainingAfterAnswer,
+  STUDY_SESSION,
+} from './recall/study_session';
+import { questionPromptText } from './recall/recall_combat';
 import { learningGoalById } from './content/bharatverse_goals';
 import { runEffects as runEffectsImpl } from './combat/effect_dispatch';
 import {
@@ -1112,6 +1119,8 @@ export interface PlayerMeta {
   recallCards: import('./recall/spaced_repetition').RecallCardMap;
   // Learning Goal id from the Guru (e.g. ncert_6_8). Persisted; null = unset.
   learningGoalId: string | null;
+  // Study Hall multi-quiz: questions left AFTER the current pending one (0 = idle).
+  studySessionRemaining: number;
 }
 
 // Away-from-keyboard / do-not-disturb presence. `afk` still delivers whispers
@@ -2019,6 +2028,7 @@ export class Sim {
         typeof savedState?.learningGoalId === 'string' && learningGoalById(savedState.learningGoalId)
           ? savedState.learningGoalId
           : null,
+      studySessionRemaining: 0,
     };
     // A fresh character sets out provisioned (class-defined starter rations);
     // a saved character loads its own bags from savedState below.
@@ -3012,6 +3022,21 @@ export class Sim {
   get reviewDueCount(): number {
     return dueCardCount(this.primary.recallCards, this.lockoutNowMs());
   }
+  get flashcardDueList(): import('../world_api/recall').FlashcardDueView[] {
+    const nowMs = this.lockoutNowMs();
+    const due = dueCardIds(this.primary.recallCards, nowMs);
+    return buildFlashcardDueList(due, this.primary.recallCards, (id) => {
+      const found = findQuestionById(DEFAULT_RECALL_BANK, id);
+      if (!found) return null;
+      return {
+        prompt: questionPromptText(found.question),
+        subject: found.question.subject,
+      };
+    });
+  }
+  get studySessionRemaining(): number {
+    return this.primary.studySessionRemaining;
+  }
   answerRecall(selectedIndex: number, timingMs: number, pid?: number): void {
     const r = this.resolve(pid);
     if (!r?.meta.recallPending) return;
@@ -3020,30 +3045,7 @@ export class Sim {
   startRecallReview(pid?: number): void {
     const r = this.resolve(pid);
     if (!r || r.meta.recallPending) return;
-    const nowMs = this.lockoutNowMs();
-    const due = dueCardIds(r.meta.recallCards, nowMs);
-    for (const qid of due) {
-      const found = findQuestionById(DEFAULT_RECALL_BANK, qid);
-      if (!found) continue;
-      const subject =
-        r.meta.recallCards.get(qid)?.subject ||
-        found.question.subject ||
-        found.poolKey.split(':')[0] ||
-        'gk';
-      r.meta.recallPending = {
-        question: found.question,
-        poolKey: found.poolKey,
-        subject,
-        startedAt: this.time,
-        expiresAt: this.time + RECALL_COMBAT.TIMEOUT_S,
-      };
-      this.emit({
-        type: 'recallOffer',
-        pid: r.meta.entityId,
-        prompt: toClientPrompt(r.meta.recallPending),
-      });
-      return;
-    }
+    this.offerDueOrNull(r.meta);
   }
   get learningGoalId(): string | null {
     return this.primary.learningGoalId;
@@ -3061,24 +3063,61 @@ export class Sim {
   startStudyHallQuiz(pid?: number): void {
     const r = this.resolve(pid);
     if (!r || r.meta.recallPending) return;
-    // Focused Study Hall quiz ignores combat cooldown (still one pending at a time).
+    const count = clampStudyCount(STUDY_SESSION.DEFAULT_COUNT);
+    // Remaining AFTER the first question we are about to open.
+    r.meta.studySessionRemaining = remainingAfterAnswer(count);
+    if (!this.offerStudyQuestion(r.meta)) {
+      r.meta.studySessionRemaining = 0;
+    }
+  }
+  /** Offer the next due Leitner card as a power-moment; returns true if opened. */
+  private offerDueOrNull(meta: PlayerMeta): boolean {
+    const nowMs = this.lockoutNowMs();
+    const due = dueCardIds(meta.recallCards, nowMs);
+    for (const qid of due) {
+      const found = findQuestionById(DEFAULT_RECALL_BANK, qid);
+      if (!found) continue;
+      const subject =
+        meta.recallCards.get(qid)?.subject ||
+        found.question.subject ||
+        found.poolKey.split(':')[0] ||
+        'gk';
+      meta.recallPending = {
+        question: found.question,
+        poolKey: found.poolKey,
+        subject,
+        startedAt: this.time,
+        expiresAt: this.time + RECALL_COMBAT.TIMEOUT_S,
+      };
+      this.emit({
+        type: 'recallOffer',
+        pid: meta.entityId,
+        prompt: toClientPrompt(meta.recallPending),
+      });
+      return true;
+    }
+    return false;
+  }
+  /** Study Hall: next fixture question (ignores combat cooldown). */
+  private offerStudyQuestion(meta: PlayerMeta): boolean {
     const offer = tryBuildRecallOffer({
       bank: DEFAULT_RECALL_BANK,
       worldSeed: this.cfg.seed,
       now: this.time,
-      offerIndex: r.meta.recallOfferIndex,
-      playerId: r.meta.entityId,
+      offerIndex: meta.recallOfferIndex,
+      playerId: meta.entityId,
       cooldownUntil: 0,
       hasPending: false,
     });
-    if (!offer) return;
-    r.meta.recallPending = offer;
-    r.meta.recallOfferIndex += 1;
+    if (!offer) return false;
+    meta.recallPending = offer;
+    meta.recallOfferIndex += 1;
     this.emit({
       type: 'recallOffer',
-      pid: r.meta.entityId,
+      pid: meta.entityId,
       prompt: toClientPrompt(offer),
     });
+    return true;
   }
   /** Internal: resolve answer or timeout for one player. */
   private resolvePlayerRecall(
@@ -3100,9 +3139,11 @@ export class Sim {
     });
     meta.recallPending = null;
     meta.recallCombo = out.nextCombo;
-    meta.recallCooldownUntil = out.cooldownUntil;
     meta.recallChargeMult = out.chargeMult;
     meta.recallChargeHitsLeft = out.chargeHits;
+    // Combat cooldown only when not mid Study Hall multi-quiz.
+    const moreStudy = meta.studySessionRemaining > 0;
+    if (!moreStudy) meta.recallCooldownUntil = out.cooldownUntil;
     meta.recallLastResult = out.result;
     if (out.masteryXpGain > 0) {
       meta.recallMastery.set(pending.subject, masteryXp + out.masteryXpGain);
@@ -3116,6 +3157,10 @@ export class Sim {
         scheduleAfterAnswer(prev, pending.subject, out.result.correct, this.lockoutNowMs()),
       );
     }
+    // studySessionRemaining is "questions left after the one we just finished".
+    const leftAfter = meta.studySessionRemaining;
+    if (moreStudy) meta.studySessionRemaining = Math.max(0, leftAfter - 1);
+
     this.emit({
       type: 'recallResult',
       pid: meta.entityId,
@@ -3129,7 +3174,13 @@ export class Sim {
       explanation: out.result.explanation,
       prompt: out.result.prompt,
       reviewDueCount: dueCardCount(meta.recallCards, this.lockoutNowMs()),
+      studySessionRemaining: meta.studySessionRemaining,
     });
+
+    // Auto-open the next Study Hall question while the session has remaining.
+    if (leftAfter > 0) {
+      if (!this.offerStudyQuestion(meta)) meta.studySessionRemaining = 0;
+    }
   }
   // Offline the sandbox has no population, so there is no rarity to report:
   // always null (the facet's documented no-data value; the window hides the

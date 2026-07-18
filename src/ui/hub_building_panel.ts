@@ -2,7 +2,11 @@
 
 import { LEARNING_GOALS } from '../sim/content/bharatverse_goals';
 import type { BvBuildingKind } from '../sim/content/bharatverse_hub';
-import { LIBRARY_CHAPTERS } from '../sim/content/bharatverse_library';
+import {
+  filterLibraryChapters,
+  LIBRARY_CHAPTERS,
+  libraryFilterOptions,
+} from '../sim/content/bharatverse_library';
 import type { IWorld } from '../world_api';
 import { buildHubBuildingView, type HubBuildingView } from './hub_building_view';
 import { t } from './i18n';
@@ -27,6 +31,8 @@ export class HubBuildingPanel {
   private root: HTMLElement;
   private openKind: BvBuildingKind | null = null;
   private selectedChapterId: string | null = null;
+  private libraryBoard: string | null = null;
+  private librarySubject: string | null = null;
   private lastSig = '';
 
   constructor(
@@ -59,6 +65,22 @@ export class HubBuildingPanel {
       const ch = tEl.closest('[data-hub-chapter]') as HTMLElement | null;
       if (ch) {
         this.selectedChapterId = ch.getAttribute('data-hub-chapter');
+        this.lastSig = '';
+        this.update();
+        return;
+      }
+      const board = tEl.closest('[data-hub-board]') as HTMLElement | null;
+      if (board) {
+        const v = board.getAttribute('data-hub-board');
+        this.libraryBoard = v === '' || v === null ? null : v;
+        this.lastSig = '';
+        this.update();
+        return;
+      }
+      const subj = tEl.closest('[data-hub-subject]') as HTMLElement | null;
+      if (subj) {
+        const v = subj.getAttribute('data-hub-subject');
+        this.librarySubject = v === '' || v === null ? null : v;
         this.lastSig = '';
         this.update();
         return;
@@ -96,11 +118,15 @@ export class HubBuildingPanel {
   update(): void {
     if (!this.openKind) return;
     const w = this.world();
+    const chapters = filterLibraryChapters(LIBRARY_CHAPTERS, {
+      board: this.libraryBoard,
+      subject: this.librarySubject,
+    });
     const view = buildHubBuildingView({
       kind: this.openKind,
       goals: LEARNING_GOALS,
       activeGoalId: w.learningGoalId,
-      chapters: LIBRARY_CHAPTERS,
+      chapters,
       selectedChapterId: this.selectedChapterId,
       mastery: w.masteryBySubject,
       dueCount: w.reviewDueCount,
@@ -134,6 +160,23 @@ export class HubBuildingPanel {
     }
 
     if (view.kind === 'library' && view.chapters) {
+      const opts = libraryFilterOptions(LIBRARY_CHAPTERS);
+      const boardChips =
+        `<button type="button" class="btn hub-chip${this.libraryBoard ? '' : ' active'}" data-hub-board="">All boards</button>` +
+        opts.boards
+          .map((b) => {
+            const active = this.libraryBoard === b ? ' active' : '';
+            return `<button type="button" class="btn hub-chip${active}" data-hub-board="${esc(b)}">${esc(b)}</button>`;
+          })
+          .join('');
+      const subjectChips =
+        `<button type="button" class="btn hub-chip${this.librarySubject ? '' : ' active'}" data-hub-subject="">All subjects</button>` +
+        opts.subjects
+          .map((s) => {
+            const active = this.librarySubject === s ? ' active' : '';
+            return `<button type="button" class="btn hub-chip${active}" data-hub-subject="${esc(s)}">${esc(s)}</button>`;
+          })
+          .join('');
       const list = view.chapters
         .map((c) => {
           const active = c.id === view.selectedChapterId ? ' active' : '';
@@ -146,7 +189,9 @@ export class HubBuildingPanel {
       const selected =
         view.chapters.find((c) => c.id === view.selectedChapterId) ?? view.chapters[0];
       bodyHtml +=
-        `<div class="hub-chapters">${list}</div>` +
+        `<div class="hub-filters">${boardChips}</div>` +
+        `<div class="hub-filters">${subjectChips}</div>` +
+        `<div class="hub-chapters">${list || `<div class="hub-note">No chapters match.</div>`}</div>` +
         (selected
           ? `<div class="hub-excerpt"><h4>${esc(selected.title)}</h4><p>${esc(selected.excerpt)}</p></div>`
           : '');

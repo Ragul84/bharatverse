@@ -1202,6 +1202,8 @@ export class ClientWorld implements IWorld {
   masteryBySubject = new Map<string, number>();
   reviewDueCount = 0;
   learningGoalId: string | null = null;
+  flashcardDueList: import('../world_api').FlashcardDueView[] = [];
+  studySessionRemaining = 0;
   // --- IWorldDelves: active delve run + companion + marks/upgrades + daily, all
   // mirrored from the snapshot self (delta-omitted). lockpickState is the exception:
   // it has NO snapshot field and is rebuilt from the lockpick* events by the private
@@ -2366,6 +2368,9 @@ export class ClientWorld implements IWorld {
         this.masteryBySubject.set(ev.subject, prev + ev.masteryXpGain);
       }
       if (typeof ev.reviewDueCount === 'number') this.reviewDueCount = ev.reviewDueCount;
+      if (typeof ev.studySessionRemaining === 'number') {
+        this.studySessionRemaining = ev.studySessionRemaining;
+      }
     }
   }
 

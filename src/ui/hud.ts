@@ -6,6 +6,7 @@ import type { GameSettings, Settings } from '../game/settings';
 import { sfx } from '../game/sfx';
 import type { UiEffectsTier } from '../game/ui_effects_profile';
 import { bvBuildingKindForNpc } from '../sim/content/bharatverse_hub';
+import { FlashcardsPanel } from './flashcards_panel';
 import { HubBuildingPanel } from './hub_building_panel';
 import { MasteryPanel } from './mastery_panel';
 import { RecallPromptPanel } from './recall_prompt';
@@ -1481,6 +1482,7 @@ export class Hud {
   private recallPromptPanel: RecallPromptPanel;
   private masteryPanel: MasteryPanel;
   private hubBuildingPanel: HubBuildingPanel;
+  private flashcardsPanel: FlashcardsPanel;
 
   constructor(
     private sim: IWorld,
@@ -1493,6 +1495,7 @@ export class Hud {
     this.recallPromptPanel = new RecallPromptPanel(() => this.sim);
     this.masteryPanel = new MasteryPanel(() => this.sim);
     this.hubBuildingPanel = new HubBuildingPanel(() => this.sim);
+    this.flashcardsPanel = new FlashcardsPanel(() => this.sim);
     this.initChatTabs();
     this.initChatBoxGeometry();
     this.initFrameMovers();
@@ -7679,6 +7682,7 @@ export class Hud {
       this.recallPromptPanel.update();
       this.masteryPanel.update();
       this.hubBuildingPanel.update();
+      this.flashcardsPanel.update();
       // Party frames run on the ~4Hz mediumHud band (the enclosing block) for EVERY tier.
       // The tier knobs deliberately do NOT tier them down on low: party-member HP is a healer's
       // only actionable signal (no self-dispel), so a graphics preset must not slow it
@@ -14182,6 +14186,14 @@ export class Hud {
     }
   }
 
+  toggleFlashcards(): void {
+    if (this.flashcardsPanel.isOpen) this.flashcardsPanel.close();
+    else {
+      this.closeOtherWindows('#flashcards-panel');
+      this.flashcardsPanel.show();
+    }
+  }
+
   private ensureMasteryMicroButton(): void {
     if (document.getElementById('mm-mastery')) return;
     const talents = document.getElementById('mm-talents');
@@ -14196,6 +14208,18 @@ export class Hud {
     btn.textContent = 'M';
     parent.insertBefore(btn, talents.nextSibling);
     btn.addEventListener('click', () => this.toggleMastery());
+
+    if (!document.getElementById('mm-flashcards')) {
+      const fc = document.createElement('button');
+      fc.type = 'button';
+      fc.className = talents?.className || 'micro-btn';
+      fc.id = 'mm-flashcards';
+      fc.title = t('hudChrome.flashcards.openHint');
+      fc.setAttribute('aria-label', t('hudChrome.flashcards.openHint'));
+      fc.textContent = 'C';
+      parent.insertBefore(fc, btn.nextSibling);
+      fc.addEventListener('click', () => this.toggleFlashcards());
+    }
   }
 
   // Restore a saved loadout's action bar into the per-class slot map (reuses the
@@ -15486,6 +15510,10 @@ export class Hud {
   closeAll(): boolean {
     if (this.hubBuildingPanel.isOpen) {
       this.hubBuildingPanel.close();
+      return true;
+    }
+    if (this.flashcardsPanel.isOpen) {
+      this.flashcardsPanel.close();
       return true;
     }
     if (this.masteryPanel.isOpen) {

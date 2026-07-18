@@ -2351,6 +2351,7 @@ export type SimEvent = { pid?: number } & (
       explanation?: string;
       prompt: string;
       reviewDueCount?: number;
+      studySessionRemaining?: number;
     }
   | { type: 'playerDeath' }
   | { type: 'respawn' }

@@ -185,6 +185,7 @@ export type {
   VcStanding,
 } from './world_api/vale_cup';
 export type {
+  FlashcardDueView,
   MasterySubjectView,
   RecallClientPrompt,
   RecallClientResult,

@@ -11,6 +11,37 @@ export interface LibraryChapter {
   excerpt: string;
 }
 
+/** Filter chapters by board and/or subject (empty = all). Pure. */
+export function filterLibraryChapters(
+  chapters: readonly LibraryChapter[],
+  opts: { board?: string | null; subject?: string | null },
+): LibraryChapter[] {
+  const board = opts.board?.trim().toLowerCase() || null;
+  const subject = opts.subject?.trim().toLowerCase() || null;
+  return chapters.filter((c) => {
+    if (board && c.board.toLowerCase() !== board) return false;
+    if (subject && c.subject.toLowerCase() !== subject) return false;
+    return true;
+  });
+}
+
+/** Distinct boards / subjects for filter chips. */
+export function libraryFilterOptions(chapters: readonly LibraryChapter[]): {
+  boards: string[];
+  subjects: string[];
+} {
+  const boards = new Set<string>();
+  const subjects = new Set<string>();
+  for (const c of chapters) {
+    boards.add(c.board);
+    subjects.add(c.subject);
+  }
+  return {
+    boards: [...boards].sort(),
+    subjects: [...subjects].sort(),
+  };
+}
+
 export const LIBRARY_CHAPTERS: readonly LibraryChapter[] = [
   {
     id: 'ncert_sci_6_food',

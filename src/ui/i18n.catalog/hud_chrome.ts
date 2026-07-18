@@ -2274,6 +2274,17 @@ export const hudChromeStrings = {
       power: 'Power x{mult}',
     },
   },
+  // Flashcards / review deck panel (M3).
+  flashcards: {
+    title: 'Flashcards',
+    close: 'Close flashcards',
+    subtitle: '{n} cards due for review',
+    empty: 'No cards due. Answer power-moments or Study Hall quizzes to fill your deck.',
+    startReview: 'Review next due',
+    studyHall: 'Start Study Hall (5)',
+    sessionLeft: 'Study session: {n} left after this',
+    openHint: 'Cards',
+  },
   // Unity City hub building overlays (M2).
   hub: {
     close: 'Close',

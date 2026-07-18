@@ -2,8 +2,9 @@
 // Facet is string-free and host-free: types only from sim/recall, no DOM/t().
 
 import type { RecallClientPrompt, RecallClientResult } from '../sim/recall/recall_combat';
+import type { FlashcardDueView } from '../sim/recall/study_session';
 
-export type { RecallClientPrompt, RecallClientResult };
+export type { RecallClientPrompt, RecallClientResult, FlashcardDueView };
 
 /** One subject row for the mastery skills panel. */
 export interface MasterySubjectView {
@@ -25,6 +26,10 @@ export interface IWorldRecall {
   readonly masteryBySubject: ReadonlyMap<string, number>;
   /** How many Leitner cards are due for review right now. */
   readonly reviewDueCount: number;
+  /** Due flashcards with front text (for the flashcards panel). */
+  readonly flashcardDueList: readonly FlashcardDueView[];
+  /** Questions left in an active Study Hall multi-quiz (0 = idle). */
+  readonly studySessionRemaining: number;
   /**
    * Submit an MCQ choice for the active power-moment.
    * `timingMs` is client-measured time from show to submit (server clamps / may
@@ -41,7 +46,7 @@ export interface IWorldRecall {
   /** Set Learning Goal (Guru); null clears. */
   setLearningGoal(goalId: string | null): void;
   /**
-   * Study Hall: open a focused quiz power-moment (ignores combat cooldown).
+   * Study Hall: open a multi-question focused session (default 5).
    * No-op if a prompt is already open.
    */
   startStudyHallQuiz(): void;

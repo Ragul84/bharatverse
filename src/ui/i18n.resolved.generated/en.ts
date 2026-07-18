@@ -2025,6 +2025,16 @@ export const en: EnTranslations = {
         "power": "Power x{mult}"
       }
     },
+    "flashcards": {
+      "title": "Flashcards",
+      "close": "Close flashcards",
+      "subtitle": "{n} cards due for review",
+      "empty": "No cards due. Answer power-moments or Study Hall quizzes to fill your deck.",
+      "startReview": "Review next due",
+      "studyHall": "Start Study Hall (5)",
+      "sessionLeft": "Study session: {n} left after this",
+      "openHint": "Cards"
+    },
     "hub": {
       "close": "Close",
       "guru": {
