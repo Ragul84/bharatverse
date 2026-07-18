@@ -134,8 +134,8 @@ Net effect: smaller bundle, fewer draw calls, less code = smoother on low-end An
 | Logo art | BLOCKED on user file |
 | Service worker / final mobile polish | NOT STARTED |
 
-### M-Trim slice 1 (2026-07-18) — what landed
-- `src/sim/bharatverse_features.ts` — pure feature flags; cut systems default OFF
+### M-Trim slice 1 (2026-07-18) - what landed
+- `src/sim/bharatverse_features.ts` - pure feature flags; cut systems default OFF
 - Surface trim hides arena / delves / vale cup / wallet / Claudium chrome
 - Wallet permanently `WALLET_ENABLED = false`; world-boss auto-schedule disabled
 - Player-facing brand de-fork: `bharatverse.game`, logo, no upstream socials
