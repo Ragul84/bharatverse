@@ -311,6 +311,7 @@ describe('handlePickedEntity', () => {
       openLoot: () => {},
       openQuestDialog: () => {},
       openDelveBoard: () => {},
+      openHubBuilding: () => false,
       openMailbox: () => {},
       showError: () => {},
       closeContextMenu: () => {},
@@ -350,6 +351,7 @@ describe('handlePickedEntity', () => {
       openLoot: () => {},
       openQuestDialog: () => {},
       openDelveBoard: () => {},
+      openHubBuilding: () => false,
       openMailbox: () => {},
       showError: () => {},
       closeContextMenu: () => {},
@@ -387,6 +389,10 @@ describe('handlePickedEntity while dead (the ghost/death loop)', () => {
       openLoot: () => calls.push('openLoot'),
       openQuestDialog: () => calls.push('openQuestDialog'),
       openDelveBoard: () => calls.push('openDelveBoard'),
+      openHubBuilding: () => {
+        calls.push('openHubBuilding');
+        return false;
+      },
       openMailbox: () => calls.push('openMailbox'),
       showError: () => calls.push('showError'),
       closeContextMenu: () => {},
